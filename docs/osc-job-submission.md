@@ -1,0 +1,585 @@
+# Job Submission Guide
+
+Learn how to submit and manage jobs on OSC using the SLURM job scheduler.
+
+## Overview
+
+OSC uses SLURM (Simple Linux Utility for Resource Management) to schedule and manage jobs on compute nodes.
+
+### Why Use Job Submission?
+
+- ✅ Access to more resources (many CPUs, GPUs, memory)
+- ✅ Jobs run independently of your login session
+- ✅ Efficient resource sharing among all users
+- ✅ Automatic resource allocation and management
+
+## Quick Start
+
+### Interactive Job (Testing)
+
+```bash
+# Request interactive session for testing
+srun -p debug -c 4 --time=30:00 --pty bash
+
+# With GPU
+srun -p gpu --gpus-per-node=1 --time=30:00 --pty bash
+```
+
+### Batch Job (Production)
+
+Create `job.sh`:
+```bash
+#!/bin/bash
+#SBATCH --job-name=my_job
+#SBATCH --nodes=1
+#SBATCH --ntasks-per-node=4
+#SBATCH --time=02:00:00
+#SBATCH --output=job_%j.out
+
+# Your commands here
+python train.py
+```
+
+Submit:
+```bash
+sbatch job.sh
+```
+
+## SLURM Basics
+
+### Essential Commands
+
+```bash
+# Submit batch job
+sbatch job_script.sh
+
+# Interactive session
+srun -p partition --pty bash
+
+# List your jobs
+squeue -u $USER
+
+# Cancel job
+scancel <job_id>
+
+# Cancel all your jobs
+scancel -u $USER
+
+# Job details
+scontrol show job <job_id>
+
+# Job efficiency (after completion)
+seff <job_id>
+```
+
+### Job States
+
+- **PD** (Pending): Waiting for resources
+- **R** (Running): Job is running
+- **CG** (Completing): Job is finishing
+- **CD** (Completed): Job finished successfully
+- **F** (Failed): Job failed
+- **CA** (Cancelled): Job was cancelled
+
+## Creating Job Scripts
+
+### Basic Job Script Template
+
+```bash
+#!/bin/bash
+#SBATCH --job-name=my_job          # Job name
+#SBATCH --account=PAS1234          # Project account
+#SBATCH --nodes=1                  # Number of nodes
+#SBATCH --ntasks-per-node=1        # Tasks per node
+#SBATCH --cpus-per-task=4          # CPUs per task
+#SBATCH --time=02:00:00            # Time limit (HH:MM:SS)
+#SBATCH --output=logs/job_%j.out   # Standard output (%j = job ID)
+#SBATCH --error=logs/job_%j.err    # Standard error
+#SBATCH --mail-type=END,FAIL       # Email on END or FAIL
+#SBATCH --mail-user=user@osu.edu   # Email address
+
+# Print job info
+echo "Job started at: $(date)"
+echo "Running on node: $(hostname)"
+echo "Job ID: $SLURM_JOB_ID"
+
+# Load modules
+module load python/3.9-2022.05
+
+# Activate environment
+source ~/venvs/myproject/bin/activate
+
+# Run your code
+python train.py --epochs 100
+
+# Print completion
+echo "Job ended at: $(date)"
+```
+
+### GPU Job Script
+
+```bash
+#!/bin/bash
+#SBATCH --job-name=gpu_training
+#SBATCH --account=PAS1234
+#SBATCH --nodes=1
+#SBATCH --ntasks-per-node=1
+#SBATCH --gpus-per-node=1          # Number of GPUs
+#SBATCH --time=04:00:00
+#SBATCH --output=logs/gpu_job_%j.out
+
+# Load modules
+module load python/3.9-2022.05
+module load cuda/11.8.0
+
+# Activate environment
+source ~/venvs/pytorch/bin/activate
+
+# Set environment variables
+export CUDA_VISIBLE_DEVICES=0
+
+# Verify GPU
+nvidia-smi
+
+# Run training
+python train.py --device cuda --epochs 100
+```
+
+### Multi-GPU Job Script
+
+```bash
+#!/bin/bash
+#SBATCH --job-name=multi_gpu
+#SBATCH --account=PAS1234
+#SBATCH --nodes=1
+#SBATCH --gpus-per-node=4          # Use 4 GPUs
+#SBATCH --time=08:00:00
+#SBATCH --output=logs/multi_gpu_%j.out
+
+module load python/3.9-2022.05
+module load cuda/11.8.0
+source ~/venvs/pytorch/bin/activate
+
+# Run with PyTorch DDP
+python -m torch.distributed.launch \
+    --nproc_per_node=4 \
+    train.py \
+    --distributed
+```
+
+## Partitions (Queues)
+
+### Pitzer Partitions
+
+| Partition | Max Time | Max Nodes | GPUs | Best For |
+|-----------|----------|-----------|------|----------|
+| serial | 168:00:00 | 1 | No | Single-node CPU jobs |
+| parallel | 168:00:00 | Many | No | Multi-node CPU jobs |
+| gpu | 48:00:00 | Variable | Yes | GPU jobs |
+| debug | 01:00:00 | 2 | Yes | Quick testing |
+
+### Choose Partition
+
+```bash
+# CPU job
+#SBATCH --partition=serial
+
+# GPU job
+#SBATCH --partition=gpu
+
+# Quick test
+#SBATCH --partition=debug
+```
+
+## Resource Requests
+
+### CPUs and Memory
+
+```bash
+# Request 8 CPUs
+#SBATCH --cpus-per-task=8
+
+# Request 32 GB memory
+#SBATCH --mem=32G
+
+# Request memory per CPU
+#SBATCH --mem-per-cpu=4G
+```
+
+### GPUs
+
+```bash
+# Request 1 GPU (any type)
+#SBATCH --gpus-per-node=1
+
+# Request specific GPU type
+#SBATCH --gpus-per-node=v100:1     # V100 GPU
+#SBATCH --gpus-per-node=a100:1     # A100 GPU
+
+# Request multiple GPUs
+#SBATCH --gpus-per-node=2
+```
+
+### Time Limits
+
+```bash
+# Format: HH:MM:SS
+#SBATCH --time=00:30:00   # 30 minutes
+#SBATCH --time=02:00:00   # 2 hours
+#SBATCH --time=24:00:00   # 24 hours
+
+# Or use days-hours format
+#SBATCH --time=2-12:00:00  # 2 days, 12 hours
+```
+
+## Job Arrays
+
+Run multiple similar jobs efficiently:
+
+### Basic Job Array
+
+```bash
+#!/bin/bash
+#SBATCH --job-name=array_job
+#SBATCH --array=1-10              # Run 10 jobs
+#SBATCH --time=01:00:00
+#SBATCH --output=logs/job_%A_%a.out  # %A = array ID, %a = task ID
+
+# Use array task ID
+python train.py --seed $SLURM_ARRAY_TASK_ID
+```
+
+### Advanced Job Array
+
+```bash
+#!/bin/bash
+#SBATCH --array=1-100%10          # 100 jobs, max 10 concurrent
+
+# Define parameters for each task
+learning_rates=(0.001 0.01 0.1)
+batch_sizes=(16 32 64)
+
+# Get parameters for this task
+idx=$SLURM_ARRAY_TASK_ID
+lr=${learning_rates[$((idx % 3))]}
+bs=${batch_sizes[$((idx / 3 % 3))]}
+
+python train.py --lr $lr --batch-size $bs
+```
+
+## Job Dependencies
+
+Chain jobs together:
+
+```bash
+# Submit first job
+job1=$(sbatch --parsable job1.sh)
+
+# Submit second job after first completes
+sbatch --dependency=afterok:$job1 job2.sh
+
+# Submit after job completes (success or failure)
+sbatch --dependency=afterany:$job1 job3.sh
+
+# Submit after multiple jobs complete
+sbatch --dependency=afterok:$job1:$job2 job4.sh
+```
+
+## Monitoring Jobs
+
+### Check Job Status
+
+```bash
+# List your jobs
+squeue -u $USER
+
+# Detailed view
+squeue -u $USER --format="%.18i %.9P %.30j %.8u %.2t %.10M %.6D %R"
+
+# Watch job status
+watch -n 10 squeue -u $USER
+```
+
+### View Job Details
+
+```bash
+# Current job info
+scontrol show job <job_id>
+
+# Job accounting info (after completion)
+sacct -j <job_id> --format=JobID,JobName,Partition,State,Elapsed,MaxRSS
+
+# Job efficiency
+seff <job_id>
+```
+
+### Monitor Running Job
+
+```bash
+# SSH to compute node
+squeue -u $USER  # Get node name
+ssh <nodename>   # e.g., ssh p0123
+
+# Monitor resources
+top
+htop
+nvidia-smi  # For GPU jobs
+```
+
+### View Job Output
+
+```bash
+# Tail output file while job runs
+tail -f logs/job_12345.out
+
+# Follow with automatic refresh
+watch -n 5 tail -20 logs/job_12345.out
+```
+
+## Environment Variables
+
+SLURM provides useful environment variables:
+
+```bash
+# In your job script
+echo "Job ID: $SLURM_JOB_ID"
+echo "Job name: $SLURM_JOB_NAME"
+echo "Node list: $SLURM_JOB_NODELIST"
+echo "Number of nodes: $SLURM_JOB_NUM_NODES"
+echo "CPUs per task: $SLURM_CPUS_PER_TASK"
+echo "Array task ID: $SLURM_ARRAY_TASK_ID"
+echo "Working directory: $SLURM_SUBMIT_DIR"
+```
+
+Use in Python:
+```python
+import os
+
+job_id = os.environ.get('SLURM_JOB_ID')
+task_id = os.environ.get('SLURM_ARRAY_TASK_ID', '0')
+```
+
+## Advanced Topics
+
+### Email Notifications
+
+```bash
+#SBATCH --mail-type=BEGIN          # Email when job starts
+#SBATCH --mail-type=END            # Email when job ends
+#SBATCH --mail-type=FAIL           # Email on failure
+#SBATCH --mail-type=ALL            # Email for all events
+#SBATCH --mail-user=user@osu.edu
+```
+
+### Job Requeue
+
+```bash
+# Allow job to be requeued if node fails
+#SBATCH --requeue
+
+# In your script, handle requeue
+if [ -f checkpoint.pth ]; then
+    python train.py --resume checkpoint.pth
+else
+    python train.py
+fi
+```
+
+### Exclusive Node Access
+
+```bash
+# Request exclusive access to node
+#SBATCH --exclusive
+```
+
+### Specify Nodes
+
+```bash
+# Request specific node features
+#SBATCH --constraint=skylake
+
+# Exclude specific nodes
+#SBATCH --exclude=p0010,p0011
+```
+
+## Best Practices
+
+### 1. Test with Debug Partition
+
+```bash
+# Quick test first
+#SBATCH --partition=debug
+#SBATCH --time=00:30:00
+```
+
+### 2. Request Appropriate Resources
+
+```bash
+# Don't over-request
+#SBATCH --nodes=1
+#SBATCH --cpus-per-task=4    # Not 48 if you don't need it
+#SBATCH --time=02:00:00      # Not 168:00:00 for 30-min job
+```
+
+### 3. Use Job Arrays for Multiple Runs
+
+```bash
+# Better than 10 separate jobs
+#SBATCH --array=1-10
+```
+
+### 4. Organize Output Files
+
+```bash
+# Create logs directory first
+mkdir -p logs
+
+# Then in job script
+#SBATCH --output=logs/job_%j.out
+#SBATCH --error=logs/job_%j.err
+```
+
+### 5. Save Checkpoints
+
+```python
+# In your training code
+if epoch % 10 == 0:
+    torch.save({
+        'epoch': epoch,
+        'model': model.state_dict(),
+        'optimizer': optimizer.state_dict(),
+    }, f'checkpoints/epoch_{epoch}.pth')
+```
+
+### 6. Check Job Efficiency
+
+```bash
+# After job completes
+seff <job_id>
+
+# Look for:
+# - CPU Efficiency: Should be > 80%
+# - Memory Efficiency: Should use most of requested memory
+```
+
+## Troubleshooting
+
+### Job Pending Forever
+
+```bash
+# Check reason
+squeue -u $USER
+
+# Common reasons and solutions:
+# - QOSMaxGRESPerUser: Too many GPU jobs running
+# - ReqNodeNotAvail: Maintenance window soon
+# - Resources: Requesting too many resources
+# - Priority: Other jobs have higher priority
+```
+
+**Solution**: Reduce resources or wait.
+
+### Job Fails Immediately
+
+```bash
+# Check output files
+cat logs/job_<jobid>.err
+
+# Common causes:
+# - Module not loaded
+# - Python environment not activated
+# - File not found
+# - Permission denied
+```
+
+### Out of Memory
+
+```bash
+# Request more memory
+#SBATCH --mem=64G
+
+# Or reduce batch size in code
+```
+
+### Job Timeout
+
+```bash
+# Increase time limit
+#SBATCH --time=08:00:00
+
+# Or optimize your code
+```
+
+### GPU Not Detected
+
+```bash
+# Verify GPU requested
+#SBATCH --gpus-per-node=1
+
+# Check CUDA module loaded
+module load cuda/11.8.0
+
+# Verify in code
+nvidia-smi
+```
+
+## Example Workflows
+
+### Hyperparameter Search
+
+```bash
+#!/bin/bash
+#SBATCH --job-name=hyperparam_search
+#SBATCH --array=1-27
+#SBATCH --output=logs/hp_%A_%a.out
+#SBATCH --gpus-per-node=1
+#SBATCH --time=04:00:00
+
+# Define hyperparameter grid
+lrs=(0.001 0.01 0.1)
+batch_sizes=(16 32 64)
+dropouts=(0.1 0.3 0.5)
+
+# Map array task ID to hyperparameters
+idx=$SLURM_ARRAY_TASK_ID
+lr_idx=$((idx % 3))
+bs_idx=$(((idx / 3) % 3))
+dropout_idx=$(((idx / 9) % 3))
+
+lr=${lrs[$lr_idx]}
+bs=${batch_sizes[$bs_idx]}
+dropout=${dropouts[$dropout_idx]}
+
+# Run training
+python train.py \
+    --lr $lr \
+    --batch-size $bs \
+    --dropout $dropout \
+    --experiment-name "hp_search_${SLURM_ARRAY_TASK_ID}"
+```
+
+### Multi-Stage Pipeline
+
+```bash
+# Stage 1: Data preprocessing
+job1=$(sbatch --parsable preprocess.sh)
+
+# Stage 2: Training (after preprocessing)
+job2=$(sbatch --dependency=afterok:$job1 --parsable train.sh)
+
+# Stage 3: Evaluation (after training)
+sbatch --dependency=afterok:$job2 evaluate.sh
+```
+
+## Next Steps
+
+- Learn [Environment Management](osc-environment-management.md)
+- Set up [PyTorch on OSC](pytorch-setup.md)
+- Read [ML Workflow Guide](ml-workflow.md)
+- Review [OSC Best Practices](osc-best-practices.md)
+
+## Resources
+
+- [OSC SLURM Documentation](https://www.osc.edu/resources/technical_support/supercomputers/slurm_migration)
+- [SLURM Official Documentation](https://slurm.schedmd.com/)
+- [Troubleshooting Guide](troubleshooting.md)

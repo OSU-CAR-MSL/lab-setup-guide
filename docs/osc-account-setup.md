@@ -1,0 +1,173 @@
+# OSC Account Setup
+
+The Ohio Supercomputer Center (OSC) provides high-performance computing resources for research and education. This guide will help you get started with OSC access.
+
+## Prerequisites
+
+- Active Ohio State University affiliation (student, faculty, or staff)
+- Valid OSU name.# (username)
+- Participation in an approved OSC project
+
+## Getting an OSC Account
+
+### Step 1: Check if You Already Have Access
+
+If you're already part of a lab project, your PI may have already added you to their OSC project.
+
+1. Visit [my.osc.edu](https://my.osc.edu)
+2. Try logging in with your OSU credentials
+3. If successful, skip to [Verify Your Access](#verify-your-access)
+
+### Step 2: Request Access (If Needed)
+
+If you don't have access yet:
+
+#### Option A: Join Existing Project (Most Common)
+1. Contact your PI or lab manager
+2. Provide your OSU username (name.#)
+3. They will add you to the lab's OSC project
+4. You'll receive an email notification when added
+
+#### Option B: Request New Project
+If your lab doesn't have an OSC project:
+
+1. Visit [OSC Project Request](https://www.osc.edu/supercomputing/allocations)
+2. Your PI should submit a project request
+3. Follow the allocation request process
+4. Wait for approval (typically 1-2 business days)
+
+### Step 3: Activate Your Account
+
+1. After being added to a project, visit [my.osc.edu](https://my.osc.edu)
+2. Log in with your OSU credentials
+3. Accept the terms of service
+4. Set up two-factor authentication (if prompted)
+
+## Verify Your Access
+
+### Check Your Projects
+
+1. Log into [my.osc.edu](https://my.osc.edu)
+2. Click on "Projects" in the top menu
+3. Verify you see your lab's project listed
+4. Note your project code (e.g., `PAS1234`)
+
+### Check Your Allocations
+
+1. In the my.osc.edu portal, navigate to "Allocations"
+2. Verify you have access to computing resources
+3. Note which clusters you can access (Pitzer, Owens, etc.)
+
+## Understanding OSC Systems
+
+OSC operates several computing clusters:
+
+### Pitzer Cluster
+- **Purpose**: General-purpose computing
+- **GPUs**: Available with V100 and A100 GPUs
+- **Best for**: Most ML/AI workloads
+- **Login node**: `pitzer.osc.edu`
+
+### Owens Cluster
+- **Purpose**: General-purpose computing (older)
+- **GPUs**: Available with P100 GPUs
+- **Best for**: CPU-intensive tasks
+- **Login node**: `owens.osc.edu`
+
+### Choosing a Cluster
+- For PyTorch/ML work with GPUs: **Use Pitzer** (newer GPUs)
+- For CPU-only work: Either Pitzer or Owens
+- Check current availability and queue times
+
+## Setting Up SSH Keys (Recommended)
+
+SSH keys provide secure, password-less authentication:
+
+### Generate SSH Key (if you don't have one)
+
+**On Linux/macOS:**
+```bash
+# Generate new SSH key pair
+ssh-keygen -t ed25519 -C "your.email@osu.edu"
+
+# Press Enter to save to default location (~/.ssh/id_ed25519)
+# Enter a passphrase (recommended) or leave empty
+```
+
+**On Windows (PowerShell or Git Bash):**
+```bash
+ssh-keygen -t ed25519 -C "your.email@osu.edu"
+```
+
+### Add SSH Key to OSC
+
+1. Display your public key:
+   ```bash
+   cat ~/.ssh/id_ed25519.pub
+   ```
+
+2. Copy the entire output
+
+3. Log into [my.osc.edu](https://my.osc.edu)
+
+4. Navigate to "My Account" → "Manage SSH Public Keys"
+
+5. Click "Add SSH Public Key"
+
+6. Paste your public key and click "Add Key"
+
+7. Wait a few minutes for the key to propagate
+
+## Test Your Connection
+
+Try connecting via SSH:
+
+```bash
+# Replace username with your OSU name.#
+ssh username@pitzer.osc.edu
+```
+
+If successful, you should see:
+```
+Welcome to the Ohio Supercomputer Center
+Pitzer Cluster
+...
+[username@pitzer-login01 ~]$
+```
+
+## Next Steps
+
+Now that you have OSC access:
+
+1. [Configure SSH Connection](osc-ssh-connection.md) - Set up convenient SSH access
+2. [Set Up Remote Development](osc-remote-development.md) - Use VS Code with OSC
+3. [Learn OSC Best Practices](osc-best-practices.md) - Work efficiently on OSC
+
+## Important Resources
+
+- **OSC Documentation**: [https://www.osc.edu/resources/technical_support/supercomputers](https://www.osc.edu/resources/technical_support/supercomputers)
+- **OSC Help**: Email [oschelp@osc.edu](mailto:oschelp@osc.edu)
+- **Office Hours**: OSC offers walk-in office hours - check their website
+- **Status Page**: [https://www.osc.edu/supercomputing/system-status](https://www.osc.edu/supercomputing/system-status)
+
+## Troubleshooting
+
+### Can't log into my.osc.edu
+- Verify you're using your OSU credentials (name.#)
+- Try resetting your OSU password
+- Contact OSC Help at oschelp@osc.edu
+
+### SSH connection refused
+- Verify you're on OSU network or VPN
+- Check system status: [https://www.osc.edu/supercomputing/system-status](https://www.osc.edu/supercomputing/system-status)
+- Verify the correct hostname (pitzer.osc.edu, not pitzer.org)
+
+### Not listed on any projects
+- Contact your PI to be added to the lab project
+- Verify with PI that they have an active OSC allocation
+
+### Two-factor authentication issues
+- Use the Duo Mobile app
+- Contact OSU IT if you have 2FA problems
+
+For more help, see the [Troubleshooting Guide](troubleshooting.md).

@@ -1,0 +1,162 @@
+# MkDocs configuration for OSU CAR Mobility Systems Lab Setup Guide
+# Documentation: https://www.mkdocs.org/user-guide/configuration/
+
+site_name: CAR-MSL Lab Setup Guide
+site_url: https://osu-car-msl.github.io/lab-setup-guide/
+site_author: OSU CAR Mobility Systems Lab
+site_description: >-
+  Comprehensive tutorials and documentation to help lab members set up their 
+  development environment and workflows on the Ohio Supercomputer Center.
+
+repo_name: OSU-CAR-MSL/lab-setup-guide
+repo_url: https://github.com/OSU-CAR-MSL/lab-setup-guide
+edit_uri: edit/main/docs/
+
+# Copyright notice in footer
+copyright: Copyright &copy; 2024-2026 OSU CAR Mobility Systems Lab
+
+# Theme configuration
+theme:
+  name: material
+  
+  # Color palette with light/dark mode toggle
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: custom        # OSU scarlet
+      accent: custom
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: custom
+      accent: custom
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  
+  # Features
+  features:
+    - navigation.instant      # XHR loading for speed
+    - navigation.tracking     # URL updates with anchor
+    - navigation.tabs         # Top-level sections as tabs
+    - navigation.sections     # Render sections as groups in sidebar
+    - navigation.expand       # Expand all collapsible sections
+    - navigation.top          # Back-to-top button
+    - search.suggest          # Search suggestions
+    - search.highlight        # Highlight search terms on page
+    - content.code.copy       # Copy button on code blocks
+    - content.code.annotate   # Code annotations
+    - content.action.edit     # Edit this page link
+    - toc.follow              # Sidebar follows scroll
+  
+  # Icons
+  icon:
+    repo: fontawesome/brands/github
+    edit: material/pencil
+  
+  # Logo and favicon (add these files to docs/assets/ if you have them)
+  # logo: assets/logo.png
+  # favicon: assets/favicon.ico
+
+# Custom CSS for OSU branding
+extra_css:
+  - stylesheets/extra.css
+
+# Extensions for enhanced markdown
+markdown_extensions:
+  # Code highlighting
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  
+  # Content formatting
+  - pymdownx.critic
+  - pymdownx.caret
+  - pymdownx.keys            # Keyboard keys like ++ctrl+c++
+  - pymdownx.mark
+  - pymdownx.tilde
+  - pymdownx.details         # Collapsible admonitions
+  - pymdownx.tabbed:         # Tabbed content
+      alternate_style: true
+  
+  # Admonitions (note, warning, tip, etc.)
+  - admonition
+  
+  # Tables
+  - tables
+  
+  # Table of contents
+  - toc:
+      permalink: true
+      toc_depth: 3
+  
+  # Task lists
+  - pymdownx.tasklist:
+      custom_checkbox: true
+  
+  # Emojis
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+
+# Plugins
+plugins:
+  - search:
+      separator: '[\s\-,:!=\[\]()"/]+|(?!\b)(?=[A-Z][a-z])|\.(?!\d)|&[lg]t;'
+  - minify:
+      minify_html: true
+
+# Navigation structure - mirrors your docs/ folder
+nav:
+  - Home: index.md
+  
+  - Getting Started:
+    - VS Code Setup: vscode-setup.md
+    - VS Code Extensions: vscode-extensions.md
+  
+  - OSC Basics:
+    - Account Setup: osc-account-setup.md
+    - SSH Connection: osc-ssh-connection.md
+    - Remote Development: osc-remote-development.md
+    - File Transfer: osc-file-transfer.md
+  
+  - Working on OSC:
+    - Best Practices: osc-best-practices.md
+    - Job Submission: osc-job-submission.md
+    - Environment Management: osc-environment-management.md
+  
+  - ML Workflows:
+    - PyTorch Setup: pytorch-setup.md
+    - ML Workflow Guide: ml-workflow.md
+    - GPU Computing: gpu-computing.md
+  
+  - Resources:
+    - Troubleshooting: troubleshooting.md
+    - Useful Links: useful-links.md
+
+# Extra configuration
+extra:
+  # Social links in footer
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/OSU-CAR-MSL
+      name: OSU CAR-MSL on GitHub
+  
+  # Version provider (optional, for future use)
+  # version:
+  #   provider: mike
+  
+  # Analytics (optional - add your GA4 ID if desired)
+  # analytics:
+  #   provider: google
+  #   property: G-XXXXXXXXXX

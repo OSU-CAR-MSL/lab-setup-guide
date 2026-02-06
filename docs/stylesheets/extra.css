@@ -1,0 +1,41 @@
+/* OSU CAR Mobility Systems Lab - Custom Branding */
+
+/* Light mode colors */
+[data-md-color-scheme="default"] {
+  --md-primary-fg-color: #bb0000;        /* OSU Scarlet */
+  --md-primary-fg-color--light: #d44242;
+  --md-primary-fg-color--dark: #8e0000;
+  --md-accent-fg-color: #bb0000;
+}
+
+/* Dark mode colors */
+[data-md-color-scheme="slate"] {
+  --md-primary-fg-color: #bb0000;
+  --md-primary-fg-color--light: #d44242;
+  --md-primary-fg-color--dark: #8e0000;
+  --md-accent-fg-color: #d44242;
+}
+
+/* Header */
+.md-header {
+  background-color: var(--md-primary-fg-color);
+}
+
+/* Links */
+.md-typeset a {
+  color: var(--md-accent-fg-color);
+}
+
+.md-typeset a:hover {
+  color: var(--md-primary-fg-color--dark);
+}
+
+/* Navigation tabs */
+.md-tabs {
+  background-color: var(--md-primary-fg-color--dark);
+}
+
+/* Footer */
+.md-footer {
+  background-color: #333333;
+}

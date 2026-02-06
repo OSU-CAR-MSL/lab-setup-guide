@@ -662,9 +662,9 @@ conda env export > env.yml       # Export
 
 ## Next Steps
 
-- Set up [PyTorch on OSC](pytorch-setup.md)
+- Set up [PyTorch on OSC](../ml-workflows/pytorch-setup.md)
 - Learn [Job Submission](osc-job-submission.md)
-- Read [ML Workflow Guide](ml-workflow.md)
+- Read [ML Workflow Guide](../ml-workflows/ml-workflow.md)
 - Review [Best Practices](osc-best-practices.md)
 
 ## Resources
@@ -672,4 +672,4 @@ conda env export > env.yml       # Export
 - [OSC Module System](https://www.osc.edu/resources/technical_support/supercomputers/modules)
 - [Python venv Documentation](https://docs.python.org/3/library/venv.html)
 - [Conda Documentation](https://docs.conda.io/)
-- [Troubleshooting Guide](troubleshooting.md)
+- [Troubleshooting Guide](../resources/troubleshooting.md)

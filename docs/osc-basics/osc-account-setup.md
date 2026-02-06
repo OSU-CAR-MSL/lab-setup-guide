@@ -141,7 +141,7 @@ Now that you have OSC access:
 
 1. [Configure SSH Connection](osc-ssh-connection.md) - Set up convenient SSH access
 2. [Set Up Remote Development](osc-remote-development.md) - Use VS Code with OSC
-3. [Learn OSC Best Practices](osc-best-practices.md) - Work efficiently on OSC
+3. [Learn OSC Best Practices](../working-on-osc/osc-best-practices.md) - Work efficiently on OSC
 
 ## Important Resources
 
@@ -170,4 +170,4 @@ Now that you have OSC access:
 - Use the Duo Mobile app
 - Contact OSU IT if you have 2FA problems
 
-For more help, see the [Troubleshooting Guide](troubleshooting.md).
+For more help, see the [Troubleshooting Guide](../resources/troubleshooting.md).

@@ -445,12 +445,12 @@ du -sh ~/*/  # See directory sizes
 
 ## Next Steps
 
-- Learn [OSC Best Practices](osc-best-practices.md)
+- Learn [OSC Best Practices](../working-on-osc/osc-best-practices.md)
 - Set up [Remote Development](osc-remote-development.md)
-- Explore [Job Submission](osc-job-submission.md)
+- Explore [Job Submission](../working-on-osc/osc-job-submission.md)
 
 ## Resources
 
 - [OSC Data Transfer Documentation](https://www.osc.edu/resources/getting_started/howto/howto_transfer_files)
 - [Rsync Manual](https://linux.die.net/man/1/rsync)
-- [Troubleshooting Guide](troubleshooting.md)
+- [Troubleshooting Guide](../resources/troubleshooting.md)

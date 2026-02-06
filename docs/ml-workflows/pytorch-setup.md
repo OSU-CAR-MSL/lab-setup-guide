@@ -600,12 +600,12 @@ python -c "import sys; print('\n'.join(sys.path))"
 
 - Read [ML Workflow Guide](ml-workflow.md)
 - Learn [GPU Computing Guide](gpu-computing.md)
-- Review [Job Submission](osc-job-submission.md)
-- Check [Best Practices](osc-best-practices.md)
+- Review [Job Submission](../working-on-osc/osc-job-submission.md)
+- Check [Best Practices](../working-on-osc/osc-best-practices.md)
 
 ## Resources
 
 - [PyTorch Documentation](https://pytorch.org/docs/stable/index.html)
 - [PyTorch Installation Guide](https://pytorch.org/get-started/locally/)
 - [CUDA Toolkit Documentation](https://docs.nvidia.com/cuda/)
-- [Troubleshooting Guide](troubleshooting.md)
+- [Troubleshooting Guide](../resources/troubleshooting.md)

@@ -574,12 +574,12 @@ sbatch --dependency=afterok:$job2 evaluate.sh
 ## Next Steps
 
 - Learn [Environment Management](osc-environment-management.md)
-- Set up [PyTorch on OSC](pytorch-setup.md)
-- Read [ML Workflow Guide](ml-workflow.md)
+- Set up [PyTorch on OSC](../ml-workflows/pytorch-setup.md)
+- Read [ML Workflow Guide](../ml-workflows/ml-workflow.md)
 - Review [OSC Best Practices](osc-best-practices.md)
 
 ## Resources
 
 - [OSC SLURM Documentation](https://www.osc.edu/resources/technical_support/supercomputers/slurm_migration)
 - [SLURM Official Documentation](https://slurm.schedmd.com/)
-- [Troubleshooting Guide](troubleshooting.md)
+- [Troubleshooting Guide](../resources/troubleshooting.md)

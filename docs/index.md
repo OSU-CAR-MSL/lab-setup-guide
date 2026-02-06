@@ -10,10 +10,10 @@ New to the lab? Follow these steps to get up and running:
 
 | Step | Guide | Description |
 |:----:|-------|-------------|
-| **1** | **[Set up VS Code](vscode-setup.md)** | Install and configure Visual Studio Code with essential extensions |
-| **2** | **[Get OSC Access](osc-account-setup.md)** | Request your account on the Ohio Supercomputer Center |
-| **3** | **[Connect via SSH](osc-ssh-connection.md)** | Set up SSH keys and connect to OSC from your machine |
-| **4** | **[Start Developing](osc-remote-development.md)** | Use VS Code's Remote-SSH for seamless development on the cluster |
+| **1** | **[Set up VS Code](getting-started/vscode-setup.md)** | Install and configure Visual Studio Code with essential extensions |
+| **2** | **[Get OSC Access](osc-basics/osc-account-setup.md)** | Request your account on the Ohio Supercomputer Center |
+| **3** | **[Connect via SSH](osc-basics/osc-ssh-connection.md)** | Set up SSH keys and connect to OSC from your machine |
+| **4** | **[Start Developing](osc-basics/osc-remote-development.md)** | Use VS Code's Remote-SSH for seamless development on the cluster |
 
 ---
 
@@ -25,8 +25,8 @@ Set up your local development environment before connecting to OSC.
 
 | Guide | Description |
 |-------|-------------|
-| [VS Code Setup](vscode-setup.md) | Install and configure Visual Studio Code |
-| [VS Code Extensions](vscode-extensions.md) | Required and recommended extensions |
+| [VS Code Setup](getting-started/vscode-setup.md) | Install and configure Visual Studio Code |
+| [VS Code Extensions](getting-started/vscode-extensions.md) | Required and recommended extensions |
 
 ### OSC Basics
 
@@ -34,10 +34,10 @@ Learn how to access and navigate the Ohio Supercomputer Center.
 
 | Guide | Description |
 |-------|-------------|
-| [Account Setup](osc-account-setup.md) | Request and configure your OSC account |
-| [SSH Connection](osc-ssh-connection.md) | Connect from your local machine |
-| [Remote Development](osc-remote-development.md) | Use VS Code with OSC |
-| [File Transfer](osc-file-transfer.md) | Move files to and from OSC |
+| [Account Setup](osc-basics/osc-account-setup.md) | Request and configure your OSC account |
+| [SSH Connection](osc-basics/osc-ssh-connection.md) | Connect from your local machine |
+| [Remote Development](osc-basics/osc-remote-development.md) | Use VS Code with OSC |
+| [File Transfer](osc-basics/osc-file-transfer.md) | Move files to and from OSC |
 
 ### Working on OSC
 
@@ -45,9 +45,9 @@ Best practices and guides for running computational work.
 
 | Guide | Description |
 |-------|-------------|
-| [Best Practices](osc-best-practices.md) | Tips for efficient work on OSC |
-| [Job Submission](osc-job-submission.md) | Submit and manage SLURM jobs |
-| [Environment Management](osc-environment-management.md) | Modules, Conda, and virtual environments |
+| [Best Practices](working-on-osc/osc-best-practices.md) | Tips for efficient work on OSC |
+| [Job Submission](working-on-osc/osc-job-submission.md) | Submit and manage SLURM jobs |
+| [Environment Management](working-on-osc/osc-environment-management.md) | Modules, Conda, and virtual environments |
 
 ### Machine Learning Workflows
 
@@ -55,9 +55,25 @@ Guides specific to ML/DL research on OSC.
 
 | Guide | Description |
 |-------|-------------|
-| [PyTorch Setup](pytorch-setup.md) | Install and configure PyTorch on OSC |
-| [ML Workflow Guide](ml-workflow.md) | Best practices for ML projects |
-| [GPU Computing](gpu-computing.md) | Using GPUs for training |
+| [PyTorch Setup](ml-workflows/pytorch-setup.md) | Install and configure PyTorch on OSC |
+| [ML Workflow Guide](ml-workflows/ml-workflow.md) | Best practices for ML projects |
+| [GPU Computing](ml-workflows/gpu-computing.md) | Using GPUs for training |
+
+### Contributing
+
+Learn how the site works and how to add new content.
+
+| Guide | Description |
+|-------|-------------|
+| [How This Site Works](contributing/how-this-site-works.md) | Architecture, deployment, and theme features |
+| [Adding a Page](contributing/adding-a-page.md) | Step-by-step guide to adding new pages |
+
+### Resources
+
+| Guide | Description |
+|-------|-------------|
+| [Troubleshooting](resources/troubleshooting.md) | Common issues and solutions |
+| [Useful Links](resources/useful-links.md) | External resources and documentation |
 
 ---
 
@@ -71,16 +87,6 @@ Guides specific to ML/DL research on OSC.
 
 !!! tip "Edit on GitHub"
     Found an error? Click the :material-pencil: icon on any page to suggest an edit.
-
----
-
-## :handshake: Contributing
-
-We welcome contributions! If you find errors or have suggestions:
-
-1. Open an [issue](https://github.com/OSU-CAR-MSL/lab-setup-guide/issues) to report problems
-2. Submit a [pull request](https://github.com/OSU-CAR-MSL/lab-setup-guide/pulls) with improvements
-3. Add new guides for tools or workflows you've found useful
 
 ---
 

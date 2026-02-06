@@ -570,11 +570,11 @@ wandb.save('checkpoints/best_model.pth')
 
 - Learn about [GPU Computing](gpu-computing.md)
 - Review [PyTorch Setup](pytorch-setup.md)
-- Check [Best Practices](osc-best-practices.md)
-- Read [Job Submission Guide](osc-job-submission.md)
+- Check [Best Practices](../working-on-osc/osc-best-practices.md)
+- Read [Job Submission Guide](../working-on-osc/osc-job-submission.md)
 
 ## Resources
 
 - [PyTorch Documentation](https://pytorch.org/docs/)
 - [TensorBoard Tutorial](https://pytorch.org/tutorials/recipes/recipes/tensorboard_with_pytorch.html)
-- [Troubleshooting Guide](troubleshooting.md)
+- [Troubleshooting Guide](../resources/troubleshooting.md)

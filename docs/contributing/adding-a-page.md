@@ -53,17 +53,17 @@ nav:
   - Home: index.md
 
   - Getting Started:
-    - VS Code Setup: vscode-setup.md
-    - VS Code Extensions: vscode-extensions.md
+    - VS Code Setup: getting-started/vscode-setup.md
+    - VS Code Extensions: getting-started/vscode-extensions.md
 
   - OSC Basics:
-    - Account Setup: osc-account-setup.md
+    - Account Setup: osc-basics/osc-account-setup.md
     # ... other pages ...
 
   - Resources:
-    - Troubleshooting: troubleshooting.md
-    - Useful Links: useful-links.md
-    - My New Guide: my-new-guide.md        # <-- add your page here
+    - Troubleshooting: resources/troubleshooting.md
+    - Useful Links: resources/useful-links.md
+    - My New Guide: resources/my-new-guide.md        # <-- add your page here
 ```
 
 For pages in subfolders, include the subfolder path:
@@ -170,7 +170,7 @@ Which renders as:
 ```markdown
 Link to an external site: [OSC Documentation](https://www.osc.edu/resources)
 
-Link to another page on this site: [VS Code Setup](../vscode-setup.md)
+Link to another page on this site: [VS Code Setup](../getting-started/vscode-setup.md)
 ```
 
 !!! tip "Linking between pages"

@@ -345,10 +345,10 @@ mkdir $HOME\.ssh
 
 - [Set Up Remote Development with VS Code](osc-remote-development.md)
 - [Learn File Transfer Methods](osc-file-transfer.md)
-- [OSC Best Practices](osc-best-practices.md)
+- [OSC Best Practices](../working-on-osc/osc-best-practices.md)
 
 ## Additional Resources
 
 - [OSC SSH Documentation](https://www.osc.edu/resources/getting_started/howto/howto_connect_with_ssh)
 - [SSH Config File Documentation](https://www.ssh.com/academy/ssh/config)
-- [Troubleshooting Guide](troubleshooting.md)
+- [Troubleshooting Guide](../resources/troubleshooting.md)

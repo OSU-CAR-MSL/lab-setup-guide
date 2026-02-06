@@ -4,8 +4,8 @@ Visual Studio Code's Remote-SSH extension allows you to develop on OSC as if you
 
 ## Prerequisites
 
-- [VS Code installed](vscode-setup.md)
-- [Remote-SSH extension installed](vscode-extensions.md#1-remote---ssh)
+- [VS Code installed](../getting-started/vscode-setup.md)
+- [Remote-SSH extension installed](../getting-started/vscode-extensions.md#1-remote-ssh)
 - [OSC account and SSH configured](osc-ssh-connection.md)
 
 ## Initial Setup
@@ -426,13 +426,13 @@ In remote workspace settings:
 
 ## Next Steps
 
-- Learn about [OSC Best Practices](osc-best-practices.md)
-- Set up [PyTorch on OSC](pytorch-setup.md)
-- Explore [Job Submission Guide](osc-job-submission.md)
-- Read [ML Workflow Guide](ml-workflow.md)
+- Learn about [OSC Best Practices](../working-on-osc/osc-best-practices.md)
+- Set up [PyTorch on OSC](../ml-workflows/pytorch-setup.md)
+- Explore [Job Submission Guide](../working-on-osc/osc-job-submission.md)
+- Read [ML Workflow Guide](../ml-workflows/ml-workflow.md)
 
 ## Resources
 
 - [VS Code Remote-SSH Documentation](https://code.visualstudio.com/docs/remote/ssh)
 - [OSC Documentation](https://www.osc.edu/resources/technical_support/supercomputers)
-- [Troubleshooting Guide](troubleshooting.md)
+- [Troubleshooting Guide](../resources/troubleshooting.md)

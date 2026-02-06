@@ -9,13 +9,14 @@ lab-setup-guide/
 ├── mkdocs.yml                  # Site configuration (theme, nav, plugins)
 ├── docs/                       # All markdown content lives here
 │   ├── index.md                # Homepage
-│   ├── vscode-setup.md         # Each .md file becomes a page
-│   ├── osc-account-setup.md
-│   ├── stylesheets/
-│   │   └── extra.css           # Custom OSU scarlet branding
-│   └── contributing/
-│       ├── how-this-site-works.md
-│       └── adding-a-page.md
+│   ├── getting-started/        # VS Code setup guides
+│   ├── osc-basics/             # OSC account, SSH, remote dev, file transfer
+│   ├── working-on-osc/         # Best practices, jobs, environments
+│   ├── ml-workflows/           # PyTorch, ML workflow, GPU computing
+│   ├── contributing/           # Site docs and how to add pages
+│   ├── resources/              # Troubleshooting and useful links
+│   └── stylesheets/
+│       └── extra.css           # Custom OSU scarlet branding
 └── .github/
     └── workflows/
         └── deploy-docs.yml     # Automatic build & deploy pipeline
@@ -68,7 +69,7 @@ Every `.md` file in this folder becomes a page on the site. Subfolders are suppo
 | File path | URL |
 |-----------|-----|
 | `docs/index.md` | `/lab-setup-guide/` |
-| `docs/vscode-setup.md` | `/lab-setup-guide/vscode-setup/` |
+| `docs/getting-started/vscode-setup.md` | `/lab-setup-guide/getting-started/vscode-setup/` |
 | `docs/contributing/adding-a-page.md` | `/lab-setup-guide/contributing/adding-a-page/` |
 
 ### `.github/workflows/deploy-docs.yml`

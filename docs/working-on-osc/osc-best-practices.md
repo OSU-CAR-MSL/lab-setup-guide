@@ -536,11 +536,11 @@ seff <job_id>              # Job efficiency
 
 - Learn about [Job Submission](osc-job-submission.md)
 - Set up [Environment Management](osc-environment-management.md)
-- Read [PyTorch Setup Guide](pytorch-setup.md)
-- Explore [ML Workflow Guide](ml-workflow.md)
+- Read [PyTorch Setup Guide](../ml-workflows/pytorch-setup.md)
+- Explore [ML Workflow Guide](../ml-workflows/ml-workflow.md)
 
 ## Resources
 
 - [OSC Best Practices Documentation](https://www.osc.edu/resources/technical_support/supercomputers)
 - [Batch System Documentation](https://www.osc.edu/resources/technical_support/supercomputers/slurm_migration)
-- [Troubleshooting Guide](troubleshooting.md)
+- [Troubleshooting Guide](../resources/troubleshooting.md)

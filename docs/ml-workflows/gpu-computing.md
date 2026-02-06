@@ -574,12 +574,12 @@ print(prof.key_averages().table())
 
 - Review [ML Workflow Guide](ml-workflow.md)
 - Learn [PyTorch Setup](pytorch-setup.md)
-- Check [Job Submission Guide](osc-job-submission.md)
-- Read [Best Practices](osc-best-practices.md)
+- Check [Job Submission Guide](../working-on-osc/osc-job-submission.md)
+- Read [Best Practices](../working-on-osc/osc-best-practices.md)
 
 ## Resources
 
 - [CUDA Best Practices](https://docs.nvidia.com/cuda/cuda-c-best-practices-guide/)
 - [PyTorch Performance Tuning](https://pytorch.org/tutorials/recipes/recipes/tuning_guide.html)
 - [NVIDIA GPU Optimization](https://developer.nvidia.com/blog/how-optimize-data-transfers-cuda-cc/)
-- [Troubleshooting Guide](troubleshooting.md)
+- [Troubleshooting Guide](../resources/troubleshooting.md)

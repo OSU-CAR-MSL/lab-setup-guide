@@ -674,8 +674,8 @@ When things go wrong:
 
 ## Additional Resources
 
-- [VS Code Setup](vscode-setup.md)
-- [OSC Best Practices](osc-best-practices.md)
-- [Job Submission Guide](osc-job-submission.md)
-- [PyTorch Setup](pytorch-setup.md)
-- [ML Workflow Guide](ml-workflow.md)
+- [VS Code Setup](../getting-started/vscode-setup.md)
+- [OSC Best Practices](../working-on-osc/osc-best-practices.md)
+- [Job Submission Guide](../working-on-osc/osc-job-submission.md)
+- [PyTorch Setup](../ml-workflows/pytorch-setup.md)
+- [ML Workflow Guide](../ml-workflows/ml-workflow.md)

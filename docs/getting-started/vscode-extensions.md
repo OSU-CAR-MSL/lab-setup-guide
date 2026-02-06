@@ -29,7 +29,7 @@ These extensions are essential for lab work:
   code --install-extension ms-vscode-remote.remote-ssh
   ```
 - **Why Required**: Essential for working on OSC clusters
-- **Documentation**: [Remote - SSH Guide](osc-remote-development.md)
+- **Documentation**: [Remote - SSH Guide](../osc-basics/osc-remote-development.md)
 
 ### 2. Remote - SSH: Editing Configuration Files
 - **ID**: `ms-vscode-remote.remote-ssh-edit`
@@ -273,9 +273,9 @@ Enable Settings Sync (see [VS Code Setup](vscode-setup.md#settings-sync)) to syn
 
 ## Next Steps
 
-- Configure [Remote Development on OSC](osc-remote-development.md)
-- Set up [SSH Connection to OSC](osc-ssh-connection.md)
-- Learn about [PyTorch Setup](pytorch-setup.md)
+- Configure [Remote Development on OSC](../osc-basics/osc-remote-development.md)
+- Set up [SSH Connection to OSC](../osc-basics/osc-ssh-connection.md)
+- Learn about [PyTorch Setup](../ml-workflows/pytorch-setup.md)
 
 ## Troubleshooting
 
@@ -289,4 +289,4 @@ Enable Settings Sync (see [VS Code Setup](vscode-setup.md#settings-sync)) to syn
 - Use "Disable (Workspace)" for extensions not needed in specific projects
 - Check extension ratings and reviews for known issues
 
-For more help, see the [Troubleshooting Guide](troubleshooting.md).
+For more help, see the [Troubleshooting Guide](../resources/troubleshooting.md).

@@ -138,8 +138,8 @@ Enable Settings Sync to keep your configuration across devices:
 ## Next Steps
 
 - Install [Required Extensions](vscode-extensions.md)
-- Set up [Remote Development on OSC](osc-remote-development.md)
-- Configure your [OSC SSH Connection](osc-ssh-connection.md)
+- Set up [Remote Development on OSC](../osc-basics/osc-remote-development.md)
+- Configure your [OSC SSH Connection](../osc-basics/osc-ssh-connection.md)
 
 ## Troubleshooting
 
@@ -154,4 +154,4 @@ Enable Settings Sync to keep your configuration across devices:
 - Reload VS Code: Press `Ctrl+Shift+P` and run "Developer: Reload Window"
 
 ### More Issues?
-See the [Troubleshooting Guide](troubleshooting.md) or visit [VS Code Documentation](https://code.visualstudio.com/docs)
+See the [Troubleshooting Guide](../resources/troubleshooting.md) or visit [VS Code Documentation](https://code.visualstudio.com/docs)

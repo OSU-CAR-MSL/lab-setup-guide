@@ -140,6 +140,10 @@ nav:
     - ML Workflow Guide: ml-workflow.md
     - GPU Computing: gpu-computing.md
   
+  - Contributing:
+    - How This Site Works: contributing/how-this-site-works.md
+    - Adding a Page: contributing/adding-a-page.md
+
   - Resources:
     - Troubleshooting: troubleshooting.md
     - Useful Links: useful-links.md

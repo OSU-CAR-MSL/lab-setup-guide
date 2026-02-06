@@ -1,0 +1,23 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(pip install:*)",
+      "Bash(mkdocs build:*)",
+      "Bash(gh api:*)",
+      "Bash(where:*)",
+      "Bash(where.exe:*)",
+      "Bash(winget install:*)",
+      "Bash(export PATH=\"/c/Program Files/GitHub CLI:$PATH:/c/Program Files \\(x86\\)/GitHub CLI\")",
+      "Bash(gh:*)",
+      "Bash(export PATH=\"/c/Program Files/GitHub CLI:$PATH\":*)",
+      "WebFetch(domain:osu-car-msl.github.io)",
+      "Bash(git add:*)",
+      "Bash(git commit -m \"$\\(cat <<''EOF''\nFix grid card icons on index page\n\nAdd attr_list and md_in_html markdown extensions required for the\nMaterial theme grid cards and icon rendering in the Quick Start section.\n\nCo-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>\nEOF\n\\)\")",
+      "Bash(git push:*)",
+      "Bash(git commit:*)",
+      "Bash(curl:*)",
+      "Bash(python:*)",
+      "Bash(echo:*)"
+    ]
+  }
+}

@@ -8,41 +8,12 @@ Welcome to the OSU CAR Mobility Systems Lab documentation! This guide helps lab 
 
 New to the lab? Follow these steps to get up and running:
 
-<div class="grid cards" markdown>
-
--   :fontawesome-solid-laptop-code:{ .lg .middle } **1. Set up VS Code**
-
-    ---
-
-    Install and configure Visual Studio Code with essential extensions.
-
-    [:octicons-arrow-right-24: VS Code Setup](vscode-setup.md)
-
--   :fontawesome-solid-server:{ .lg .middle } **2. Get OSC Access**
-
-    ---
-
-    Request your account on the Ohio Supercomputer Center.
-
-    [:octicons-arrow-right-24: OSC Account Setup](osc-account-setup.md)
-
--   :fontawesome-solid-terminal:{ .lg .middle } **3. Connect via SSH**
-
-    ---
-
-    Set up SSH keys and connect to OSC from your machine.
-
-    [:octicons-arrow-right-24: SSH Connection Guide](osc-ssh-connection.md)
-
--   :fontawesome-solid-code:{ .lg .middle } **4. Start Developing**
-
-    ---
-
-    Use VS Code's Remote-SSH for seamless development on the cluster.
-
-    [:octicons-arrow-right-24: Remote Development](osc-remote-development.md)
-
-</div>
+| Step | Guide | Description |
+|:----:|-------|-------------|
+| **1** | **[Set up VS Code](vscode-setup.md)** | Install and configure Visual Studio Code with essential extensions |
+| **2** | **[Get OSC Access](osc-account-setup.md)** | Request your account on the Ohio Supercomputer Center |
+| **3** | **[Connect via SSH](osc-ssh-connection.md)** | Set up SSH keys and connect to OSC from your machine |
+| **4** | **[Start Developing](osc-remote-development.md)** | Use VS Code's Remote-SSH for seamless development on the cluster |
 
 ---
 

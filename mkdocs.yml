@@ -94,6 +94,10 @@ markdown_extensions:
   
   # Tables
   - tables
+
+  # Allow markdown inside HTML blocks (needed for grid cards)
+  - attr_list
+  - md_in_html
   
   # Table of contents
   - toc:

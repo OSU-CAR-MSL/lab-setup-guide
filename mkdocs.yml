@@ -147,10 +147,12 @@ nav:
     - PyTorch Setup: ml-workflows/pytorch-setup.md
     - ML Workflow Guide: ml-workflows/ml-workflow.md
     - GPU Computing: ml-workflows/gpu-computing.md
+    - Data & Experiment Tracking: ml-workflows/data-experiment-tracking.md
 
   - Contributing:
     - How This Site Works: contributing/how-this-site-works.md
     - Adding a Page: contributing/adding-a-page.md
+    - GitHub Pages Setup: contributing/github-pages-setup.md
 
   - Resources:
     - Troubleshooting: resources/troubleshooting.md

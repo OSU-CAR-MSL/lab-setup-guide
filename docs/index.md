@@ -78,6 +78,7 @@ Guides specific to ML/DL research on OSC.
 | [PyTorch Setup](ml-workflows/pytorch-setup.md) | Install and configure PyTorch on OSC |
 | [ML Workflow Guide](ml-workflows/ml-workflow.md) | Best practices for ML projects |
 | [GPU Computing](ml-workflows/gpu-computing.md) | Using GPUs for training |
+| [Data & Experiment Tracking](ml-workflows/data-experiment-tracking.md) | DVC, SQLite, MLflow, and Parquet for ML projects |
 
 ### Contributing
 
@@ -87,6 +88,7 @@ Learn how the site works and how to add new content.
 |-------|-------------|
 | [How This Site Works](contributing/how-this-site-works.md) | Architecture, deployment, and theme features |
 | [Adding a Page](contributing/adding-a-page.md) | Step-by-step guide to adding new pages |
+| [GitHub Pages Setup](contributing/github-pages-setup.md) | Set up a documentation site with MkDocs or Quarto |
 
 ### Resources
 

@@ -1,0 +1,369 @@
+# Data & Experiment Tracking
+
+Managing datasets, tracking experiments, and reproducing results are core challenges in ML research. This guide covers practical tools for structured data and experiment tracking on OSC, using patterns from the [DQN-Fusion](https://github.com/RobertFrenken/DQN-Fusion) project as a real-world example.
+
+---
+
+## Why You Need Structured Tracking
+
+Without tracking infrastructure, ML projects quickly accumulate problems:
+
+- **Dataset confusion** — Which version of the data was used for a given result?
+- **Lost experiments** — Hyperparameters buried in terminal history or forgotten notebooks
+- **Broken reproduction** — "It worked on my machine" but no one can replicate the setup
+- **Slow iteration** — Re-processing raw data from scratch every time
+
+A tracking stack solves these by versioning data, logging every run, and making results queryable.
+
+---
+
+## Tool Overview
+
+| Tool | Purpose | Best For |
+|------|---------|----------|
+| **DVC** | Dataset versioning + remote storage | Large datasets, data pipelines |
+| **SQLite** | Lightweight relational database | Structured metadata, queryable results |
+| **MLflow** | Experiment tracking UI + API | Comparing runs, logging metrics/artifacts |
+| **Parquet** | Columnar data format | Fast reads of large tabular datasets |
+
+These tools complement each other — a typical project might use DVC for data versioning, SQLite for metadata, MLflow for experiment tracking, and Parquet for fast data loading.
+
+---
+
+## DVC (Data Version Control)
+
+[DVC](https://dvc.org/) tracks large files and datasets alongside your Git history without storing them in the repo.
+
+### Setup on OSC
+
+```bash
+# Install in your project environment
+pip install dvc
+
+# Initialize DVC in your repo
+cd ~/projects/my-ml-project
+dvc init
+
+# Use your OSC scratch space as a local remote
+dvc remote add -d osc_scratch /fs/scratch/$OSC_PROJECT/dvc-store
+```
+
+### Basic Workflow
+
+```bash
+# Track a dataset
+dvc add data/raw/sensor_readings.csv
+
+# This creates data/raw/sensor_readings.csv.dvc (a small pointer file)
+# Commit the pointer file to Git
+git add data/raw/sensor_readings.csv.dvc data/raw/.gitignore
+git commit -m "Track sensor readings dataset v1"
+
+# Push data to remote storage
+dvc push
+```
+
+### Switching Data Versions
+
+```bash
+# Check out a previous version of the dataset
+git checkout v1.0 -- data/raw/sensor_readings.csv.dvc
+dvc checkout
+
+# Return to latest
+git checkout main -- data/raw/sensor_readings.csv.dvc
+dvc checkout
+```
+
+!!! tip "DVC on OSC scratch"
+    OSC scratch directories (`/fs/scratch/`) are ideal for DVC remote storage — they're high-performance, shared across nodes, and have large quotas. Just remember that scratch files may be purged after 90 days of inactivity, so keep important data backed up.
+
+---
+
+## SQLite Project Database
+
+SQLite is a file-based relational database — no server needed. It's perfect for storing structured project metadata directly in your repo.
+
+### Schema Design
+
+A practical schema for ML projects tracks three things: datasets, training runs, and metrics.
+
+```sql
+-- datasets: what data versions exist
+CREATE TABLE datasets (
+    id          INTEGER PRIMARY KEY,
+    name        TEXT NOT NULL,
+    version     TEXT NOT NULL,
+    path        TEXT NOT NULL,
+    num_samples INTEGER,
+    created_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    description TEXT
+);
+
+-- runs: each training experiment
+CREATE TABLE runs (
+    id          INTEGER PRIMARY KEY,
+    dataset_id  INTEGER REFERENCES datasets(id),
+    model_name  TEXT NOT NULL,
+    config      TEXT,          -- JSON string of hyperparameters
+    started_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    finished_at TIMESTAMP,
+    status      TEXT DEFAULT 'running'
+);
+
+-- metrics: results from each run
+CREATE TABLE metrics (
+    id       INTEGER PRIMARY KEY,
+    run_id   INTEGER REFERENCES runs(id),
+    epoch    INTEGER,
+    metric   TEXT NOT NULL,    -- e.g. 'val_loss', 'accuracy'
+    value    REAL NOT NULL
+);
+```
+
+### Python Helper Module
+
+Create a small helper to interact with the database from your training scripts:
+
+```python
+# src/db.py
+import sqlite3
+import json
+from pathlib import Path
+
+DB_PATH = Path(__file__).parent.parent / "project.db"
+
+def get_connection():
+    conn = sqlite3.connect(DB_PATH)
+    conn.row_factory = sqlite3.Row
+    return conn
+
+def log_run(dataset_id, model_name, config):
+    conn = get_connection()
+    cursor = conn.execute(
+        "INSERT INTO runs (dataset_id, model_name, config) VALUES (?, ?, ?)",
+        (dataset_id, model_name, json.dumps(config))
+    )
+    conn.commit()
+    run_id = cursor.lastrowid
+    conn.close()
+    return run_id
+
+def log_metric(run_id, epoch, metric, value):
+    conn = get_connection()
+    conn.execute(
+        "INSERT INTO metrics (run_id, epoch, metric, value) VALUES (?, ?, ?, ?)",
+        (run_id, epoch, metric, value)
+    )
+    conn.commit()
+    conn.close()
+```
+
+### YAML Dataset Catalog
+
+Keep a human-readable catalog of datasets alongside the database:
+
+```yaml
+# data/catalog.yaml
+datasets:
+  sensor_v1:
+    path: data/raw/sensor_readings_v1.csv
+    description: Raw sensor readings, Jan-Mar 2025
+    num_samples: 50000
+
+  sensor_v2:
+    path: data/raw/sensor_readings_v2.csv
+    description: Extended sensor readings with new features
+    num_samples: 120000
+```
+
+---
+
+## MLflow
+
+[MLflow](https://mlflow.org/) provides a tracking API and web UI for logging parameters, metrics, and artifacts from training runs.
+
+### Setup with SQLite Backend on OSC
+
+```bash
+# Install
+pip install mlflow
+
+# Set tracking URI to a local SQLite database
+export MLFLOW_TRACKING_URI=sqlite:///~/projects/my-ml-project/mlflow.db
+```
+
+Add this to your `~/.bashrc` or project activation script so it's always set.
+
+### Training Code Integration
+
+```python
+import mlflow
+
+mlflow.set_experiment("dqn-fusion")
+
+with mlflow.start_run(run_name="lr-sweep-001"):
+    # Log hyperparameters
+    mlflow.log_params({
+        "learning_rate": 1e-3,
+        "batch_size": 64,
+        "hidden_dim": 256,
+        "optimizer": "adam",
+    })
+
+    for epoch in range(num_epochs):
+        train_loss = train_one_epoch(model, train_loader, optimizer)
+        val_loss, val_acc = evaluate(model, val_loader)
+
+        # Log metrics at each epoch
+        mlflow.log_metrics({
+            "train_loss": train_loss,
+            "val_loss": val_loss,
+            "val_accuracy": val_acc,
+        }, step=epoch)
+
+    # Log the trained model
+    mlflow.pytorch.log_model(model, "model")
+```
+
+### Viewing Results via Port Forwarding
+
+Since OSC compute nodes don't have public web access, use SSH port forwarding to view the MLflow UI locally:
+
+```bash
+# On the OSC login node, start the MLflow server
+mlflow ui --port 5000 --backend-store-uri sqlite:///~/projects/my-ml-project/mlflow.db
+
+# From your local machine, forward the port
+ssh -L 5000:localhost:5000 username@pitzer.osc.edu
+
+# Open http://localhost:5000 in your browser
+```
+
+### Comparing Runs
+
+The MLflow UI lets you:
+
+- **Compare metrics** across runs with interactive charts
+- **Filter runs** by parameters, metrics, or tags
+- **Download artifacts** (saved models, plots, configs)
+- **Search runs** with SQL-like queries: `metrics.val_accuracy > 0.9`
+
+!!! tip "MLflow with SLURM"
+    In batch jobs, set the experiment name and run name in your SLURM script so results are automatically organized:
+    ```bash
+    export MLFLOW_EXPERIMENT_NAME="dqn-fusion"
+    export MLFLOW_RUN_NAME="job-${SLURM_JOB_ID}"
+    python train.py
+    ```
+
+---
+
+## Data Format Pipeline
+
+Raw CSV data is convenient but slow to load for large datasets. A common pipeline converts data through progressively faster formats:
+
+```
+CSV (raw) → Parquet (compressed + fast reads) → PyTorch tensors (GPU-ready cache)
+```
+
+### Parquet Conversion
+
+```python
+import pandas as pd
+
+# Read raw CSV
+df = pd.read_csv("data/raw/sensor_readings.csv")
+
+# Save as Parquet (typically 2-5x smaller, 10-100x faster to read)
+df.to_parquet("data/processed/sensor_readings.parquet")
+```
+
+### PyTorch Dataset with Caching
+
+```python
+import torch
+from torch.utils.data import Dataset
+import pandas as pd
+from pathlib import Path
+
+class SensorDataset(Dataset):
+    def __init__(self, parquet_path, cache_dir="data/cache"):
+        cache_path = Path(cache_dir) / f"{Path(parquet_path).stem}.pt"
+
+        if cache_path.exists():
+            cached = torch.load(cache_path)
+            self.features = cached["features"]
+            self.labels = cached["labels"]
+        else:
+            df = pd.read_parquet(parquet_path)
+            self.features = torch.tensor(df.drop("label", axis=1).values, dtype=torch.float32)
+            self.labels = torch.tensor(df["label"].values, dtype=torch.long)
+            cache_path.parent.mkdir(parents=True, exist_ok=True)
+            torch.save({"features": self.features, "labels": self.labels}, cache_path)
+
+    def __len__(self):
+        return len(self.labels)
+
+    def __getitem__(self, idx):
+        return self.features[idx], self.labels[idx]
+```
+
+### Performance Comparison
+
+| Format | File Size (100K rows) | Read Time |
+|--------|----------------------|-----------|
+| CSV | ~50 MB | ~2 s |
+| Parquet | ~12 MB | ~0.1 s |
+| PyTorch cache (.pt) | ~40 MB | ~0.02 s |
+
+!!! note
+    Exact numbers depend on your data. The relative speedups are what matter — Parquet is significantly faster than CSV, and pre-cached tensors are fastest of all.
+
+---
+
+## Putting It All Together
+
+Here's what a well-structured ML project looks like with these tools:
+
+```
+my-ml-project/
+├── data/
+│   ├── catalog.yaml              # Dataset catalog
+│   ├── raw/                      # Original data (DVC-tracked)
+│   │   ├── sensor_readings.csv
+│   │   └── sensor_readings.csv.dvc
+│   ├── processed/                # Parquet files (DVC-tracked)
+│   │   └── sensor_readings.parquet
+│   └── cache/                    # PyTorch tensor cache (gitignored)
+│       └── sensor_readings.pt
+├── src/
+│   ├── db.py                     # SQLite helper
+│   ├── data.py                   # Dataset classes
+│   └── train.py                  # Training script with MLflow
+├── project.db                    # SQLite metadata database
+├── mlflow.db                     # MLflow tracking database
+├── dvc.yaml                      # DVC pipeline definitions
+├── dvc.lock                      # DVC pipeline state
+├── .dvc/                         # DVC configuration
+├── .gitignore
+└── README.md
+```
+
+### Recommended Workflow
+
+1. **Add raw data** — Place files in `data/raw/`, track with `dvc add`
+2. **Register in catalog** — Add an entry to `data/catalog.yaml`
+3. **Process data** — Convert to Parquet, run feature engineering
+4. **Train with tracking** — Use MLflow to log params and metrics, use SQLite for structured metadata
+5. **Compare results** — Use `mlflow ui` to compare runs, query SQLite for custom analysis
+6. **Version everything** — `git commit` for code + DVC pointers, `dvc push` for data
+
+---
+
+## Next Steps
+
+- [ML Workflow Guide](ml-workflow.md) — Best practices for ML projects on OSC
+- [PyTorch Setup](pytorch-setup.md) — Installing and configuring PyTorch
+- [Job Submission](../working-on-osc/osc-job-submission.md) — Running training jobs on SLURM
+- [Environment Management](../working-on-osc/osc-environment-management.md) — Managing Python environments on OSC

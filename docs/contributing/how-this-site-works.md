@@ -50,6 +50,56 @@ osu-car-msl.github.io/lab-setup-guide/
 
 You never need to manually build or upload anything. Just push markdown and the site updates in about 45 seconds.
 
+## Local Preview vs Live Deployment
+
+A common question: *"Do I need to commit, build, then serve?"* The short answer is **no** — local preview and live deployment are completely separate workflows.
+
+### Local Preview (no commit needed)
+
+Run `mkdocs serve` from the repo root to start a local development server:
+
+```bash
+# Install dependencies (one time)
+pip install mkdocs-material mkdocs-minify-plugin
+
+# Start local server with live reload
+mkdocs serve
+```
+
+Open [http://127.0.0.1:8000](http://127.0.0.1:8000) in your browser. The server watches for file changes and **auto-reloads instantly** when you save — no restart, no commit, no build step required.
+
+!!! tip "When to use this"
+    Use `mkdocs serve` whenever you're writing or editing documentation. Edit your markdown, save, and see the result immediately in your browser.
+
+### Pre-Push Validation (optional)
+
+Before pushing, you can run the same build command that CI uses to catch problems early:
+
+```bash
+mkdocs build --strict
+```
+
+The `--strict` flag treats warnings as errors, catching broken internal links, missing nav entries, and other issues that would fail the deployment pipeline.
+
+### Live Deployment (commit + push)
+
+When you're happy with your changes, commit and push to `main`. GitHub Actions handles the rest automatically — no manual build or upload needed.
+
+```bash
+git add docs/my-new-page.md mkdocs.yml
+git commit -m "Add my new page"
+git push origin main
+# Site updates at osu-car-msl.github.io/lab-setup-guide/ in ~45 seconds
+```
+
+### Quick Reference
+
+| What you want to do | Command | Commit needed? |
+|---|---|---|
+| Preview changes locally | `mkdocs serve` | No |
+| Check for broken links | `mkdocs build --strict` | No |
+| Update the live site | `git push origin main` | Yes |
+
 ## Key Files
 
 ### `mkdocs.yml`
@@ -141,18 +191,3 @@ Press ++ctrl+c++ to copy.
 - [ ] Set up SSH keys
 ```
 
-## Local Development
-
-To preview changes before pushing:
-
-```bash
-# Install dependencies (one time)
-pip install mkdocs-material mkdocs-minify-plugin
-
-# Start local server with live reload
-mkdocs serve
-
-# Open http://127.0.0.1:8000
-```
-
-The local server auto-reloads when you save a file, so you can see changes instantly.

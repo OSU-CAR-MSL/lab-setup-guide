@@ -17,6 +17,22 @@ New to the lab? Follow these steps to get up and running:
 
 ---
 
+## :wrench: Why These Tools?
+
+Each tool in our stack addresses a specific challenge in the ML research workflow — from writing code locally to running large-scale experiments on OSC's supercomputers.
+
+| | VS Code | Git / GitHub | SSH | SLURM | Conda / uv | Snakemake | PyTorch | Copilot / Claude |
+|:--|:--|:--|:--|:--|:--|:--|:--|:--|
+| **Edit & debug code** | Primary IDE and debugger | | | | | | | AI-powered suggestions |
+| **Collaborate on code** | | Version control & pull requests | | | Shared environment specs | | | |
+| **Access HPC clusters** | Remote-SSH extension | | Secure cluster login | | | | | |
+| **Manage Python envs** | | | | | Reproducible environments | | | |
+| **Run compute jobs** | | | | Schedule CPUs & GPUs | | Auto-submit SLURM jobs | | |
+| **Automate pipelines** | | | | Execute each step | | Define DAG workflows | | |
+| **Train ML models** | Monitor & debug | | | GPU allocation | Install ML stack | Orchestrate experiments | Neural network framework | Help write & fix code |
+
+---
+
 ## :books: Documentation Sections
 
 ### Getting Started

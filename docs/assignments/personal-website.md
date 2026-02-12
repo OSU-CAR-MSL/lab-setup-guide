@@ -1,9 +1,10 @@
 # Assignment 1: Personal Academic Website
 
+|                    |                                              |
 | ------------------ | -------------------------------------------- |
-| **Author** | Robert Frenken |
-| **Estimated time** | 3--4 hours |
-| **Prerequisites** | A computer (Windows or Mac), internet access |
+| **Author**         | Robert Frenken                               |
+| **Estimated time** | 3--4 hours                                   |
+| **Prerequisites**  | A computer (Windows or Mac), internet access |
 
 ---
 

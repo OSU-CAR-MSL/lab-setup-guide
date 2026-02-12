@@ -567,35 +567,7 @@ Disk quota exceeded
 
 ## Performance Issues
 
-### Slow Training
-
-**Diagnose:**
-```python
-import torch.profiler
-with torch.profiler.profile() as prof:
-    train_one_epoch()
-print(prof.key_averages().table(sort_by="cuda_time_total"))
-```
-
-**Common issues:**
-
-1. **Data loading bottleneck**
-   ```python
-   num_workers=4      # Increase workers
-   pin_memory=True    # Enable pin_memory
-   ```
-
-2. **GPU underutilized**
-   ```python
-   batch_size=128     # Increase batch size
-   ```
-
-3. **Too many checkpoints**
-   ```python
-   # Save less frequently
-   if epoch % 10 == 0:  # Instead of every epoch
-       save_checkpoint()
-   ```
+For GPU performance troubleshooting (slow training, profiling, DataLoader optimization), see [PyTorch & GPU Setup](../ml-workflows/pytorch-setup.md#troubleshooting).
 
 ### Out of Memory (RAM)
 
@@ -621,24 +593,10 @@ print(prof.key_averages().table(sort_by="cuda_time_total"))
 
 ## Getting More Help
 
-### Check System Status
-- [OSC System Status](https://www.osc.edu/supercomputing/system-status)
-- [OSC Announcements](https://www.osc.edu/news)
-
-### OSC Support
-- **Email**: oschelp@osc.edu
-- **Office Hours**: Check OSC website
-- **Phone**: (614) 292-9248
-
-### Documentation
-- [OSC Documentation](https://www.osc.edu/resources/technical_support)
-- [SLURM Documentation](https://slurm.schedmd.com/)
-- [PyTorch Documentation](https://pytorch.org/docs/)
-
-### Lab Resources
-- Ask lab members on Slack/Teams
-- Check lab wiki
-- Consult with PI or senior members
+- **OSC Support**: Email [oschelp@osc.edu](mailto:oschelp@osc.edu) or call (614) 292-9248
+- **System Status**: [osc.edu/supercomputing/system-status](https://www.osc.edu/supercomputing/system-status)
+- **Lab**: Ask lab members on Slack/Teams, or consult your PI
+- See [Useful Links](useful-links.md) for OSC portals and support contacts
 
 ## Debug Checklist
 
@@ -672,10 +630,3 @@ When things go wrong:
 6. **Use version control**
 7. **Back up important data**
 
-## Additional Resources
-
-- [VS Code Setup](../getting-started/vscode-setup.md)
-- [OSC Best Practices](../working-on-osc/osc-best-practices.md)
-- [Job Submission Guide](../working-on-osc/osc-job-submission.md)
-- [PyTorch Setup](../ml-workflows/pytorch-setup.md)
-- [ML Workflow Guide](../ml-workflows/ml-workflow.md)

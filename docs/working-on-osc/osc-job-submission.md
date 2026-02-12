@@ -336,27 +336,7 @@ echo "Training finished at $(date)"
 
 ## Partitions (Queues)
 
-### Pitzer Partitions
-
-| Partition | Max Time | Max Nodes | GPUs | Best For |
-|-----------|----------|-----------|------|----------|
-| serial | 168:00:00 | 1 | No | Single-node CPU jobs |
-| parallel | 168:00:00 | Many | No | Multi-node CPU jobs |
-| gpu | 48:00:00 | Variable | Yes | GPU jobs |
-| debug | 01:00:00 | 2 | Yes | Quick testing |
-
-### Choose Partition
-
-```bash
-# CPU job
-#SBATCH --partition=serial
-
-# GPU job
-#SBATCH --partition=gpu
-
-# Quick test
-#SBATCH --partition=debug
-```
+For partition details (time limits, GPU availability, node counts), see the [Clusters Overview](../osc-basics/osc-clusters-overview.md).
 
 ## Resource Requests
 

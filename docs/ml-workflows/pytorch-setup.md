@@ -1,6 +1,6 @@
-# PyTorch Setup on OSC
+# PyTorch & GPU Setup
 
-This guide walks you through setting up PyTorch with GPU support on OSC clusters.
+Everything you need to install PyTorch, request GPUs, and train efficiently on OSC.
 
 ## Prerequisites
 
@@ -90,12 +90,6 @@ pip install --upgrade pip
 pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
 ```
 
-#### CPU-Only Version (Not Recommended)
-
-```bash
-pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu
-```
-
 ### Step 5: Install Additional Packages
 
 ```bash
@@ -142,17 +136,17 @@ if torch.cuda.is_available():
     print(f"Number of GPUs: {torch.cuda.device_count()}")
     print(f"Current GPU: {torch.cuda.current_device()}")
     print(f"GPU name: {torch.cuda.get_device_name(0)}")
-    
+
     # Test tensor operations
     print("\nTesting GPU operations...")
     x = torch.rand(5, 3)
     print(f"CPU tensor shape: {x.shape}")
-    
+
     x_gpu = x.cuda()
     print(f"GPU tensor device: {x_gpu.device}")
-    print("✓ GPU operations working!")
+    print("GPU operations working!")
 else:
-    print("\n⚠ CUDA not available. Running on CPU.")
+    print("\nCUDA not available. Running on CPU.")
 
 print("\n" + "=" * 50)
 ```
@@ -195,58 +189,371 @@ conda install pytorch torchvision torchaudio pytorch-cuda=11.8 -c pytorch -c nvi
 conda install numpy pandas matplotlib scikit-learn jupyter -y
 ```
 
-## Creating a Requirements File
+## Requesting GPUs
 
-After installation, save your environment:
+### Available GPU Types
 
-```bash
-# Activate environment
-source ~/venvs/pytorch/bin/activate
+#### Pitzer Cluster
 
-# Create requirements file
-pip freeze > requirements.txt
+| GPU Model | Memory | CUDA Cores | Best For | Quantity |
+|-----------|--------|------------|----------|----------|
+| NVIDIA V100 | 32 GB | 5120 | Training large models | Limited |
+| NVIDIA A100 | 40 GB | 6912 | Latest ML workloads | Limited |
 
-# Review and clean up (remove unnecessary packages)
-nano requirements.txt
-```
+#### Owens Cluster (Older)
 
-Example cleaned `requirements.txt`:
+| GPU Model | Memory | CUDA Cores | Best For | Quantity |
+|-----------|--------|------------|----------|----------|
+| NVIDIA P100 | 16 GB | 3584 | General GPU work | Many |
 
-```txt
-torch==2.1.0
-torchvision==0.16.0
-torchaudio==2.1.0
-numpy==1.24.3
-pandas==2.0.3
-matplotlib==3.7.2
-scikit-learn==1.3.0
-tensorboard==2.14.0
-jupyter==1.0.0
-tqdm==4.65.0
-```
+#### Which GPU to Use?
 
-## Using PyTorch in Jobs
+- **A100**: Latest architectures (Transformers, large models)
+- **V100**: Most ML workloads, good balance
+- **P100**: Older but widely available, good for testing
 
 ### Interactive GPU Session
 
 ```bash
-# Request GPU for interactive work
+# Request any available GPU
 srun -p gpu --gpus-per-node=1 --time=01:00:00 --pty bash
 
-# Load modules and activate environment
-module load python/3.9-2022.05 cuda/11.8.0
-source ~/venvs/pytorch/bin/activate
+# Request specific GPU type
+srun -p gpu --gpus-per-node=v100:1 --time=01:00:00 --pty bash
+srun -p gpu --gpus-per-node=a100:1 --time=01:00:00 --pty bash
 
-# Verify GPU
-nvidia-smi
-python -c "import torch; print(torch.cuda.is_available())"
+# Request multiple GPUs
+srun -p gpu --gpus-per-node=2 --time=01:00:00 --pty bash
 
-# Work interactively
-python
->>> import torch
->>> x = torch.rand(5, 3).cuda()
->>> print(x)
+# With more CPUs and memory
+srun -p gpu --gpus-per-node=1 --cpus-per-task=8 --mem=64G --time=02:00:00 --pty bash
 ```
+
+### Batch Job
+
+```bash
+#!/bin/bash
+#SBATCH --job-name=gpu_job
+#SBATCH --partition=gpu
+#SBATCH --gpus-per-node=1           # Number of GPUs
+#SBATCH --gpus-per-node=v100:1      # Specific GPU type
+#SBATCH --cpus-per-task=4           # CPUs (for data loading)
+#SBATCH --mem=32G                   # Memory
+#SBATCH --time=08:00:00
+
+# Your GPU job commands
+```
+
+## Monitoring GPUs
+
+### Using nvidia-smi
+
+```bash
+# Basic GPU info
+nvidia-smi
+
+# Continuous monitoring
+watch -n 1 nvidia-smi
+
+# Specific GPU
+nvidia-smi -i 0
+
+# Show processes
+nvidia-smi pmon
+
+# Detailed query
+nvidia-smi --query-gpu=index,name,memory.total,memory.used,memory.free,utilization.gpu --format=csv
+```
+
+### Using Python
+
+```python
+import torch
+
+# Check CUDA availability
+print(f"CUDA available: {torch.cuda.is_available()}")
+print(f"CUDA version: {torch.version.cuda}")
+
+# GPU information
+print(f"Number of GPUs: {torch.cuda.device_count()}")
+for i in range(torch.cuda.device_count()):
+    print(f"GPU {i}: {torch.cuda.get_device_name(i)}")
+    print(f"  Memory: {torch.cuda.get_device_properties(i).total_memory / 1e9:.2f} GB")
+
+# Memory usage
+print(f"Allocated: {torch.cuda.memory_allocated(0) / 1e9:.2f} GB")
+print(f"Cached: {torch.cuda.memory_reserved(0) / 1e9:.2f} GB")
+```
+
+### GPU Selection
+
+```bash
+# Use specific GPU
+export CUDA_VISIBLE_DEVICES=0
+
+# Use multiple GPUs
+export CUDA_VISIBLE_DEVICES=0,1
+```
+
+```python
+# In Python
+import os
+os.environ['CUDA_VISIBLE_DEVICES'] = '0'
+
+# Or use device parameter
+device = torch.device('cuda:0')
+```
+
+## Performance
+
+### Data Loading Optimization
+
+```python
+from torch.utils.data import DataLoader
+
+# Use multiple workers (match CPUs requested)
+train_loader = DataLoader(
+    dataset,
+    batch_size=64,
+    shuffle=True,
+    num_workers=4,        # Match --cpus-per-task
+    pin_memory=True,      # Faster GPU transfer
+    prefetch_factor=2,    # Prefetch batches
+    persistent_workers=True  # Keep workers alive
+)
+```
+
+### Mixed Precision Training
+
+Mixed precision uses FP16 where possible, saving memory and speeding up training.
+
+```python
+from torch.cuda.amp import autocast, GradScaler
+
+scaler = GradScaler()
+
+for epoch in range(num_epochs):
+    for data, target in train_loader:
+        data, target = data.cuda(), target.cuda()
+
+        optimizer.zero_grad()
+
+        # Forward pass in mixed precision
+        with autocast():
+            output = model(data)
+            loss = criterion(output, target)
+
+        # Backward pass with scaling
+        scaler.scale(loss).backward()
+        scaler.step(optimizer)
+        scaler.update()
+```
+
+### Gradient Accumulation
+
+Simulate larger batch sizes without more GPU memory:
+
+```python
+accumulation_steps = 4  # Effective batch size = batch_size * 4
+
+for i, (data, target) in enumerate(train_loader):
+    data, target = data.cuda(), target.cuda()
+
+    # Forward pass
+    output = model(data)
+    loss = criterion(output, target)
+
+    # Scale loss and backward
+    loss = loss / accumulation_steps
+    loss.backward()
+
+    # Update weights every accumulation_steps
+    if (i + 1) % accumulation_steps == 0:
+        optimizer.step()
+        optimizer.zero_grad()
+```
+
+### Gradient Checkpointing
+
+Save memory by recomputing activations during backward pass:
+
+```python
+import torch.utils.checkpoint as checkpoint
+
+class MyModel(nn.Module):
+    def forward(self, x):
+        # Use checkpointing for memory-intensive layers
+        x = checkpoint.checkpoint(self.layer1, x)
+        x = checkpoint.checkpoint(self.layer2, x)
+        return x
+```
+
+### Profiling
+
+```python
+import torch.profiler
+
+with torch.profiler.profile(
+    activities=[
+        torch.profiler.ProfilerActivity.CPU,
+        torch.profiler.ProfilerActivity.CUDA,
+    ],
+    record_shapes=True,
+    profile_memory=True,
+    with_stack=True
+) as prof:
+    for i in range(10):
+        output = model(input)
+        loss = criterion(output, target)
+        loss.backward()
+        optimizer.step()
+
+# Print results
+print(prof.key_averages().table(sort_by="cuda_time_total", row_limit=10))
+
+# Save trace for visualization
+prof.export_chrome_trace("trace.json")
+# View at chrome://tracing
+```
+
+## Multi-GPU Training
+
+### DataParallel (Simple, Single Node)
+
+```python
+import torch.nn as nn
+
+model = MyModel()
+
+# Wrap model for multi-GPU
+if torch.cuda.device_count() > 1:
+    print(f"Using {torch.cuda.device_count()} GPUs")
+    model = nn.DataParallel(model)
+
+model = model.cuda()
+
+# Train as usual
+for data, target in train_loader:
+    output = model(data.cuda())  # Automatically distributed
+    loss = criterion(output, target.cuda())
+    loss.backward()
+    optimizer.step()
+```
+
+Job script:
+```bash
+#SBATCH --gpus-per-node=4
+```
+
+### DistributedDataParallel (Recommended)
+
+More efficient than DataParallel:
+
+```python
+import torch.distributed as dist
+from torch.nn.parallel import DistributedDataParallel as DDP
+from torch.utils.data.distributed import DistributedSampler
+
+def setup(rank, world_size):
+    os.environ['MASTER_ADDR'] = 'localhost'
+    os.environ['MASTER_PORT'] = '12355'
+    dist.init_process_group("nccl", rank=rank, world_size=world_size)
+
+def cleanup():
+    dist.destroy_process_group()
+
+def train(rank, world_size):
+    setup(rank, world_size)
+
+    # Create model and move to GPU
+    model = MyModel().to(rank)
+    ddp_model = DDP(model, device_ids=[rank])
+
+    # Use DistributedSampler
+    sampler = DistributedSampler(dataset, num_replicas=world_size, rank=rank)
+    dataloader = DataLoader(dataset, sampler=sampler, batch_size=64)
+
+    # Training loop
+    for epoch in range(num_epochs):
+        sampler.set_epoch(epoch)  # Shuffle differently each epoch
+        for data, target in dataloader:
+            data, target = data.to(rank), target.to(rank)
+            output = ddp_model(data)
+            loss = criterion(output, target)
+            loss.backward()
+            optimizer.step()
+            optimizer.zero_grad()
+
+    cleanup()
+
+if __name__ == '__main__':
+    world_size = torch.cuda.device_count()
+    torch.multiprocessing.spawn(train, args=(world_size,), nprocs=world_size)
+```
+
+Job script:
+```bash
+#!/bin/bash
+#SBATCH --gpus-per-node=4
+#SBATCH --ntasks-per-node=4
+
+python -m torch.distributed.launch \
+    --nproc_per_node=4 \
+    train_ddp.py
+```
+
+## Memory Management
+
+### Check Memory Usage
+
+```python
+import torch
+
+# Current GPU memory usage
+print(f"Allocated: {torch.cuda.memory_allocated(0) / 1e9:.2f} GB")
+print(f"Cached: {torch.cuda.memory_reserved(0) / 1e9:.2f} GB")
+
+# Peak memory usage
+print(f"Max allocated: {torch.cuda.max_memory_allocated(0) / 1e9:.2f} GB")
+
+# Detailed memory summary
+print(torch.cuda.memory_summary(device=0, abbreviated=False))
+```
+
+### Clear GPU Memory
+
+```python
+# Clear cache
+torch.cuda.empty_cache()
+
+# Delete tensors explicitly
+del large_tensor
+torch.cuda.empty_cache()
+
+# Move to CPU and delete
+large_tensor = large_tensor.cpu()
+del large_tensor
+torch.cuda.empty_cache()
+```
+
+### Memory-Efficient Practices
+
+```python
+# 1. Use in-place operations
+x.add_(y)  # Instead of x = x + y
+
+# 2. Use torch.no_grad() for inference
+with torch.no_grad():
+    output = model(input)
+
+# 3. Clear gradients efficiently
+optimizer.zero_grad(set_to_none=True)  # More memory efficient
+
+# 4. Set memory fraction
+torch.cuda.set_per_process_memory_fraction(0.8, device=0)
+```
+
+## Using PyTorch in Jobs
 
 ### Batch Job Script
 
@@ -294,173 +601,6 @@ Submit:
 ```bash
 mkdir -p logs
 sbatch pytorch_job.sh
-```
-
-## Multi-GPU Training
-
-### DataParallel (Single Node)
-
-```python
-import torch
-import torch.nn as nn
-
-model = MyModel()
-
-# Use all available GPUs
-if torch.cuda.device_count() > 1:
-    print(f"Using {torch.cuda.device_count()} GPUs")
-    model = nn.DataParallel(model)
-
-model = model.cuda()
-```
-
-Job script:
-```bash
-#SBATCH --gpus-per-node=4  # Request 4 GPUs
-```
-
-### DistributedDataParallel (Recommended)
-
-```python
-import torch
-import torch.distributed as dist
-from torch.nn.parallel import DistributedDataParallel as DDP
-
-def setup(rank, world_size):
-    os.environ['MASTER_ADDR'] = 'localhost'
-    os.environ['MASTER_PORT'] = '12355'
-    dist.init_process_group("nccl", rank=rank, world_size=world_size)
-
-def cleanup():
-    dist.destroy_process_group()
-
-def train(rank, world_size):
-    setup(rank, world_size)
-    
-    model = MyModel().to(rank)
-    ddp_model = DDP(model, device_ids=[rank])
-    
-    # Training code here
-    
-    cleanup()
-```
-
-Job script:
-```bash
-#!/bin/bash
-#SBATCH --gpus-per-node=4
-#SBATCH --ntasks-per-node=4
-
-python -m torch.distributed.launch \
-    --nproc_per_node=4 \
-    train_ddp.py
-```
-
-## GPU Selection and Management
-
-### Set Specific GPU
-
-```bash
-# Environment variable
-export CUDA_VISIBLE_DEVICES=0
-
-# In Python
-import os
-os.environ['CUDA_VISIBLE_DEVICES'] = '0'
-```
-
-### Check GPU Usage
-
-```bash
-# Watch GPU usage
-watch -n 1 nvidia-smi
-
-# Or in Python
-import torch
-torch.cuda.memory_summary(device=0)
-```
-
-### Memory Management
-
-```python
-import torch
-
-# Clear cache
-torch.cuda.empty_cache()
-
-# Set memory fraction
-torch.cuda.set_per_process_memory_fraction(0.8, device=0)
-
-# Mixed precision training (saves memory)
-from torch.cuda.amp import autocast, GradScaler
-
-scaler = GradScaler()
-
-for data, target in dataloader:
-    optimizer.zero_grad()
-    
-    with autocast():
-        output = model(data)
-        loss = criterion(output, target)
-    
-    scaler.scale(loss).backward()
-    scaler.step(optimizer)
-    scaler.update()
-```
-
-## Optimizing Performance
-
-### Data Loading
-
-```python
-# Use multiple workers (match CPU cores)
-train_loader = torch.utils.data.DataLoader(
-    dataset,
-    batch_size=64,
-    shuffle=True,
-    num_workers=4,      # Match --cpus-per-task
-    pin_memory=True,    # Faster GPU transfer
-    persistent_workers=True  # Keep workers alive
-)
-```
-
-### Mixed Precision Training
-
-```python
-from torch.cuda.amp import autocast, GradScaler
-
-scaler = GradScaler()
-
-for epoch in range(num_epochs):
-    for data, target in dataloader:
-        optimizer.zero_grad()
-        
-        # Forward pass with mixed precision
-        with autocast():
-            output = model(data.cuda())
-            loss = criterion(output, target.cuda())
-        
-        # Backward pass
-        scaler.scale(loss).backward()
-        scaler.step(optimizer)
-        scaler.update()
-```
-
-### Gradient Accumulation
-
-```python
-# Effective batch size = batch_size * accumulation_steps
-accumulation_steps = 4
-
-for i, (data, target) in enumerate(dataloader):
-    output = model(data.cuda())
-    loss = criterion(output, target.cuda())
-    loss = loss / accumulation_steps
-    loss.backward()
-    
-    if (i + 1) % accumulation_steps == 0:
-        optimizer.step()
-        optimizer.zero_grad()
 ```
 
 ## Checkpointing
@@ -512,58 +652,76 @@ if os.path.exists('checkpoints/best_model.pth'):
 
 ### CUDA Out of Memory
 
-**Solutions**:
-```python
-# 1. Reduce batch size
-batch_size = 32  # Instead of 64
-
-# 2. Use gradient accumulation
-accumulation_steps = 2
-
-# 3. Clear cache
-torch.cuda.empty_cache()
-
-# 4. Use mixed precision
-from torch.cuda.amp import autocast
-with autocast():
-    output = model(input)
-
-# 5. Use gradient checkpointing
-from torch.utils.checkpoint import checkpoint
+**Symptoms:**
 ```
+RuntimeError: CUDA out of memory
+```
+
+**Solutions:**
+
+1. **Reduce batch size**
+   ```python
+   batch_size = 32  # Instead of 64
+   ```
+
+2. **Use gradient accumulation**
+   ```python
+   accumulation_steps = 2  # Effective batch size = 64
+   ```
+
+3. **Use mixed precision**
+   ```python
+   from torch.cuda.amp import autocast
+   with autocast():
+       output = model(input)
+   ```
+
+4. **Clear cache**
+   ```python
+   torch.cuda.empty_cache()
+   ```
+
+5. **Use gradient checkpointing**
+   ```python
+   model.gradient_checkpointing_enable()
+   ```
+
+6. **Reduce model size**
 
 ### CUDA Not Available
 
-**Checks**:
-```bash
-# 1. Verify CUDA module loaded
-module list | grep cuda
+**Checks:**
 
-# 2. Check GPU requested in job
+```bash
+# 1. Verify GPU requested
 squeue -u $USER
 
-# 3. Verify on GPU node
+# 2. Check node has GPU
 nvidia-smi
 
-# 4. Reinstall PyTorch
+# 3. Check CUDA module loaded
+module list | grep cuda
+
+# 4. Verify PyTorch installation
+python -c "import torch; print(torch.cuda.is_available())"
+
+# 5. Reinstall PyTorch
 pip uninstall torch torchvision torchaudio
 pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
 ```
 
 ### Slow Training
 
-**Solutions**:
+**Common issues:**
+- Too few data loader workers
+- Not using pin_memory
+- Not using mixed precision
+- CPU-GPU transfer bottleneck
+
+**Diagnose:**
+
 ```python
-# 1. Use more workers
-num_workers=4
-
-# 2. Pin memory
-pin_memory=True
-
-# 3. Use mixed precision
-from torch.cuda.amp import autocast, GradScaler
-
-# 4. Profile code
+# Profile to find bottlenecks
 import torch.profiler
 with torch.profiler.profile() as prof:
     train_one_epoch()
@@ -590,16 +748,15 @@ python -c "import sys; print('\n'.join(sys.path))"
 3. **Save checkpoints regularly**
 4. **Use mixed precision for faster training**
 5. **Monitor GPU usage** with `nvidia-smi`
-6. **Clear GPU cache** when needed
+6. **Don't over-request GPUs** you won't use
 7. **Use appropriate batch size** for your GPU memory
-8. **Pin memory** for faster data loading
-9. **Use multiple workers** for data loading
+8. **Pin memory and use multiple workers** for data loading
+9. **Profile before optimizing** — find actual bottlenecks
 10. **Document your environment** in requirements.txt
 
 ## Next Steps
 
 - Read [ML Workflow Guide](ml-workflow.md)
-- Learn [GPU Computing Guide](gpu-computing.md)
 - Review [Job Submission](../working-on-osc/osc-job-submission.md)
 - Check [Best Practices](../working-on-osc/osc-best-practices.md)
 
@@ -608,4 +765,5 @@ python -c "import sys; print('\n'.join(sys.path))"
 - [PyTorch Documentation](https://pytorch.org/docs/stable/index.html)
 - [PyTorch Installation Guide](https://pytorch.org/get-started/locally/)
 - [CUDA Toolkit Documentation](https://docs.nvidia.com/cuda/)
+- [PyTorch Performance Tuning Guide](https://pytorch.org/tutorials/recipes/recipes/tuning_guide.html)
 - [Troubleshooting Guide](../resources/troubleshooting.md)

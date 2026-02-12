@@ -118,59 +118,11 @@ Everything runs on the remote server!
 
 ## Installing Extensions Remotely
 
-Some extensions need to be installed on the remote server:
-
-### Install on Remote
-
-1. Open Extensions view (`Ctrl+Shift+X`)
-2. Look for "Install in SSH: pitzer" button
-3. Click to install the extension remotely
-
-### Recommended Remote Extensions
-
-These should be installed on OSC:
-
-```bash
-# Python development
-code --install-extension ms-python.python
-code --install-extension ms-python.vscode-pylance
-code --install-extension ms-toolsai.jupyter
-
-# Git integration
-code --install-extension eamodio.gitlens
-
-# General productivity
-code --install-extension usernamehw.errorlens
-```
-
-Note: Extensions install to `~/.vscode-server/extensions/` on OSC.
+Extensions you use locally should also be installed on the remote server. Open the Extensions view (`Ctrl+Shift+X`) and click "Install in SSH: pitzer" for each extension you need. For recommended extensions, see [VS Code Extensions](../getting-started/vscode-extensions.md).
 
 ## File Transfer
 
-### Drag and Drop
-
-Simply drag files from your local file explorer into VS Code's file browser!
-
-### Download Files
-
-Right-click any file in VS Code and select "Download..."
-
-### Upload Files
-
-Right-click in the file browser and select "Upload..." to upload files to OSC.
-
-### Sync Settings
-
-For larger transfers, use `rsync` in the terminal:
-```bash
-# In VS Code terminal (runs on OSC)
-rsync -avz --progress username@yourcomputer:/local/path/ ./osc/path/
-```
-
-Or from your local machine:
-```bash
-rsync -avz --progress ./local/path/ pitzer:~/osc/path/
-```
+VS Code supports drag-and-drop uploads and right-click downloads for small files. For bulk transfers, see the [File Transfer Guide](osc-file-transfer.md).
 
 ## Port Forwarding
 

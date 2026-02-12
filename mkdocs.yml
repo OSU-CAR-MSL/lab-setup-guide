@@ -146,10 +146,9 @@ nav:
     - MATLAB & Simulink: working-on-osc/matlab-simulink.md
 
   - ML Workflows:
-    - PyTorch Setup: ml-workflows/pytorch-setup.md
+    - PyTorch & GPU Setup: ml-workflows/pytorch-setup.md
     - ML Workflow Guide: ml-workflows/ml-workflow.md
     - Notebook-to-Script Workflow: ml-workflows/notebook-to-script.md
-    - GPU Computing: ml-workflows/gpu-computing.md
     - Data & Experiment Tracking: ml-workflows/data-experiment-tracking.md
 
   - Contributing:

@@ -58,65 +58,9 @@ If your lab doesn't have an OSC project:
 2. Verify you have access to computing resources
 3. Note which clusters you can access (Pitzer, Owens, etc.)
 
-## Understanding OSC Systems
+For cluster specs, GPU types, and partition details, see the [Clusters Overview](osc-clusters-overview.md).
 
-OSC operates several computing clusters:
-
-### Pitzer Cluster
-- **Purpose**: General-purpose computing
-- **GPUs**: Available with V100 and A100 GPUs
-- **Best for**: Most ML/AI workloads
-- **Login node**: `pitzer.osc.edu`
-
-### Owens Cluster
-- **Purpose**: General-purpose computing (older)
-- **GPUs**: Available with P100 GPUs
-- **Best for**: CPU-intensive tasks
-- **Login node**: `owens.osc.edu`
-
-### Choosing a Cluster
-- For PyTorch/ML work with GPUs: **Use Pitzer** (newer GPUs)
-- For CPU-only work: Either Pitzer or Owens
-- Check current availability and queue times
-
-## Setting Up SSH Keys (Recommended)
-
-SSH keys provide secure, password-less authentication:
-
-### Generate SSH Key (if you don't have one)
-
-**On Linux/macOS:**
-```bash
-# Generate new SSH key pair
-ssh-keygen -t ed25519 -C "your.email@osu.edu"
-
-# Press Enter to save to default location (~/.ssh/id_ed25519)
-# Enter a passphrase (recommended) or leave empty
-```
-
-**On Windows (PowerShell or Git Bash):**
-```bash
-ssh-keygen -t ed25519 -C "your.email@osu.edu"
-```
-
-### Add SSH Key to OSC
-
-1. Display your public key:
-   ```bash
-   cat ~/.ssh/id_ed25519.pub
-   ```
-
-2. Copy the entire output
-
-3. Log into [my.osc.edu](https://my.osc.edu)
-
-4. Navigate to "My Account" → "Manage SSH Public Keys"
-
-5. Click "Add SSH Public Key"
-
-6. Paste your public key and click "Add Key"
-
-7. Wait a few minutes for the key to propagate
+To set up SSH keys for password-less login, see the [SSH Connection Guide](osc-ssh-connection.md#ssh-keys-setup).
 
 ## Test Your Connection
 

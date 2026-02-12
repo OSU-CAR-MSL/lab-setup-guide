@@ -71,7 +71,7 @@ ssh owens
 
 ### Advanced Configuration with SSH Keys
 
-For password-less login (after [setting up SSH keys](osc-account-setup.md#setting-up-ssh-keys-recommended)):
+For password-less login (after [setting up SSH keys](#ssh-keys-setup)):
 
 ```ssh-config
 Host pitzer
@@ -224,51 +224,9 @@ ssh pitzer-jupyter
 ssh -D 8080 pitzer
 ```
 
-## File Transfer via SSH
+## File Transfer
 
-### SCP (Secure Copy)
-
-```bash
-# Copy file to OSC
-scp local_file.txt pitzer:~/remote_directory/
-
-# Copy file from OSC
-scp pitzer:~/remote_file.txt ./local_directory/
-
-# Copy directory recursively
-scp -r local_directory pitzer:~/remote_directory/
-```
-
-### SFTP (Interactive File Transfer)
-
-```bash
-sftp pitzer
-
-# SFTP commands:
-# put local_file.txt          - Upload file
-# get remote_file.txt         - Download file
-# cd directory                - Change remote directory
-# lcd directory               - Change local directory
-# ls                          - List remote files
-# lls                         - List local files
-# quit                        - Exit
-```
-
-### Rsync (Best for Large Transfers)
-
-```bash
-# Sync directory to OSC
-rsync -avz --progress local_directory/ pitzer:~/remote_directory/
-
-# Sync from OSC to local
-rsync -avz --progress pitzer:~/remote_directory/ ./local_directory/
-```
-
-Rsync options:
-- `-a`: Archive mode (preserves permissions, timestamps)
-- `-v`: Verbose output
-- `-z`: Compress during transfer
-- `--progress`: Show progress
+For SCP, SFTP, rsync, and other transfer methods, see the [File Transfer Guide](osc-file-transfer.md).
 
 ## Troubleshooting
 

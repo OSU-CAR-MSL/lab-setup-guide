@@ -362,65 +362,7 @@ chmod -R g+rwX /fs/project/PAS1234/envs/lab_shared
 source /fs/project/PAS1234/envs/lab_shared/bin/activate
 ```
 
-## PyTorch Environment Setup
-
-### Complete PyTorch Setup
-
-```bash
-# 1. Load modules
-module load python/3.9-2022.05
-module load cuda/11.8.0
-
-# 2. Create environment
-python -m venv ~/venvs/pytorch
-
-# 3. Activate
-source ~/venvs/pytorch/bin/activate
-
-# 4. Upgrade pip
-pip install --upgrade pip
-
-# 5. Install PyTorch with CUDA support
-pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
-
-# 6. Install additional packages
-pip install numpy pandas matplotlib scikit-learn
-pip install jupyter tensorboard wandb
-
-# 7. Verify installation
-python -c "import torch; print(f'PyTorch: {torch.__version__}'); print(f'CUDA: {torch.cuda.is_available()}')"
-```
-
-### Test PyTorch GPU
-
-Create `test_gpu.py`:
-```python
-import torch
-
-print(f"PyTorch version: {torch.__version__}")
-print(f"CUDA available: {torch.cuda.is_available()}")
-print(f"CUDA version: {torch.version.cuda}")
-print(f"Number of GPUs: {torch.cuda.device_count()}")
-
-if torch.cuda.is_available():
-    print(f"GPU name: {torch.cuda.get_device_name(0)}")
-    
-    # Test tensor on GPU
-    x = torch.rand(5, 3).cuda()
-    print(f"Tensor on GPU: {x.device}")
-```
-
-Run:
-```bash
-# Interactive GPU session
-srun -p gpu --gpus-per-node=1 --pty bash
-
-# Activate environment
-source ~/venvs/pytorch/bin/activate
-
-# Test
-python test_gpu.py
-```
+For PyTorch-specific environment setup (CUDA versions, GPU verification, etc.), see [PyTorch & GPU Setup](../ml-workflows/pytorch-setup.md).
 
 ## Managing Disk Space
 

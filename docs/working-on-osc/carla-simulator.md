@@ -460,7 +460,7 @@ $SCRATCH/carla/CarlaUE4.sh -RenderOffScreen -carla-port=2000 -opengl
 
 - Learn about [Job Submission](osc-job-submission.md) and job arrays for parallel experiments
 - Set up [Data & Experiment Tracking](../ml-workflows/data-experiment-tracking.md) for your CARLA runs
-- Review [GPU Computing](../ml-workflows/gpu-computing.md) for multi-GPU setups
+- Review [PyTorch & GPU Setup](../ml-workflows/pytorch-setup.md) for multi-GPU setups
 - Use the [Notebook-to-Script Workflow](../ml-workflows/notebook-to-script.md) to prototype CARLA experiments interactively
 
 ## Resources

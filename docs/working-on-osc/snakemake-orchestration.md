@@ -676,7 +676,7 @@ snakemake --unlock
 - Review [Job Submission](osc-job-submission.md) for SLURM fundamentals
 - Learn about [Environment Management](osc-environment-management.md) for setting up Python environments
 - See the [ML Workflow Guide](../ml-workflows/ml-workflow.md) for organizing ML projects
-- Explore [GPU Computing](../ml-workflows/gpu-computing.md) for GPU-specific guidance
+- Explore [PyTorch & GPU Setup](../ml-workflows/pytorch-setup.md) for GPU-specific guidance
 
 ## Resources
 

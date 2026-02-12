@@ -278,53 +278,7 @@ sbatch scripts/run_experiment.sh
 
 ### Hyperparameter Sweeps with Job Arrays
 
-Run many configurations in parallel using SLURM job arrays:
-
-`scripts/sweep.sh`:
-
-```bash
-#!/bin/bash
-#SBATCH --job-name=sweep
-#SBATCH --account=PAS1234
-#SBATCH --array=0-11
-#SBATCH --gpus-per-node=1
-#SBATCH --cpus-per-task=4
-#SBATCH --mem=32G
-#SBATCH --time=04:00:00
-#SBATCH --output=logs/sweep_%A_%a.out
-
-module load python/3.9-2022.05
-module load cuda/11.8.0
-source ~/venvs/myproject/bin/activate
-
-# Define sweep grid
-lrs=(1e-4 1e-3 1e-2)
-batch_sizes=(32 64 128 256)
-
-# Map array index to hyperparameters
-lr_idx=$(( SLURM_ARRAY_TASK_ID / 4 ))
-bs_idx=$(( SLURM_ARRAY_TASK_ID % 4 ))
-LR=${lrs[$lr_idx]}
-BS=${batch_sizes[$bs_idx]}
-
-SCRATCH=/fs/scratch/PAS1234/$USER/my_project
-OUTDIR=$SCRATCH/results/sweep_lr${LR}_bs${BS}
-
-python src/train.py \
-    --data-dir $SCRATCH/datasets/my_data \
-    --output-dir $OUTDIR \
-    --epochs 50 \
-    --batch-size $BS \
-    --lr $LR \
-    --seed 42
-
-echo "Finished: lr=$LR bs=$BS"
-```
-
-```bash
-sbatch scripts/sweep.sh
-# Submits 12 jobs (3 learning rates x 4 batch sizes)
-```
+Use SLURM job arrays to run many configurations in parallel. For sweep script templates and job array patterns, see the [Job Submission Guide](../working-on-osc/osc-job-submission.md#job-arrays).
 
 ### Using Config Files Instead of CLI Args
 
@@ -408,4 +362,4 @@ graph TD
 - Review [Job Submission](../working-on-osc/osc-job-submission.md) for SLURM details
 - Set up [Data & Experiment Tracking](data-experiment-tracking.md) with TensorBoard or W&B
 - Use [Snakemake](../working-on-osc/snakemake-orchestration.md) for multi-step pipelines
-- Learn about [GPU Computing](gpu-computing.md) for training at scale
+- Learn about [PyTorch & GPU Setup](pytorch-setup.md) for training at scale

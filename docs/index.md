@@ -75,9 +75,8 @@ Guides specific to ML/DL research on OSC.
 
 | Guide | Description |
 |-------|-------------|
-| [PyTorch Setup](ml-workflows/pytorch-setup.md) | Install and configure PyTorch on OSC |
+| [PyTorch & GPU Setup](ml-workflows/pytorch-setup.md) | Install PyTorch, request GPUs, optimize training |
 | [ML Workflow Guide](ml-workflows/ml-workflow.md) | Best practices for ML projects |
-| [GPU Computing](ml-workflows/gpu-computing.md) | Using GPUs for training |
 | [Data & Experiment Tracking](ml-workflows/data-experiment-tracking.md) | DVC, SQLite, MLflow, and Parquet for ML projects |
 
 ### Contributing

@@ -26,16 +26,48 @@ There are no tests or linters. The `--strict` flag in CI catches broken links an
 ## Architecture
 
 - **`mkdocs.yml`** — Central configuration: site metadata, theme settings, markdown extensions, plugins, and the `nav:` section that defines all page navigation. Every new page must be added here.
-- **`docs/`** — All Markdown content, organized into section subfolders (`getting-started/`, `osc-basics/`, `working-on-osc/`, `ml-workflows/`, `contributing/`, `resources/`).
+- **`docs/`** — All Markdown content, organized into section subfolders (`getting-started/`, `osc-basics/`, `working-on-osc/`, `ml-workflows/`, `contributing/`, `assignments/`, `resources/`).
 - **`docs/stylesheets/extra.css`** — Custom OSU branding (scarlet `#bb0000` color scheme) applied on top of Material theme.
 - **`.github/workflows/deploy-docs.yml`** — GitHub Actions pipeline. Triggers on pushes to `main` that touch `docs/` or `mkdocs.yml`. Builds with `mkdocs build --strict` and deploys to GitHub Pages.
 - **`site/`** — Auto-generated build output (gitignored).
+
+## Content Architecture — Canonical Locations
+
+Each topic has exactly one canonical page. Other pages cross-link to it instead of repeating the content.
+
+| Topic | Canonical Page |
+|-------|---------------|
+| Cluster specs, partitions, storage quotas | `osc-basics/osc-clusters-overview.md` |
+| SSH keys and SSH config | `osc-basics/osc-ssh-connection.md` |
+| File transfer (SCP, rsync, SFTP) | `osc-basics/osc-file-transfer.md` |
+| VS Code extensions | `getting-started/vscode-extensions.md` |
+| Modules, venvs, conda | `working-on-osc/osc-environment-management.md` |
+| SLURM jobs, job arrays, job scripts | `working-on-osc/osc-job-submission.md` |
+| PyTorch install, GPU requesting, GPU perf, multi-GPU, memory mgmt | `ml-workflows/pytorch-setup.md` |
+| Experiment tracking (TensorBoard, W&B, MLflow) | `ml-workflows/data-experiment-tracking.md` |
+| OSC portals and support contacts | `resources/useful-links.md` |
+
+## Content Conventions
+
+**Single source of truth.** Every topic lives on one page. If another page needs that information, it links to the canonical page — never copy-pastes the content.
+
+**Lean pages.** Each page should cover its own topic and nothing more. Avoid "here's everything you might need" mega-pages. If a section is growing beyond the page's scope, it belongs on its canonical page with a cross-link.
+
+**Cross-links over duplication.** When referencing another topic, use a one- or two-line mention plus a Markdown link. Example:
+```markdown
+For partition details and GPU types, see the [Clusters Overview](../osc-basics/osc-clusters-overview.md).
+```
+
+**No link dumps.** The useful-links page is intentionally minimal — only OSC-specific portals, lab resources, and genuinely hard-to-find references. Don't add generic links (Python docs, ML courses, framework homepages) that any search engine would find.
+
+**Practical, not encyclopedic.** Include concrete commands, code snippets, and job script templates that people will actually copy. Skip generic explanations that the official docs already cover.
 
 ## Adding a New Page
 
 1. Create a `.md` file in the appropriate `docs/` subfolder.
 2. Add the page to the `nav:` section in `mkdocs.yml`.
-3. Run `mkdocs serve` to preview locally before pushing.
+3. Check the canonical locations table above — if the new page overlaps with an existing topic, cross-link instead of duplicating.
+4. Run `mkdocs build --strict` to verify no broken links.
 
 ## Markdown Features Available
 

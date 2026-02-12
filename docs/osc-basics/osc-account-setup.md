@@ -52,6 +52,9 @@ If your lab doesn't have an OSC project:
 3. Verify you see your lab's project listed
 4. Note your project code (e.g., `PAS1234`)
 
+!!! warning "PAS1234 is a placeholder"
+    Throughout this documentation, `PAS1234` is used as a placeholder project code. Replace it with your actual OSC project code, which you can find at [my.osc.edu](https://my.osc.edu) under your project list.
+
 ### Check Your Allocations
 
 1. In the my.osc.edu portal, navigate to "Allocations"

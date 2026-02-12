@@ -2,6 +2,16 @@
 
 Everything you need to install PyTorch, request GPUs, and train efficiently on OSC.
 
+**On this page:**
+
+- [Quick Setup](#quick-setup) — copy-paste install in 5 commands
+- [Detailed Setup](#detailed-setup) — step-by-step with explanations
+- [Requesting GPUs](#requesting-gpus) — GPU types, interactive & batch requests
+- [Performance](#performance) — DataLoaders, mixed precision, gradient accumulation
+- [Multi-GPU Training](#multi-gpu-training) — DataParallel & DDP
+- [Memory Management](#memory-management) — monitoring & clearing GPU memory
+- [Troubleshooting](#troubleshooting) — CUDA errors, slow training, import issues
+
 ## Prerequisites
 
 - OSC account with GPU access
@@ -168,26 +178,26 @@ python test_pytorch.py
 exit
 ```
 
-## Alternative: Conda Setup
+??? note "Alternative: Conda Setup"
 
-If you prefer conda:
+    If you prefer conda:
 
-```bash
-# Load conda
-module load python/3.9-2022.05
+    ```bash
+    # Load conda
+    module load python/3.9-2022.05
 
-# Create conda environment
-conda create -n pytorch python=3.9 -y
+    # Create conda environment
+    conda create -n pytorch python=3.9 -y
 
-# Activate
-conda activate pytorch
+    # Activate
+    conda activate pytorch
 
-# Install PyTorch with CUDA
-conda install pytorch torchvision torchaudio pytorch-cuda=11.8 -c pytorch -c nvidia
+    # Install PyTorch with CUDA
+    conda install pytorch torchvision torchaudio pytorch-cuda=11.8 -c pytorch -c nvidia
 
-# Install additional packages
-conda install numpy pandas matplotlib scikit-learn jupyter -y
-```
+    # Install additional packages
+    conda install numpy pandas matplotlib scikit-learn jupyter -y
+    ```
 
 ## Requesting GPUs
 
@@ -373,48 +383,48 @@ for i, (data, target) in enumerate(train_loader):
         optimizer.zero_grad()
 ```
 
-### Gradient Checkpointing
+??? tip "Gradient Checkpointing"
 
-Save memory by recomputing activations during backward pass:
+    Save memory by recomputing activations during backward pass:
 
-```python
-import torch.utils.checkpoint as checkpoint
+    ```python
+    import torch.utils.checkpoint as checkpoint
 
-class MyModel(nn.Module):
-    def forward(self, x):
-        # Use checkpointing for memory-intensive layers
-        x = checkpoint.checkpoint(self.layer1, x)
-        x = checkpoint.checkpoint(self.layer2, x)
-        return x
-```
+    class MyModel(nn.Module):
+        def forward(self, x):
+            # Use checkpointing for memory-intensive layers
+            x = checkpoint.checkpoint(self.layer1, x)
+            x = checkpoint.checkpoint(self.layer2, x)
+            return x
+    ```
 
-### Profiling
+??? tip "Profiling with PyTorch Profiler"
 
-```python
-import torch.profiler
+    ```python
+    import torch.profiler
 
-with torch.profiler.profile(
-    activities=[
-        torch.profiler.ProfilerActivity.CPU,
-        torch.profiler.ProfilerActivity.CUDA,
-    ],
-    record_shapes=True,
-    profile_memory=True,
-    with_stack=True
-) as prof:
-    for i in range(10):
-        output = model(input)
-        loss = criterion(output, target)
-        loss.backward()
-        optimizer.step()
+    with torch.profiler.profile(
+        activities=[
+            torch.profiler.ProfilerActivity.CPU,
+            torch.profiler.ProfilerActivity.CUDA,
+        ],
+        record_shapes=True,
+        profile_memory=True,
+        with_stack=True
+    ) as prof:
+        for i in range(10):
+            output = model(input)
+            loss = criterion(output, target)
+            loss.backward()
+            optimizer.step()
 
-# Print results
-print(prof.key_averages().table(sort_by="cuda_time_total", row_limit=10))
+    # Print results
+    print(prof.key_averages().table(sort_by="cuda_time_total", row_limit=10))
 
-# Save trace for visualization
-prof.export_chrome_trace("trace.json")
-# View at chrome://tracing
-```
+    # Save trace for visualization
+    prof.export_chrome_trace("trace.json")
+    # View at chrome://tracing
+    ```
 
 ## Multi-GPU Training
 
@@ -758,12 +768,8 @@ python -c "import sys; print('\n'.join(sys.path))"
 
 - Read [ML Workflow Guide](ml-workflow.md)
 - Review [Job Submission](../working-on-osc/osc-job-submission.md)
-- Check [Best Practices](../working-on-osc/osc-best-practices.md)
 
 ## Resources
 
-- [PyTorch Documentation](https://pytorch.org/docs/stable/index.html)
 - [PyTorch Installation Guide](https://pytorch.org/get-started/locally/)
-- [CUDA Toolkit Documentation](https://docs.nvidia.com/cuda/)
 - [PyTorch Performance Tuning Guide](https://pytorch.org/tutorials/recipes/recipes/tuning_guide.html)
-- [Troubleshooting Guide](../resources/troubleshooting.md)

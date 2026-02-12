@@ -2,11 +2,28 @@
 
 Learn how to manage software environments on OSC using modules and virtual environments.
 
+**On this page:**
+
+- [Module System](#module-system) — loading pre-installed software
+- [Python Virtual Environments](#python-virtual-environments) — venv & conda setup
+- [Using Environments in Job Scripts](#using-environments-in-job-scripts) — venv & conda in SLURM
+- [Managing Disk Space](#managing-disk-space) — quotas, cleanup, env sizes
+
 ## Overview
 
 OSC uses two main systems for environment management:
 1. **Module System**: Load pre-installed software
 2. **Virtual Environments**: Isolated Python environments with custom packages
+
+```mermaid
+flowchart TD
+    A{Need custom\nPython packages?} -->|No| B[Modules only]
+    A -->|Yes| C{Need system-level\nlibraries or\nnon-Python tools?}
+    C -->|No| D[venv\nRecommended]
+    C -->|Yes| E[conda]
+    D --> F[pip install in venv]
+    E --> G[conda install packages]
+```
 
 ## Module System
 
@@ -112,12 +129,7 @@ module spider tensorflow/2.10.0
 
 ## Python Virtual Environments
 
-### Why Use Virtual Environments?
-
-- ✅ Isolate project dependencies
-- ✅ Avoid package conflicts
-- ✅ Reproducible environments
-- ✅ Easy to recreate on different systems
+Virtual environments isolate project dependencies so different projects can use different package versions without conflicts.
 
 ### Creating Virtual Environments
 
@@ -332,35 +344,35 @@ Use it:
 source ~/scripts/activate_ml_env.sh
 ```
 
-## Advanced: Shared Environments
+??? note "Advanced: Shared Lab Environments"
 
-For lab collaboration, create shared environments:
+    For lab collaboration, create shared environments in project space:
 
-### Shared Conda Environment
+    **Shared Conda Environment:**
 
-```bash
-# Create in project space
-conda create -p /fs/project/PAS1234/envs/lab_shared python=3.9
+    ```bash
+    # Create in project space
+    conda create -p /fs/project/PAS1234/envs/lab_shared python=3.9
 
-# All lab members can activate
-conda activate /fs/project/PAS1234/envs/lab_shared
+    # All lab members can activate
+    conda activate /fs/project/PAS1234/envs/lab_shared
 
-# Install packages (requires write access)
-conda install pytorch torchvision cudatoolkit=11.8 -c pytorch
-```
+    # Install packages (requires write access)
+    conda install pytorch torchvision cudatoolkit=11.8 -c pytorch
+    ```
 
-### Shared venv (Alternative)
+    **Shared venv (Alternative):**
 
-```bash
-# Create in project space
-python -m venv /fs/project/PAS1234/envs/lab_shared
+    ```bash
+    # Create in project space
+    python -m venv /fs/project/PAS1234/envs/lab_shared
 
-# Set permissions (if needed)
-chmod -R g+rwX /fs/project/PAS1234/envs/lab_shared
+    # Set permissions (if needed)
+    chmod -R g+rwX /fs/project/PAS1234/envs/lab_shared
 
-# Activate
-source /fs/project/PAS1234/envs/lab_shared/bin/activate
-```
+    # Activate
+    source /fs/project/PAS1234/envs/lab_shared/bin/activate
+    ```
 
 For PyTorch-specific environment setup (CUDA versions, GPU verification, etc.), see [PyTorch & GPU Setup](../ml-workflows/pytorch-setup.md).
 
@@ -402,23 +414,23 @@ quota -s
 du -sh ~/*/  | sort -hr | head -10
 ```
 
-## .bashrc Configuration
+??? note ".bashrc Convenience Aliases"
 
-Add to `~/.bashrc` for automatic setup:
+    Add to `~/.bashrc` for automatic setup:
 
-```bash
-# Load commonly used modules
-module load python/3.9-2022.05
+    ```bash
+    # Load commonly used modules
+    module load python/3.9-2022.05
 
-# Alias for activating environments
-alias activate-ml='source ~/venvs/ml_project/bin/activate'
-alias activate-pytorch='source ~/venvs/pytorch/bin/activate'
+    # Alias for activating environments
+    alias activate-ml='source ~/venvs/ml_project/bin/activate'
+    alias activate-pytorch='source ~/venvs/pytorch/bin/activate'
 
-# Environment variables
-export PYTHONUNBUFFERED=1
-```
+    # Environment variables
+    export PYTHONUNBUFFERED=1
+    ```
 
-**Warning**: Don't load modules that conflict or slow down login.
+    **Warning**: Don't load modules that conflict or slow down login.
 
 ## Best Practices
 
@@ -548,21 +560,7 @@ quota -s
 
 **Problem**: `torch.cuda.is_available()` returns False
 
-**Solutions**:
-```bash
-# Verify CUDA module loaded
-module list | grep cuda
-
-# Load CUDA module
-module load cuda/11.8.0
-
-# Reinstall PyTorch with CUDA
-pip uninstall torch torchvision
-pip install torch torchvision --index-url https://download.pytorch.org/whl/cu118
-
-# Test on GPU node
-srun -p gpu --gpus-per-node=1 --pty bash
-```
+Verify the CUDA module is loaded (`module load cuda/11.8.0`) and that you're on a GPU node. For full diagnostic steps and PyTorch reinstall commands, see [PyTorch & GPU Setup — Troubleshooting](../ml-workflows/pytorch-setup.md#troubleshooting).
 
 ### Conflicting Modules
 
@@ -578,40 +576,34 @@ module load python/3.9-2022.05
 module load cuda/11.8.0
 ```
 
-## Quick Reference
+??? note "Quick Reference"
 
-### Essential Commands
+    ```bash
+    # Modules
+    module load python/3.9-2022.05   # Load Python
+    module load cuda/11.8.0          # Load CUDA
+    module list                      # Show loaded
+    module purge                     # Unload all
 
-```bash
-# Modules
-module load python/3.9-2022.05   # Load Python
-module load cuda/11.8.0          # Load CUDA
-module list                      # Show loaded
-module purge                     # Unload all
+    # venv
+    python -m venv ~/venvs/name      # Create
+    source ~/venvs/name/bin/activate # Activate
+    deactivate                       # Deactivate
+    pip freeze > requirements.txt    # Export
 
-# venv
-python -m venv ~/venvs/name      # Create
-source ~/venvs/name/bin/activate # Activate
-deactivate                       # Deactivate
-pip freeze > requirements.txt    # Export
-
-# conda
-conda create -n name python=3.9  # Create
-conda activate name              # Activate
-conda deactivate                 # Deactivate
-conda env export > env.yml       # Export
-```
+    # conda
+    conda create -n name python=3.9  # Create
+    conda activate name              # Activate
+    conda deactivate                 # Deactivate
+    conda env export > env.yml       # Export
+    ```
 
 ## Next Steps
 
 - Set up [PyTorch on OSC](../ml-workflows/pytorch-setup.md)
 - Learn [Job Submission](osc-job-submission.md)
-- Read [ML Workflow Guide](../ml-workflows/ml-workflow.md)
-- Review [Best Practices](osc-best-practices.md)
 
 ## Resources
 
 - [OSC Module System](https://www.osc.edu/resources/technical_support/supercomputers/modules)
 - [Python venv Documentation](https://docs.python.org/3/library/venv.html)
-- [Conda Documentation](https://docs.conda.io/)
-- [Troubleshooting Guide](../resources/troubleshooting.md)

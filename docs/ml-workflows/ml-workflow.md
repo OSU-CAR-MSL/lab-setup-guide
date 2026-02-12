@@ -11,6 +11,17 @@ This guide covers the complete ML workflow on OSC:
 4. Training and experimentation
 5. Results tracking and analysis
 
+```mermaid
+flowchart LR
+    A[Setup\nEnv & Project] --> B[Data Prep\nDownload & Process]
+    B --> C[Develop\nModel & Training Code]
+    C --> D[Submit Jobs\nSLURM Batch]
+    D --> E[Track\nMetrics & Artifacts]
+    E --> F{Converged?}
+    F -->|No| C
+    F -->|Yes| G[Results\nAnalysis & Report]
+```
+
 ## Project Structure
 
 ### Recommended Directory Layout

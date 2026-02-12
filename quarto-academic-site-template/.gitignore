@@ -1,7 +1,0 @@
-/_site/
-/.quarto/
-*.html
-!posts/**/*.html
-!research/**/*.html
-.DS_Store
-Thumbs.db

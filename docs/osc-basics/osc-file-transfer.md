@@ -6,11 +6,26 @@ Learn efficient methods to transfer files between your local machine and OSC.
 
 | Method | Best For | Speed | Ease of Use |
 |--------|----------|-------|-------------|
-| VS Code | Small files, editing | Medium | ⭐⭐⭐⭐⭐ |
-| SCP | Single files | Medium | ⭐⭐⭐⭐ |
-| Rsync | Large datasets, syncing | Fast | ⭐⭐⭐ |
+| VS Code | Small files (<1 MB), editing | Medium | ⭐⭐⭐⭐⭐ |
+| SCP | Single files, medium size | Medium | ⭐⭐⭐⭐ |
+| Rsync | Large files (>100 MB), directory sync | Fast | ⭐⭐⭐ |
 | SFTP | Interactive browsing | Medium | ⭐⭐⭐⭐ |
-| OnDemand | Web interface | Medium | ⭐⭐⭐⭐⭐ |
+| OnDemand | Web uploads (<100 MB) | Medium | ⭐⭐⭐⭐⭐ |
+| Git | Code and scripts only | Fast | ⭐⭐⭐⭐ |
+
+```mermaid
+flowchart TD
+    A{What are you\ntransferring?} --> B[Code / scripts]
+    A --> C[Small files\n< 1 MB]
+    A --> D[Medium files\n1–100 MB]
+    A --> E[Large files / dirs\n> 100 MB]
+    B --> F[Git push/pull]
+    C --> G[VS Code\ndrag & drop]
+    D --> H{Single file or\ndirectory?}
+    H -->|Single file| I[SCP]
+    H -->|Directory| J[Rsync]
+    E --> K[Rsync\n--partial --progress]
+```
 
 ## Method 1: VS Code (Easiest)
 
@@ -129,39 +144,40 @@ rsync -avz --progress --delete source/ pitzer:~/destination/
 rsync -avz --progress --partial source/ pitzer:~/destination/
 ```
 
-### Exclude Patterns
+??? tip "Rsync Exclude Patterns"
 
-Create `.rsync-exclude` file:
+    Create `.rsync-exclude` file:
 
-```
-# Exclude patterns
-*.log
-*.tmp
-.git/
-__pycache__/
-*.pyc
-node_modules/
-.DS_Store
-```
+    ```
+    # Exclude patterns
+    *.log
+    *.tmp
+    .git/
+    __pycache__/
+    *.pyc
+    node_modules/
+    .DS_Store
+    ```
 
-Use it:
-```bash
-rsync -avz --progress --exclude-from=.rsync-exclude source/ pitzer:~/destination/
-```
+    Use it:
+    ```bash
+    rsync -avz --progress --exclude-from=.rsync-exclude source/ pitzer:~/destination/
+    ```
 
-### Large Dataset Sync
+??? tip "Large Dataset Sync"
 
-```bash
-# For multi-GB datasets
-rsync -avzh --progress \
-  --partial --partial-dir=.rsync-partial \
-  --exclude='*.log' \
-  ./dataset/ pitzer:~/projects/data/dataset/
-```
+    ```bash
+    # For multi-GB datasets
+    rsync -avzh --progress \
+      --partial --partial-dir=.rsync-partial \
+      --exclude='*.log' \
+      ./dataset/ pitzer:~/projects/data/dataset/
+    ```
 
-Options:
-- `--partial`: Keep partial files if transfer interrupted
-- `--partial-dir`: Store partial files in hidden directory
+    Options:
+
+    - `--partial`: Keep partial files if transfer interrupted
+    - `--partial-dir`: Store partial files in hidden directory
 
 ## Method 4: SFTP (Interactive)
 
@@ -289,28 +305,6 @@ datasets/
 checkpoints/
 ```
 
-## Performance Comparison
-
-### Small Files (< 1 MB)
-- **VS Code**: Fastest and easiest
-- **SCP**: Fast
-- **OnDemand**: Easy but slower
-
-### Medium Files (1-100 MB)
-- **Rsync**: Best for multiple files
-- **SCP**: Good for single files
-- **VS Code**: Convenient but slower
-
-### Large Files (> 100 MB)
-- **Rsync**: Best option (resumable, fast)
-- **SFTP**: Good alternative
-- ❌ **Not OnDemand**: Too slow
-
-### Entire Directories
-- **Rsync**: Optimal (only syncs changes)
-- **SCP -r**: Works but transfers everything
-- ❌ **Not OnDemand**: Too tedious
-
 ## Best Practices
 
 ### 1. Organize Your Files
@@ -348,19 +342,19 @@ ssh pitzer
 tar -xzf dataset.tar.gz
 ```
 
-### 4. Verify Large Transfers
+??? tip "Checksum Verification for Large Transfers"
 
-```bash
-# Generate checksum locally
-sha256sum large_file.zip > checksum.txt
+    ```bash
+    # Generate checksum locally
+    sha256sum large_file.zip > checksum.txt
 
-# Transfer both
-rsync -avz --progress large_file.zip checksum.txt pitzer:~/
+    # Transfer both
+    rsync -avz --progress large_file.zip checksum.txt pitzer:~/
 
-# Verify on OSC
-ssh pitzer
-sha256sum -c checksum.txt
-```
+    # Verify on OSC
+    ssh pitzer
+    sha256sum -c checksum.txt
+    ```
 
 ### 5. Use .rsyncignore
 
@@ -445,7 +439,6 @@ du -sh ~/*/  # See directory sizes
 
 ## Next Steps
 
-- Learn [OSC Best Practices](../working-on-osc/osc-best-practices.md)
 - Set up [Remote Development](osc-remote-development.md)
 - Explore [Job Submission](../working-on-osc/osc-job-submission.md)
 
@@ -453,4 +446,3 @@ du -sh ~/*/  # See directory sizes
 
 - [OSC Data Transfer Documentation](https://www.osc.edu/resources/getting_started/howto/howto_transfer_files)
 - [Rsync Manual](https://linux.die.net/man/1/rsync)
-- [Troubleshooting Guide](../resources/troubleshooting.md)

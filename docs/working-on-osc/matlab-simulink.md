@@ -2,6 +2,15 @@
 
 How to use MATLAB and Simulink on OSC for computation, simulation, and batch processing.
 
+**On this page:**
+
+- [Loading MATLAB](#loading-matlab) — finding and loading versions
+- [Running MATLAB Interactively](#running-matlab-interactively) — OnDemand GUI & command-line
+- [Running MATLAB in Batch Mode](#running-matlab-in-batch-mode) — SLURM scripts, arguments, sweeps
+- [Using Simulink on OSC](#using-simulink-on-osc) — batch mode & parameter sweeps
+- [Parallel Computing with MATLAB](#parallel-computing-with-matlab) — `parfor` & parallel pools
+- [GPU Computing with MATLAB](#gpu-computing-with-matlab) — `gpuArray` & GPU jobs
+
 ## Overview
 
 OSC provides MATLAB installations that all users can access through the module system. You can:

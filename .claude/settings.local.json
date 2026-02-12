@@ -22,7 +22,10 @@
       "Bash(wc:*)",
       "Bash(python3 -m pip:*)",
       "Bash(dpkg -l:*)",
-      "Bash(pip3 install:*)"
+      "Bash(pip3 install:*)",
+      "Bash(git init:*)",
+      "Bash(git remote add:*)",
+      "Bash(git remote set-url:*)"
     ]
   }
 }

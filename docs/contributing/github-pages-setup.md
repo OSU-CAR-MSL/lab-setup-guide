@@ -237,7 +237,7 @@ jobs:
 
 The lab maintains a ready-to-use Quarto template for personal academic websites. New undergraduates use this template in the [onboarding assignment](../assignments/personal-website.md), but anyone in the lab can use it to spin up a professional site quickly.
 
-**Repository:** [quarto-academic-site-template](https://github.com/OSU-CAR-MSL/quarto-academic-site-template) (also maintained in the `quarto-academic-site-template/` directory of this repo)
+**Repository:** [quarto-academic-site-template](https://github.com/OSU-CAR-MSL/quarto-academic-site-template)
 
 #### What's Included
 

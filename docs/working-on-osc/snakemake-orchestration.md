@@ -2,6 +2,15 @@
 
 Learn how to use Snakemake to build reproducible, automated computational pipelines on OSC with SLURM integration.
 
+**On this page:**
+
+- [Installation on OSC](#installation-on-osc) — pip or conda setup
+- [Snakefile Basics](#snakefile-basics) — rules, wildcards, config files
+- [SLURM Profile Configuration](#slurm-profile-configuration) — submit rules as SLURM jobs
+- [Running Pipelines on OSC](#running-pipelines-on-osc) — dry run, local, cluster execution
+- [Practical Examples](#practical-examples) — ML training, hyperparameter sweep, data processing
+- [Monitoring and Debugging](#monitoring-and-debugging) — logs, recovery, common errors
+
 ## Overview
 
 Snakemake is a workflow management system that uses Python-based rule definitions to create reproducible and scalable data analysis pipelines. It automatically determines which steps need to run based on file dependencies and can submit each step as a separate SLURM job.
@@ -632,19 +641,19 @@ Commit these files to your repository:
 - ✅ `~/.config/snakemake/slurm/config.yaml` (copy to project as `profiles/slurm/config.yaml`)
 - ❌ Do not commit output data or log files
 
-### 6. Use Conda/Venv Environments per Rule
+??? note "Per-Rule Conda Environments"
 
-For complex pipelines with conflicting dependencies:
+    For complex pipelines with conflicting dependencies, use per-rule conda environments:
 
-```python
-rule special_analysis:
-    input: "data/processed.csv"
-    output: "results/special.csv"
-    conda:
-        "envs/special.yaml"
-    shell:
-        "python scripts/special_analysis.py --input {input} --output {output}"
-```
+    ```python
+    rule special_analysis:
+        input: "data/processed.csv"
+        output: "results/special.csv"
+        conda:
+            "envs/special.yaml"
+        shell:
+            "python scripts/special_analysis.py --input {input} --output {output}"
+    ```
 
 ## Troubleshooting
 
@@ -674,13 +683,9 @@ snakemake --unlock
 ## Next Steps
 
 - Review [Job Submission](osc-job-submission.md) for SLURM fundamentals
-- Learn about [Environment Management](osc-environment-management.md) for setting up Python environments
 - See the [ML Workflow Guide](../ml-workflows/ml-workflow.md) for organizing ML projects
-- Explore [PyTorch & GPU Setup](../ml-workflows/pytorch-setup.md) for GPU-specific guidance
 
 ## Resources
 
 - [Snakemake Documentation](https://snakemake.readthedocs.io/)
 - [Snakemake SLURM Executor Plugin](https://snakemake.github.io/snakemake-plugin-catalog/plugins/executor/slurm.html)
-- [Snakemake Tutorial](https://snakemake.readthedocs.io/en/stable/tutorial/tutorial.html)
-- [OSC SLURM Documentation](https://www.osc.edu/resources/technical_support/supercomputers/slurm_migration)

@@ -2,6 +2,28 @@
 
 Common issues and solutions for working on OSC.
 
+```mermaid
+flowchart TD
+    A{What's the problem?} --> B[Connection]
+    A --> C[Module & Environment]
+    A --> D[GPU / CUDA]
+    A --> E[Job Submission]
+    A --> F[File System]
+    A --> G[Performance]
+    B --> B1["#connection-issues"]
+    C --> C1["#module-and-environment-issues"]
+    D --> D1["#gpu-issues"]
+    E --> E1["#job-submission-issues"]
+    F --> F1["#file-system-issues"]
+    G --> G1["#performance-issues"]
+    click B1 "#connection-issues"
+    click C1 "#module-and-environment-issues"
+    click D1 "#gpu-issues"
+    click E1 "#job-submission-issues"
+    click F1 "#file-system-issues"
+    click G1 "#performance-issues"
+```
+
 ## Connection Issues
 
 ### SSH Connection Failed
@@ -191,115 +213,22 @@ Module 'xyz' not found
 
 **Problem:** `torch.cuda.is_available()` returns False
 
-**Solutions:**
-
-1. **Verify on GPU node**
-   ```bash
-   # Check if you requested GPU
-   squeue -u $USER
-   # Should show gpu partition
-   
-   # Request GPU session
-   srun -p gpu --gpus-per-node=1 --pty bash
-   ```
-
-2. **Check CUDA module**
-   ```bash
-   module list | grep cuda
-   module load cuda/11.8.0
-   ```
-
-3. **Verify GPU present**
-   ```bash
-   nvidia-smi
-   # Should show GPU info
-   ```
-
-4. **Reinstall PyTorch with CUDA**
-   ```bash
-   pip uninstall torch torchvision torchaudio
-   pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
-   ```
-
-5. **Check PyTorch CUDA compatibility**
-   ```python
-   import torch
-   print(f"PyTorch version: {torch.__version__}")
-   print(f"CUDA compiled: {torch.version.cuda}")
-   # Should match loaded CUDA module
-   ```
+Quick checks: verify you're on a GPU node (`nvidia-smi`), that the CUDA module is loaded (`module load cuda/11.8.0`), and that PyTorch was installed with CUDA support. For full diagnostic steps and reinstall commands, see [PyTorch & GPU Setup — Troubleshooting](../ml-workflows/pytorch-setup.md#troubleshooting).
 
 ### CUDA Out of Memory
 
-**Problem:** 
-```
-RuntimeError: CUDA out of memory
-```
+**Problem:** `RuntimeError: CUDA out of memory`
 
-**Solutions:**
-
-1. **Reduce batch size**
-   ```python
-   batch_size = 32  # Instead of 64
-   ```
-
-2. **Clear GPU cache**
-   ```python
-   import torch
-   torch.cuda.empty_cache()
-   ```
-
-3. **Use gradient accumulation**
-   ```python
-   accumulation_steps = 2
-   # Effective batch size = batch_size * 2
-   ```
-
-4. **Use mixed precision**
-   ```python
-   from torch.cuda.amp import autocast, GradScaler
-   with autocast():
-       output = model(input)
-   ```
-
-5. **Enable gradient checkpointing**
-   ```python
-   model.gradient_checkpointing_enable()
-   ```
-
-6. **Monitor memory usage**
-   ```python
-   print(torch.cuda.memory_summary())
-   ```
+Start by reducing batch size or clearing the cache with `torch.cuda.empty_cache()`. For a complete list of solutions (gradient accumulation, mixed precision, gradient checkpointing), see [PyTorch & GPU Setup — CUDA Out of Memory](../ml-workflows/pytorch-setup.md#cuda-out-of-memory).
 
 ### GPU Utilization Low
 
 **Problem:** GPU usage < 50% during training
 
-**Solutions:**
-
-1. **Increase data loading workers**
-   ```python
-   num_workers=4  # Match CPU cores
-   ```
-
-2. **Enable pin_memory**
-   ```python
-   pin_memory=True
-   ```
-
-3. **Use larger batch size**
-   ```python
-   batch_size = 128  # If memory allows
-   ```
-
-4. **Profile to find bottleneck**
-   ```python
-   import torch.profiler
-   with torch.profiler.profile() as prof:
-       train_one_epoch()
-   print(prof.key_averages().table())
-   ```
+- Increase `num_workers` in your DataLoader to match `--cpus-per-task`
+- Enable `pin_memory=True`
+- Use a larger batch size if memory allows
+- Profile to find the actual bottleneck — see [PyTorch & GPU Setup — Slow Training](../ml-workflows/pytorch-setup.md#slow-training)
 
 ## Job Submission Issues
 
@@ -612,21 +541,5 @@ When things go wrong:
 - [ ] Search error message online
 - [ ] Contact OSC support if needed
 
-## Prevention Tips
-
-1. **Test interactively first**
-   ```bash
-   srun -p debug --pty bash
-   ```
-
-2. **Start with small experiments**
-   - Small dataset
-   - Few epochs
-   - Debug queue
-
-3. **Save checkpoints regularly**
-4. **Monitor resource usage**
-5. **Keep good documentation**
-6. **Use version control**
-7. **Back up important data**
+For general best practices that help prevent these issues, see [OSC Best Practices](../working-on-osc/osc-best-practices.md).
 

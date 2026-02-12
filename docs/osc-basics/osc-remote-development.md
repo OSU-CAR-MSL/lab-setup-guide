@@ -241,19 +241,19 @@ tmux new -s work
 
 This keeps your session alive even if VS Code disconnects.
 
-### Workspace Settings for Remote
+??? note "Workspace Settings for Remote"
 
-Create `.vscode/settings.json` in your project:
+    Create `.vscode/settings.json` in your project:
 
-```json
-{
-  "python.defaultInterpreterPath": "/usr/local/python/3.9/bin/python3",
-  "python.terminal.activateEnvironment": true,
-  "terminal.integrated.env.linux": {
-    "PATH": "/usr/local/python/3.9/bin:${env:PATH}"
-  }
-}
-```
+    ```json
+    {
+      "python.defaultInterpreterPath": "/usr/local/python/3.9/bin/python3",
+      "python.terminal.activateEnvironment": true,
+      "terminal.integrated.env.linux": {
+        "PATH": "/usr/local/python/3.9/bin:${env:PATH}"
+      }
+    }
+    ```
 
 ### SSH Config for Multiple Login Nodes
 
@@ -329,52 +329,26 @@ Host pitzer01
 2. Manually add port in VS Code Ports panel
 3. Check firewall settings on OSC
 
-## Performance Tips
+??? tip "Performance Tuning"
 
-### Reduce Remote Extension Count
+    **Reduce remote extension count** — install only essentials remotely:
 
-Install only essential extensions remotely:
-- ms-python.python
-- ms-python.vscode-pylance
-- ms-toolsai.jupyter
+    - ms-python.python
+    - ms-python.vscode-pylance
+    - ms-toolsai.jupyter
 
-### Use .gitignore Properly
+    **Exclude large directories from the file watcher** in `.vscode/settings.json`:
 
-Exclude large directories from VS Code's file watcher:
-
-```gitignore
-# Python
-__pycache__/
-*.pyc
-.venv/
-
-# Data files
-*.hdf5
-*.h5
-*.npy
-data/
-datasets/
-
-# Model checkpoints
-checkpoints/
-*.pth
-*.ckpt
-```
-
-### Disable Unneeded Features
-
-In remote workspace settings:
-
-```json
-{
-  "files.watcherExclude": {
-    "**/node_modules": true,
-    "**/.git": true,
-    "**/data": true,
-    "**/checkpoints": true
-  }
-}
-```
+    ```json
+    {
+      "files.watcherExclude": {
+        "**/node_modules": true,
+        "**/.git": true,
+        "**/data": true,
+        "**/checkpoints": true
+      }
+    }
+    ```
 
 ## Next Steps
 

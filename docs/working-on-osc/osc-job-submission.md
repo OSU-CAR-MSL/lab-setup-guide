@@ -2,16 +2,19 @@
 
 Learn how to submit and manage jobs on OSC using the SLURM job scheduler.
 
+**On this page:**
+
+- [Quick Start](#quick-start) — interactive & batch job in seconds
+- [SLURM Basics](#slurm-basics) — essential commands & job states
+- [Creating Job Scripts](#creating-job-scripts) — templates for CPU, GPU, multi-GPU
+- [Job Arrays](#job-arrays) — run many similar jobs efficiently
+- [Job Dependencies](#job-dependencies) — chain jobs together
+- [Monitoring Jobs](#monitoring-jobs) — status, details, output
+- [Troubleshooting](#troubleshooting) — pending, failing, timeout issues
+
 ## Overview
 
 OSC uses SLURM (Simple Linux Utility for Resource Management) to schedule and manage jobs on compute nodes.
-
-### Why Use Job Submission?
-
-- ✅ Access to more resources (many CPUs, GPUs, memory)
-- ✅ Jobs run independently of your login session
-- ✅ Efficient resource sharing among all users
-- ✅ Automatic resource allocation and management
 
 ## Quick Start
 
@@ -81,6 +84,18 @@ seff <job_id>
 - **F** (Failed): Job failed
 - **CA** (Cancelled): Job was cancelled
 
+```mermaid
+flowchart LR
+    A[sbatch] --> B(Pending\nPD)
+    B --> C(Running\nR)
+    C --> D(Completing\nCG)
+    D --> E[Completed\nCD]
+    C --> F[Failed\nF]
+    C --> G[Timeout]
+    B --> H[Cancelled\nCA]
+    C --> H
+```
+
 ## Creating Job Scripts
 
 ### Anatomy of a SLURM Script
@@ -92,6 +107,9 @@ Every SLURM batch script has three sections:
 #SBATCH --job-name=my_job              # 2. SBATCH directives
 #SBATCH --account=PAS1234
 #SBATCH --time=02:00:00
+
+!!! note "Replace `PAS1234`"
+    `PAS1234` is a placeholder. Use your actual OSC project code, found at [my.osc.edu](https://my.osc.edu) under your project list. See [Account Setup](../osc-basics/osc-account-setup.md#check-your-projects) for details.
 
 module load python/3.9-2022.05         # 3. Execution block
 source ~/venvs/myproject/bin/activate
@@ -521,96 +539,43 @@ task_id = os.environ.get('SLURM_ARRAY_TASK_ID', '0')
 #SBATCH --mail-user=user@osu.edu
 ```
 
-### Job Requeue
+??? note "Job Requeue"
 
-```bash
-# Allow job to be requeued if node fails
-#SBATCH --requeue
+    ```bash
+    # Allow job to be requeued if node fails
+    #SBATCH --requeue
 
-# In your script, handle requeue
-if [ -f checkpoint.pth ]; then
-    python train.py --resume checkpoint.pth
-else
-    python train.py
-fi
-```
+    # In your script, handle requeue
+    if [ -f checkpoint.pth ]; then
+        python train.py --resume checkpoint.pth
+    else
+        python train.py
+    fi
+    ```
 
-### Exclusive Node Access
+??? note "Exclusive Node Access"
 
-```bash
-# Request exclusive access to node
-#SBATCH --exclusive
-```
+    ```bash
+    # Request exclusive access to node
+    #SBATCH --exclusive
+    ```
 
-### Specify Nodes
+??? note "Node Constraints"
 
-```bash
-# Request specific node features
-#SBATCH --constraint=skylake
+    ```bash
+    # Request specific node features
+    #SBATCH --constraint=skylake
 
-# Exclude specific nodes
-#SBATCH --exclude=p0010,p0011
-```
+    # Exclude specific nodes
+    #SBATCH --exclude=p0010,p0011
+    ```
 
 ## Best Practices
 
-### 1. Test with Debug Partition
-
-```bash
-# Quick test first
-#SBATCH --partition=debug
-#SBATCH --time=00:30:00
-```
-
-### 2. Request Appropriate Resources
-
-```bash
-# Don't over-request
-#SBATCH --nodes=1
-#SBATCH --cpus-per-task=4    # Not 48 if you don't need it
-#SBATCH --time=02:00:00      # Not 168:00:00 for 30-min job
-```
-
-### 3. Use Job Arrays for Multiple Runs
-
-```bash
-# Better than 10 separate jobs
-#SBATCH --array=1-10
-```
-
-### 4. Organize Output Files
-
-```bash
-# Create logs directory first
-mkdir -p logs
-
-# Then in job script
-#SBATCH --output=logs/job_%j.out
-#SBATCH --error=logs/job_%j.err
-```
-
-### 5. Save Checkpoints
-
-```python
-# In your training code
-if epoch % 10 == 0:
-    torch.save({
-        'epoch': epoch,
-        'model': model.state_dict(),
-        'optimizer': optimizer.state_dict(),
-    }, f'checkpoints/epoch_{epoch}.pth')
-```
-
-### 6. Check Job Efficiency
-
-```bash
-# After job completes
-seff <job_id>
-
-# Look for:
-# - CPU Efficiency: Should be > 80%
-# - Memory Efficiency: Should use most of requested memory
-```
+1. **Test with debug partition first** — `#SBATCH --partition=debug` with a short time limit before submitting long jobs.
+2. **Don't over-request resources** — request only the CPUs, memory, and time you need. Over-requesting wastes allocation and increases queue wait time.
+3. **Organize output files** — create a `logs/` directory and use `--output=logs/job_%j.out`.
+4. **Check job efficiency after completion** — run `seff <job_id>` and aim for >80% CPU efficiency.
 
 ## Troubleshooting
 
@@ -724,13 +689,10 @@ sbatch --dependency=afterok:$job2 evaluate.sh
 ## Next Steps
 
 - Learn [Environment Management](osc-environment-management.md)
-- Automate pipelines with [Snakemake](snakemake-orchestration.md)
 - Set up [PyTorch on OSC](../ml-workflows/pytorch-setup.md)
-- Read [ML Workflow Guide](../ml-workflows/ml-workflow.md)
-- Review [OSC Best Practices](osc-best-practices.md)
+- Automate pipelines with [Snakemake](snakemake-orchestration.md)
 
 ## Resources
 
 - [OSC SLURM Documentation](https://www.osc.edu/resources/technical_support/supercomputers/slurm_migration)
 - [SLURM Official Documentation](https://slurm.schedmd.com/)
-- [Troubleshooting Guide](../resources/troubleshooting.md)

@@ -127,8 +127,11 @@ nav:
   - Getting Started:
     - VS Code Setup: getting-started/vscode-setup.md
     - VS Code Extensions: getting-started/vscode-extensions.md
+    - Python Environment Setup: getting-started/python-environment-setup.md
+    - AI Coding Assistants: getting-started/ai-coding-assistants.md
 
   - OSC Basics:
+    - Clusters Overview: osc-basics/osc-clusters-overview.md
     - Account Setup: osc-basics/osc-account-setup.md
     - SSH Connection: osc-basics/osc-ssh-connection.md
     - Remote Development: osc-basics/osc-remote-development.md
@@ -138,6 +141,7 @@ nav:
     - Best Practices: working-on-osc/osc-best-practices.md
     - Job Submission: working-on-osc/osc-job-submission.md
     - Environment Management: working-on-osc/osc-environment-management.md
+    - Snakemake Pipelines: working-on-osc/snakemake-orchestration.md
 
   - ML Workflows:
     - PyTorch Setup: ml-workflows/pytorch-setup.md

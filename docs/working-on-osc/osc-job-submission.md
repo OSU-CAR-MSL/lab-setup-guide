@@ -83,6 +83,63 @@ seff <job_id>
 
 ## Creating Job Scripts
 
+### Anatomy of a SLURM Script
+
+Every SLURM batch script has three sections:
+
+```bash
+#!/bin/bash                            # 1. Shebang line
+#SBATCH --job-name=my_job              # 2. SBATCH directives
+#SBATCH --account=PAS1234
+#SBATCH --time=02:00:00
+
+module load python/3.9-2022.05         # 3. Execution block
+source ~/venvs/myproject/bin/activate
+python train.py
+```
+
+**Section 1 — Shebang line:** Must be the very first line. Tells the system to use Bash.
+
+**Section 2 — SBATCH directives:** Lines starting with `#SBATCH` configure job resources. They look like comments to Bash, but SLURM reads them.
+
+**Section 3 — Execution block:** Everything after the directives is your actual script — module loading, environment activation, and commands.
+
+!!! warning "Directives must come before any executable line"
+    SLURM stops reading `#SBATCH` directives at the first non-comment, non-blank line. Any directive placed after an executable command (like `echo` or `module load`) is **silently ignored**.
+
+    ```bash
+    #!/bin/bash
+    #SBATCH --job-name=my_job       # ✅ Read by SLURM
+    #SBATCH --time=02:00:00         # ✅ Read by SLURM
+
+    module load python/3.9-2022.05  # First executable line
+
+    #SBATCH --mem=64G               # ❌ SILENTLY IGNORED
+    ```
+
+#### SBATCH Directive Reference
+
+| Directive | Required | Description | Example |
+|-----------|----------|-------------|---------|
+| `--job-name` | No | Name shown in `squeue` | `--job-name=train_v2` |
+| `--account` | **Yes** | Project allocation to charge | `--account=PAS1234` |
+| `--nodes` | No | Number of nodes (default: 1) | `--nodes=1` |
+| `--ntasks-per-node` | No | Tasks per node (default: 1) | `--ntasks-per-node=1` |
+| `--cpus-per-task` | No | CPU cores per task | `--cpus-per-task=4` |
+| `--gpus-per-node` | No | GPUs per node | `--gpus-per-node=1` |
+| `--mem` | No | Total memory per node | `--mem=32G` |
+| `--mem-per-cpu` | No | Memory per CPU core | `--mem-per-cpu=4G` |
+| `--time` | **Yes** | Maximum walltime | `--time=04:00:00` |
+| `--partition` | No | Partition/queue | `--partition=gpu` |
+| `--output` | No | Stdout file (`%j` = job ID) | `--output=logs/job_%j.out` |
+| `--error` | No | Stderr file | `--error=logs/job_%j.err` |
+| `--mail-type` | No | Email notification triggers | `--mail-type=END,FAIL` |
+| `--mail-user` | No | Email address | `--mail-user=user@osu.edu` |
+| `--array` | No | Job array specification | `--array=1-10` |
+| `--dependency` | No | Job dependency | `--dependency=afterok:12345` |
+| `--exclusive` | No | Exclusive node access | `--exclusive` |
+| `--constraint` | No | Node feature constraint | `--constraint=a100` |
+
 ### Basic Job Script Template
 
 ```bash
@@ -165,6 +222,116 @@ python -m torch.distributed.launch \
     --nproc_per_node=4 \
     train.py \
     --distributed
+```
+
+### Common Job Patterns
+
+#### CPU-Only Data Processing
+
+For data preprocessing, feature extraction, or file conversion jobs that don't need a GPU:
+
+```bash
+#!/bin/bash
+#SBATCH --job-name=data_preprocess
+#SBATCH --account=PAS1234
+#SBATCH --partition=serial
+#SBATCH --cpus-per-task=16
+#SBATCH --mem=64G
+#SBATCH --time=04:00:00
+#SBATCH --output=logs/preprocess_%j.out
+
+module load python/3.9-2022.05
+source ~/venvs/myproject/bin/activate
+
+# Use all allocated CPUs
+export OMP_NUM_THREADS=$SLURM_CPUS_PER_TASK
+
+python preprocess.py \
+    --input-dir data/raw/ \
+    --output-dir data/processed/ \
+    --workers $SLURM_CPUS_PER_TASK
+```
+
+#### Checkpoint-Resume Pattern
+
+For long training jobs that may hit walltime limits or need to recover from failures:
+
+```bash
+#!/bin/bash
+#SBATCH --job-name=train_resume
+#SBATCH --account=PAS1234
+#SBATCH --partition=gpu
+#SBATCH --gpus-per-node=1
+#SBATCH --cpus-per-task=8
+#SBATCH --mem=64G
+#SBATCH --time=24:00:00
+#SBATCH --output=logs/train_%j.out
+
+module load python/3.9-2022.05
+module load cuda/11.8.0
+source ~/venvs/pytorch/bin/activate
+
+# Automatically resume from latest checkpoint if one exists
+CHECKPOINT_DIR="checkpoints/"
+LATEST=$(ls -t ${CHECKPOINT_DIR}/*.pt 2>/dev/null | head -1)
+
+if [ -n "$LATEST" ]; then
+    echo "Resuming from checkpoint: $LATEST"
+    python train.py --resume "$LATEST"
+else
+    echo "Starting fresh training"
+    python train.py
+fi
+```
+
+Your Python training script should save checkpoints periodically:
+
+```python
+# In your training loop
+for epoch in range(start_epoch, num_epochs):
+    train_one_epoch(model, dataloader, optimizer)
+
+    # Save checkpoint every 5 epochs
+    if epoch % 5 == 0:
+        torch.save({
+            'epoch': epoch,
+            'model_state_dict': model.state_dict(),
+            'optimizer_state_dict': optimizer.state_dict(),
+            'loss': loss,
+        }, f'checkpoints/checkpoint_epoch_{epoch}.pt')
+```
+
+!!! tip "Resubmit automatically"
+    Combine the checkpoint-resume pattern with a resubmission wrapper to chain long training runs:
+    ```bash
+    # At the end of your job script, resubmit itself if not done
+    if [ ! -f "training_complete.flag" ]; then
+        sbatch $0
+    fi
+    ```
+
+#### Long-Running Job with Email Alerts
+
+Get notified when important jobs start, finish, or fail:
+
+```bash
+#!/bin/bash
+#SBATCH --job-name=long_training
+#SBATCH --account=PAS1234
+#SBATCH --partition=gpu
+#SBATCH --gpus-per-node=1
+#SBATCH --time=48:00:00
+#SBATCH --output=logs/long_train_%j.out
+#SBATCH --mail-type=BEGIN,END,FAIL
+#SBATCH --mail-user=name.1@osu.edu
+
+module load python/3.9-2022.05
+module load cuda/11.8.0
+source ~/venvs/pytorch/bin/activate
+
+echo "Training started at $(date) on $(hostname)"
+python train.py --config configs/full_training.yaml
+echo "Training finished at $(date)"
 ```
 
 ## Partitions (Queues)
@@ -284,6 +451,9 @@ sbatch --dependency=afterany:$job1 job3.sh
 # Submit after multiple jobs complete
 sbatch --dependency=afterok:$job1:$job2 job4.sh
 ```
+
+!!! tip "Consider Snakemake for complex pipelines"
+    If you have multi-step pipelines with many dependencies, [Snakemake](snakemake-orchestration.md) can manage job submission, dependency tracking, and partial reruns automatically.
 
 ## Monitoring Jobs
 
@@ -574,6 +744,7 @@ sbatch --dependency=afterok:$job2 evaluate.sh
 ## Next Steps
 
 - Learn [Environment Management](osc-environment-management.md)
+- Automate pipelines with [Snakemake](snakemake-orchestration.md)
 - Set up [PyTorch on OSC](../ml-workflows/pytorch-setup.md)
 - Read [ML Workflow Guide](../ml-workflows/ml-workflow.md)
 - Review [OSC Best Practices](osc-best-practices.md)

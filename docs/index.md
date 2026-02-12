@@ -27,6 +27,8 @@ Set up your local development environment before connecting to OSC.
 |-------|-------------|
 | [VS Code Setup](getting-started/vscode-setup.md) | Install and configure Visual Studio Code |
 | [VS Code Extensions](getting-started/vscode-extensions.md) | Required and recommended extensions |
+| [Python Environment Setup](getting-started/python-environment-setup.md) | WSL filesystem, `uv`, and local Python environments |
+| [AI Coding Assistants](getting-started/ai-coding-assistants.md) | Set up GitHub Copilot and Claude Code |
 
 ### OSC Basics
 
@@ -34,6 +36,7 @@ Learn how to access and navigate the Ohio Supercomputer Center.
 
 | Guide | Description |
 |-------|-------------|
+| [Clusters Overview](osc-basics/osc-clusters-overview.md) | HPC terminology, Pitzer and Owens specs, partitions |
 | [Account Setup](osc-basics/osc-account-setup.md) | Request and configure your OSC account |
 | [SSH Connection](osc-basics/osc-ssh-connection.md) | Connect from your local machine |
 | [Remote Development](osc-basics/osc-remote-development.md) | Use VS Code with OSC |
@@ -48,6 +51,7 @@ Best practices and guides for running computational work.
 | [Best Practices](working-on-osc/osc-best-practices.md) | Tips for efficient work on OSC |
 | [Job Submission](working-on-osc/osc-job-submission.md) | Submit and manage SLURM jobs |
 | [Environment Management](working-on-osc/osc-environment-management.md) | Modules, Conda, and virtual environments |
+| [Snakemake Pipelines](working-on-osc/snakemake-orchestration.md) | Automate multi-step workflows with SLURM |
 
 ### Machine Learning Workflows
 

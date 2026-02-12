@@ -1,0 +1,23 @@
+---
+title: "Example: My First Research Project"
+description: "A brief description of the project and its goals."
+date: "2025-01-15"
+categories: [machine-learning, example]
+---
+
+## Overview
+
+Replace this with a description of your research project.
+
+## Methods
+
+Describe your approach here.
+
+## Key Findings
+
+Summarize results or current progress.
+
+## Links
+
+- [Paper PDF](#) (if available)
+- [Code Repository](#) (if available)

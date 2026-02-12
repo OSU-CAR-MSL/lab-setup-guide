@@ -233,6 +233,59 @@ jobs:
 !!! note "Which should you choose?"
     **MkDocs Material** if you're writing documentation, tutorials, or setup guides. **Quarto** if you want to publish Jupyter notebooks, include rendered figures, or mix code output with prose.
 
+### Lab Academic Website Template
+
+The lab maintains a ready-to-use Quarto template for personal academic websites. New undergraduates use this template in the [onboarding assignment](../assignments/personal-website.md), but anyone in the lab can use it to spin up a professional site quickly.
+
+**Repository:** [quarto-academic-site-template](https://github.com/OSU-CAR-MSL/quarto-academic-site-template) (also maintained in the `quarto-academic-site-template/` directory of this repo)
+
+#### What's Included
+
+```
+quarto-academic-site-template/
+├── .github/workflows/publish.yml   # Auto-deploy on push to main
+├── _quarto.yml                     # Site config (title, navbar, theme)
+├── index.qmd                       # Home page (bio, photo, links)
+├── cv.qmd                          # Curriculum vitae
+├── research.qmd                    # Auto-listing of research projects
+├── posts.qmd                       # Auto-listing of blog posts
+├── posts/hello-world.qmd           # Example blog post
+├── research/example-project.qmd    # Example research project
+├── images/README.md                # Drop your profile.jpg here
+├── styles.css                      # Custom CSS overrides
+└── .nojekyll                       # Tells GitHub Pages to skip Jekyll
+```
+
+#### Key Design Decisions
+
+- **Auto-listing pages** — `research.qmd` and `posts.qmd` use Quarto's `listing` feature to automatically display any `.qmd` file added to their respective folders. No config changes needed to add new content.
+- **`cosmo` theme** — Clean Bootstrap-based theme. Override in `styles.css` or swap to another [Bootswatch theme](https://quarto.org/docs/output-formats/html-themes.html).
+- **`freeze: auto`** — Caches computation output so pages with code blocks only re-render when source changes.
+- **GitHub Actions deployment** — Pushes to `main` trigger a build that publishes to the `gh-pages` branch automatically.
+
+#### How to Use It
+
+1. Go to the template repo → click **"Use this template"** → **"Create a new repository"**
+2. Name your repo `YOURUSERNAME.github.io` (for a personal site) or any name (for a project site)
+3. Enable GitHub Pages: **Settings → Pages → Source → GitHub Actions**
+4. Enable workflow permissions: **Settings → Actions → General → Read and write permissions**
+5. Clone locally, edit `_quarto.yml` and `index.qmd`, commit, push — your site will be live within minutes
+
+#### Adding Content
+
+To add a **blog post**, create a `.qmd` file in `posts/`:
+
+```yaml
+---
+title: "My Post Title"
+description: "A short summary."
+date: "2026-02-12"
+categories: [topic-a, topic-b]
+---
+```
+
+To add a **research project**, create a `.qmd` file in `research/` with the same frontmatter structure. Both listing pages pick up new files automatically.
+
 ---
 
 ## GitHub Pages Configuration

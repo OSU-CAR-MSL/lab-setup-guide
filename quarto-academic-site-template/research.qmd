@@ -1,0 +1,10 @@
+---
+title: "Research"
+listing:
+  contents: research
+  sort: "date desc"
+  type: default
+  fields: [title, date, description]
+---
+
+My research focuses on [brief description]. Below are my current projects and publications.

@@ -90,6 +90,14 @@ Learn how the site works and how to add new content.
 | [Adding a Page](contributing/adding-a-page.md) | Step-by-step guide to adding new pages |
 | [GitHub Pages Setup](contributing/github-pages-setup.md) | Set up a documentation site with MkDocs or Quarto |
 
+### Assignments
+
+Hands-on tasks for new undergraduates joining the lab.
+
+| Assignment | Description |
+|------------|-------------|
+| [Assignment 1: Personal Website](assignments/personal-website.md) | Build and deploy your academic website with Git, Quarto, and GitHub Pages |
+
 ### Resources
 
 | Guide | Description |

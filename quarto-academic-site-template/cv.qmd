@@ -1,0 +1,30 @@
+---
+title: "CV"
+---
+
+<!-- You can also link to a PDF version of your CV -->
+<!-- Download: [CV (PDF)](files/cv.pdf) -->
+
+## Education
+
+| Degree | Field | Institution | Year |
+|--------|-------|-------------|------|
+| Ph.D.  | Your Field | Your University | Expected 20XX |
+| B.S.   | Your Field | Your University | 20XX |
+
+## Experience
+
+### Research Assistant — [Lab Name]
+*[University], [Start Date] – Present*
+
+- Brief description of your work
+
+## Skills
+
+- **Programming:** Python, R, etc.
+- **ML Frameworks:** PyTorch, TensorFlow, etc.
+- **Tools:** Git, Docker, LaTeX, etc.
+
+## Service
+
+- Reviewer, [Conference/Journal Name], [Year]

@@ -1,0 +1,14 @@
+/* Custom styles for your academic site */
+/* Feel free to modify colors, fonts, etc. */
+
+/* Make the about page image a bit larger on wide screens */
+@media (min-width: 992px) {
+  .about-entity .about-image {
+    max-width: 250px;
+  }
+}
+
+/* Slightly tighter line spacing for readability */
+p {
+  line-height: 1.6;
+}

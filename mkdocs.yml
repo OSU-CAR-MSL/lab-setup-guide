@@ -157,6 +157,10 @@ nav:
     - Adding a Page: contributing/adding-a-page.md
     - GitHub Pages Setup: contributing/github-pages-setup.md
 
+  - Assignments:
+    - Overview: assignments/index.md
+    - "Assignment 1: Personal Website": assignments/personal-website.md
+
   - Resources:
     - Troubleshooting: resources/troubleshooting.md
     - Useful Links: resources/useful-links.md

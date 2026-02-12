@@ -1,0 +1,36 @@
+---
+title: "Your Name"
+image: images/profile.jpg
+about:
+  template: trestles
+  image-shape: round
+  image-width: 15em
+  links:
+    - icon: github
+      text: GitHub
+      href: https://github.com/YOURUSERNAME
+    - icon: envelope
+      text: Email
+      href: mailto:your.email@university.edu
+    - icon: linkedin
+      text: LinkedIn
+      href: https://linkedin.com/in/YOURUSERNAME
+---
+
+## About Me
+
+<!-- REPLACE this section with your own bio -->
+
+I am a [your year] student in [your department] at [your university].
+I work in the [Lab Name] on [brief description of research].
+
+## Research Interests
+
+- Interest 1
+- Interest 2
+- Interest 3
+
+## Education
+
+- **[Degree]** in [Field], [University], [Year (expected)]
+- **[Degree]** in [Field], [University], [Year]

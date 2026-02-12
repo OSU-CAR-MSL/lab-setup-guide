@@ -142,10 +142,13 @@ nav:
     - Job Submission: working-on-osc/osc-job-submission.md
     - Environment Management: working-on-osc/osc-environment-management.md
     - Snakemake Pipelines: working-on-osc/snakemake-orchestration.md
+    - CARLA Simulator: working-on-osc/carla-simulator.md
+    - MATLAB & Simulink: working-on-osc/matlab-simulink.md
 
   - ML Workflows:
     - PyTorch Setup: ml-workflows/pytorch-setup.md
     - ML Workflow Guide: ml-workflows/ml-workflow.md
+    - Notebook-to-Script Workflow: ml-workflows/notebook-to-script.md
     - GPU Computing: ml-workflows/gpu-computing.md
     - Data & Experiment Tracking: ml-workflows/data-experiment-tracking.md
 

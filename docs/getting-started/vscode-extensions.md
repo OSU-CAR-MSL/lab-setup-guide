@@ -122,21 +122,14 @@ These extensions are essential for lab work:
   code --install-extension kevinrose.vsc-python-indent
   ```
 
-#### 7. isort
-- **ID**: `ms-python.isort`
-- **Purpose**: Sort Python imports automatically
-- **Install**: 
+#### 7. Ruff
+- **ID**: `charliermarsh.ruff`
+- **Purpose**: Fast Python linter and formatter (replaces Black, isort, Flake8, and more)
+- **Install**:
   ```bash
-  code --install-extension ms-python.isort
+  code --install-extension charliermarsh.ruff
   ```
-
-#### 8. Black Formatter
-- **ID**: `ms-python.black-formatter`
-- **Purpose**: Format Python code using Black
-- **Install**: 
-  ```bash
-  code --install-extension ms-python.black-formatter
-  ```
+- **Note**: Ruff is a single tool that handles both linting and formatting. It replaces the now-deprecated `python.linting.*` and `python.formatting.*` settings.
 
 ### Machine Learning
 
@@ -195,22 +188,22 @@ Add to your `settings.json`:
 
 ```json
 {
-  "python.linting.enabled": true,
-  "python.linting.pylintEnabled": false,
-  "python.linting.flake8Enabled": true,
-  "python.formatting.provider": "black",
-  "python.formatting.blackArgs": ["--line-length", "100"],
   "python.languageServer": "Pylance",
   "python.analysis.typeCheckingMode": "basic",
   "[python]": {
-    "editor.defaultFormatter": "ms-python.black-formatter",
+    "editor.defaultFormatter": "charliermarsh.ruff",
     "editor.formatOnSave": true,
     "editor.codeActionsOnSave": {
-      "source.organizeImports": true
+      "source.fixAll": "explicit",
+      "source.organizeImports": "explicit"
     }
-  }
+  },
+  "ruff.lineLength": 100
 }
 ```
+
+!!! note "Deprecated settings"
+    The `python.linting.*` and `python.formatting.*` settings were removed in recent versions of the Python extension. Use the Ruff extension instead — it handles linting, formatting, and import sorting in one tool.
 
 ### Remote SSH Settings
 
@@ -242,8 +235,7 @@ code --install-extension eamodio.gitlens
 code --install-extension mhutchie.git-graph
 code --install-extension christian-kohler.path-intellisense
 code --install-extension njpwerner.autodocstring
-code --install-extension ms-python.black-formatter
-code --install-extension ms-python.isort
+code --install-extension charliermarsh.ruff
 code --install-extension yzhang.markdown-all-in-one
 code --install-extension usernamehw.errorlens
 ```

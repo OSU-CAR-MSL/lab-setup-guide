@@ -68,6 +68,8 @@ Best practices and guides for running computational work.
 | [Job Submission](working-on-osc/osc-job-submission.md) | Submit and manage SLURM jobs |
 | [Environment Management](working-on-osc/osc-environment-management.md) | Modules, Conda, and virtual environments |
 | [Snakemake Pipelines](working-on-osc/snakemake-orchestration.md) | Automate multi-step workflows with SLURM |
+| [CARLA Simulator](working-on-osc/carla-simulator.md) | Run CARLA for autonomous driving research |
+| [MATLAB & Simulink](working-on-osc/matlab-simulink.md) | Use MATLAB and Simulink on OSC |
 
 ### Machine Learning Workflows
 
@@ -77,7 +79,8 @@ Guides specific to ML/DL research on OSC.
 |-------|-------------|
 | [PyTorch & GPU Setup](ml-workflows/pytorch-setup.md) | Install PyTorch, request GPUs, optimize training |
 | [ML Workflow Guide](ml-workflows/ml-workflow.md) | Best practices for ML projects |
-| [Data & Experiment Tracking](ml-workflows/data-experiment-tracking.md) | DVC, SQLite, MLflow, and Parquet for ML projects |
+| [Notebook-to-Script Workflow](ml-workflows/notebook-to-script.md) | Convert Jupyter prototypes to production scripts |
+| [Data & Experiment Tracking](ml-workflows/data-experiment-tracking.md) | DVC, SQLite, MLflow, W&B, and Parquet for ML projects |
 
 ### Contributing
 
@@ -96,6 +99,8 @@ Hands-on tasks for new undergraduates joining the lab.
 | Assignment | Description |
 |------------|-------------|
 | [Assignment 1: Personal Website](assignments/personal-website.md) | Build and deploy your academic website with Git, Quarto, and GitHub Pages |
+| [Assignment 2a: Exploratory Data Analysis](assignments/exploratory-data-analysis.md) | EDA, visualizations, and baseline ML models with pandas and scikit-learn |
+| [Assignment 2b: Concepts, Admin & AI Setup](assignments/concepts-admin-setup.md) | OSC access, W&B, SQL, ML pipelines, Copilot, and Claude Code setup |
 
 ### Resources
 

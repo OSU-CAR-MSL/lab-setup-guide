@@ -11,8 +11,8 @@ MkDocs Material documentation site for the OSU CAR Mobility Systems Lab. All con
 ## Commands
 
 ```bash
-# Install dependencies
-pip install mkdocs-material mkdocs-minify-plugin
+# Install dependencies (pinned in requirements-docs.txt)
+pip install -r requirements-docs.txt
 
 # Local development server (auto-reloads at http://127.0.0.1:8000)
 mkdocs serve
@@ -29,6 +29,7 @@ There are no tests or linters. The `--strict` flag in CI catches broken links an
 - **`docs/`** — All Markdown content, organized into section subfolders (`getting-started/`, `osc-basics/`, `working-on-osc/`, `ml-workflows/`, `contributing/`, `assignments/`, `resources/`).
 - **`docs/stylesheets/extra.css`** — Custom OSU branding (scarlet `#bb0000` color scheme) applied on top of Material theme.
 - **`.github/workflows/deploy-docs.yml`** — GitHub Actions pipeline. Triggers on pushes to `main` that touch `docs/` or `mkdocs.yml`. Builds with `mkdocs build --strict` and deploys to GitHub Pages.
+- **`requirements-docs.txt`** — Python dependencies for MkDocs build. Referenced by CI cache key in the deploy workflow.
 - **`site/`** — Auto-generated build output (gitignored).
 
 ## Content Architecture — Canonical Locations
@@ -44,7 +45,8 @@ Each topic has exactly one canonical page. Other pages cross-link to it instead 
 | Modules, venvs, conda | `working-on-osc/osc-environment-management.md` |
 | SLURM jobs, job arrays, job scripts | `working-on-osc/osc-job-submission.md` |
 | PyTorch install, GPU requesting, GPU perf, multi-GPU, memory mgmt | `ml-workflows/pytorch-setup.md` |
-| Experiment tracking (TensorBoard, W&B, MLflow) | `ml-workflows/data-experiment-tracking.md` |
+| Experiment tracking (DVC, SQLite, MLflow, W&B, TensorBoard, Parquet) | `ml-workflows/data-experiment-tracking.md` |
+| Notebook-to-script conversion | `ml-workflows/notebook-to-script.md` |
 | OSC portals and support contacts | `resources/useful-links.md` |
 
 ## Content Conventions
@@ -79,6 +81,20 @@ The site has these extensions configured in `mkdocs.yml` — use them in content
 - **Mermaid diagrams:** fenced with ` ```mermaid `
 - **Keyboard keys:** `++ctrl+c++`
 - **Task lists:** `- [x] Done` / `- [ ] Todo`
+
+## Assignments
+
+Assignment pages live in `docs/assignments/`. Each assignment follows a consistent pattern established by `personal-website.md`:
+
+- Metadata table (author, estimated time, prerequisites)
+- "What You'll Build/Learn" intro paragraph
+- Multi-part structure with numbered tasks
+- Admonitions for tips/warnings, tabbed content for OS-specific instructions
+- Task-list checklists (`- [ ]`) at the end of each part
+- Final Deliverables checklist
+- Troubleshooting table
+
+When adding new assignments, also update `docs/assignments/index.md` (the table) and the `nav:` section in `mkdocs.yml`.
 
 ## Deployment
 

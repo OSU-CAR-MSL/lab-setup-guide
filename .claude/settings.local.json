@@ -25,7 +25,12 @@
       "Bash(pip3 install:*)",
       "Bash(git init:*)",
       "Bash(git remote add:*)",
-      "Bash(git remote set-url:*)"
+      "Bash(git remote set-url:*)",
+      "Bash(apt list:*)",
+      "Bash(python3 -m venv:*)",
+      "Bash(source:*)",
+      "Bash(/tmp/mkdocs-env/bin/pip install:*)",
+      "Bash(/tmp/mkdocs-env/bin/mkdocs build:*)"
     ]
   }
 }

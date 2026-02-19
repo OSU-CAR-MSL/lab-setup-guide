@@ -18,6 +18,8 @@ Welcome to the lab assignments section. These hands-on assignments are designed 
 | # | Assignment | Topics | Est. Time | Difficulty |
 |:-:|------------|--------|:---------:|:----------:|
 | 1 | **[Build Your Personal Academic Website](personal-website.md)** | Git, GitHub, VS Code, Quarto, GitHub Pages | 3--4 hrs | Beginner |
+| 2a | **[Exploratory Data Analysis](exploratory-data-analysis.md)** | pandas, matplotlib, seaborn, scikit-learn, Quarto blog | 6--8 hrs | Beginner |
+| 2b | **[Concepts, Admin & AI Setup](concepts-admin-setup.md)** | OSC, W&B, SQL, ML pipelines, Copilot, Claude | 5--7 hrs | Beginner |
 
-!!! tip "Coming soon"
-    Additional assignments covering OSC workflows, Python environments, and ML pipelines will be added as the semester progresses.
+!!! info "Assignments 2a and 2b"
+    Assignments 2a and 2b are assigned together — you have **2 weeks** to complete both. They are designed to be worked on in parallel: 2a is hands-on coding, 2b is conceptual setup. Part 5 of 2b (creating a CLAUDE.md) connects to your 2a EDA project.

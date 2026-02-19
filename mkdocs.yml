@@ -159,6 +159,8 @@ nav:
   - Assignments:
     - Overview: assignments/index.md
     - "Assignment 1: Personal Website": assignments/personal-website.md
+    - "Assignment 2a: Exploratory Data Analysis": assignments/exploratory-data-analysis.md
+    - "Assignment 2b: Concepts, Admin & AI Setup": assignments/concepts-admin-setup.md
 
   - Resources:
     - Troubleshooting: resources/troubleshooting.md

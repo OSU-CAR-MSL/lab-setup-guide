@@ -360,6 +360,6 @@ graph TD
 ## Next Steps
 
 - Review [Job Submission](../working-on-osc/osc-job-submission.md) for SLURM details
-- Set up [Data & Experiment Tracking](data-experiment-tracking.md) with TensorBoard or W&B
+- Set up [Data & Experiment Tracking](data-experiment-tracking.md) for experiment logging with MLflow or W&B
 - Use [Snakemake](../working-on-osc/snakemake-orchestration.md) for multi-step pipelines
 - Learn about [PyTorch & GPU Setup](pytorch-setup.md) for training at scale

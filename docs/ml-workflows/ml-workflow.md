@@ -274,7 +274,7 @@ Submit training as SLURM batch jobs. For job script templates (single GPU, multi
 
 ### 6. Experiment Tracking
 
-Track metrics, hyperparameters, and artifacts across runs. See [Data & Experiment Tracking](data-experiment-tracking.md) for TensorBoard, Weights & Biases, and MLflow setup.
+Track metrics, hyperparameters, and artifacts across runs. See [Data & Experiment Tracking](data-experiment-tracking.md) for DVC, SQLite, MLflow, W&B, and TensorBoard setup.
 
 ## Best Practices
 

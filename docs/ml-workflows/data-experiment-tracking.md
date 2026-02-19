@@ -1,6 +1,6 @@
 # Data & Experiment Tracking
 
-Managing datasets, tracking experiments, and reproducing results are core challenges in ML research. This guide covers practical tools for structured data and experiment tracking on OSC, using patterns from the [DQN-Fusion](https://github.com/RobertFrenken/DQN-Fusion) project as a real-world example.
+Managing datasets, tracking experiments, and reproducing results are core challenges in ML research. This guide covers practical tools for structured data and experiment tracking on OSC — DVC for data versioning, SQLite for metadata, MLflow and Weights & Biases for experiment tracking, TensorBoard for training visualization, and Parquet for fast data loading.
 
 ---
 
@@ -24,9 +24,11 @@ A tracking stack solves these by versioning data, logging every run, and making 
 | **DVC** | Dataset versioning + remote storage | Large datasets, data pipelines |
 | **SQLite** | Lightweight relational database | Structured metadata, queryable results |
 | **MLflow** | Experiment tracking UI + API | Comparing runs, logging metrics/artifacts |
+| **W&B** | Cloud experiment tracking + visualization | Team dashboards, no port forwarding needed |
+| **TensorBoard** | Training visualization | Loss curves, model graphs, quick local checks |
 | **Parquet** | Columnar data format | Fast reads of large tabular datasets |
 
-These tools complement each other — a typical project might use DVC for data versioning, SQLite for metadata, MLflow for experiment tracking, and Parquet for fast data loading.
+These tools complement each other — a typical project might use DVC for data versioning, SQLite for metadata, MLflow or W&B for experiment tracking, TensorBoard for quick training visualization, and Parquet for fast data loading.
 
 ---
 
@@ -256,6 +258,123 @@ The MLflow UI lets you:
     export MLFLOW_RUN_NAME="job-${SLURM_JOB_ID}"
     python train.py
     ```
+
+---
+
+## Weights & Biases (W&B)
+
+[Weights & Biases](https://wandb.ai/) is a cloud-hosted experiment tracker. Unlike MLflow, results sync to wandb.ai automatically — no port forwarding needed to view dashboards from OSC jobs.
+
+### Account Setup
+
+1. Sign up at [wandb.ai/site](https://wandb.ai/site) with your university email
+2. Apply for a free academic team at [wandb.ai/academic](https://wandb.ai/site/academic) (unlimited private projects)
+3. Copy your API key from [wandb.ai/authorize](https://wandb.ai/authorize)
+
+```bash
+pip install wandb
+wandb login
+# Paste your API key when prompted
+```
+
+!!! tip "Store your API key on OSC"
+    Add `export WANDB_API_KEY=<your-key>` to your `~/.bashrc` so SLURM batch jobs can authenticate automatically.
+
+### Training Code Integration
+
+```python
+import wandb
+
+wandb.init(
+    project="dqn-fusion",
+    name="lr-sweep-001",
+    config={
+        "learning_rate": 1e-3,
+        "batch_size": 64,
+        "hidden_dim": 256,
+        "optimizer": "adam",
+    },
+)
+
+for epoch in range(num_epochs):
+    train_loss = train_one_epoch(model, train_loader, optimizer)
+    val_loss, val_acc = evaluate(model, val_loader)
+
+    wandb.log({
+        "train_loss": train_loss,
+        "val_loss": val_loss,
+        "val_accuracy": val_acc,
+        "epoch": epoch,
+    })
+
+# Save the trained model as an artifact
+artifact = wandb.Artifact("model", type="model")
+artifact.add_file("checkpoints/best_model.pt")
+wandb.log_artifact(artifact)
+
+wandb.finish()
+```
+
+### SLURM Usage
+
+Compute nodes on OSC may have limited internet access. Use W&B's offline mode to log locally, then sync after the job finishes:
+
+```bash
+#!/bin/bash
+#SBATCH --job-name=train
+#SBATCH --gpus-per-node=1
+
+export WANDB_MODE=offline   # Log to local directory
+python train.py
+
+# Sync results after training completes
+wandb sync --sync-all
+```
+
+Alternatively, if your cluster allows outbound HTTPS from compute nodes, W&B syncs in real time with no extra steps.
+
+### Viewing Results
+
+Open [wandb.ai](https://wandb.ai/) in your browser — your runs appear in the project dashboard with interactive charts, system metrics, and logged artifacts. No SSH tunneling required.
+
+---
+
+## TensorBoard
+
+[TensorBoard](https://www.tensorflow.org/tensorboard) provides lightweight training visualization. It's bundled with PyTorch via `torch.utils.tensorboard`.
+
+### Basic Usage
+
+```python
+from torch.utils.tensorboard import SummaryWriter
+
+writer = SummaryWriter("runs/experiment-001")
+
+for epoch in range(num_epochs):
+    train_loss = train_one_epoch(model, train_loader, optimizer)
+    val_loss, val_acc = evaluate(model, val_loader)
+
+    writer.add_scalar("Loss/train", train_loss, epoch)
+    writer.add_scalar("Loss/val", val_loss, epoch)
+    writer.add_scalar("Accuracy/val", val_acc, epoch)
+
+writer.close()
+```
+
+### Viewing on OSC via Port Forwarding
+
+```bash
+# On the OSC login node
+tensorboard --logdir=runs/ --port 6006
+
+# From your local machine
+ssh -L 6006:localhost:6006 username@pitzer.osc.edu
+
+# Open http://localhost:6006 in your browser
+```
+
+!!! tip "TensorBoard vs W&B vs MLflow"
+    **TensorBoard** is great for quick, local visualization during development. **MLflow** adds structured experiment comparison with a SQLite backend. **W&B** provides the richest cloud-hosted dashboards with zero port-forwarding setup — ideal for long-running SLURM jobs where you want to check progress from anywhere.
 
 ---
 

@@ -30,7 +30,14 @@
       "Bash(python3 -m venv:*)",
       "Bash(source:*)",
       "Bash(/tmp/mkdocs-env/bin/pip install:*)",
-      "Bash(/tmp/mkdocs-env/bin/mkdocs build:*)"
+      "Bash(/tmp/mkdocs-env/bin/mkdocs build:*)",
+      "Bash(ls:*)",
+      "Bash(git rm:*)",
+      "Bash(apt-get install:*)",
+      "WebSearch",
+      "Bash(find:*)",
+      "WebFetch(domain:www.osc.edu)",
+      "Bash(python3:*)"
     ]
   }
 }

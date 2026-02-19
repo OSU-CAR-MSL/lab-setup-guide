@@ -1,3 +1,4 @@
+<!-- last-reviewed: 2026-02-19 -->
 # VS Code Extensions
 
 Extensions enhance VS Code's functionality. This guide covers required extensions for lab work and recommended extensions for productivity.
@@ -133,7 +134,7 @@ These extensions are essential for lab work:
 
 ### Machine Learning
 
-#### 9. PyTorch Snippets
+#### 8. PyTorch Snippets
 - **ID**: `SBSnippets.pytorch-snippets`
 - **Purpose**: PyTorch code snippets
 - **Install**: 
@@ -141,7 +142,7 @@ These extensions are essential for lab work:
   code --install-extension SBSnippets.pytorch-snippets
   ```
 
-#### 10. TensorBoard
+#### 9. TensorBoard
 - **ID**: `ms-toolsai.vscode-tensorboard`
 - **Purpose**: View TensorBoard logs in VS Code
 - **Install**: 
@@ -151,7 +152,7 @@ These extensions are essential for lab work:
 
 ### Productivity
 
-#### 11. Markdown All in One
+#### 10. Markdown All in One
 - **ID**: `yzhang.markdown-all-in-one`
 - **Purpose**: Enhanced Markdown editing
 - **Features**: Shortcuts, table of contents, preview
@@ -160,7 +161,7 @@ These extensions are essential for lab work:
   code --install-extension yzhang.markdown-all-in-one
   ```
 
-#### 12. Better Comments
+#### 11. Better Comments
 - **ID**: `aaron-bond.better-comments`
 - **Purpose**: Color-code comments (TODO, FIXME, etc.)
 - **Install**: 
@@ -168,7 +169,7 @@ These extensions are essential for lab work:
   code --install-extension aaron-bond.better-comments
   ```
 
-#### 13. Error Lens
+#### 12. Error Lens
 - **ID**: `usernamehw.errorlens`
 - **Purpose**: Highlight errors inline
 - **Install**: 
@@ -176,8 +177,8 @@ These extensions are essential for lab work:
   code --install-extension usernamehw.errorlens
   ```
 
-#### 14. Bracket Pair Colorizer 2 (or built-in)
-- **Note**: VS Code now has built-in bracket pair colorization
+#### 13. Bracket Pair Colorization (Built-in)
+- VS Code has built-in bracket pair colorization — no extension needed
 - **Enable**: Search for "Bracket Pair Colorization" in settings and enable it
 
 ## Extension Configuration

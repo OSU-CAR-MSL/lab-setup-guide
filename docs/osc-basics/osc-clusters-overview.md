@@ -1,3 +1,4 @@
+<!-- last-reviewed: 2026-02-19 -->
 # OSC Clusters Overview
 
 Understand OSC's high-performance computing clusters, available resources, and how to choose the right configuration for your workloads.
@@ -171,6 +172,20 @@ du -sh /fs/scratch/PAS1234
 !!! danger "Scratch is purged automatically"
     Files on scratch that have not been accessed for 90 days are automatically deleted. **Never store important results only on scratch.** Copy final results to your home or project directory.
 
+### Shared Project Directories
+
+Use project space for datasets and environments that the whole lab needs:
+
+```
+/fs/ess/PAS1234/
+├── datasets/           # Shared datasets
+├── envs/               # Shared conda/venv environments
+├── username1/          # Individual work directories
+└── username2/
+```
+
+Keep a README in the project root documenting what each directory contains. For creating shared conda or venv environments, see [Environment Management](../working-on-osc/osc-environment-management.md).
+
 ### Job Limits per User
 
 Typical per-user limits (these may vary by project):
@@ -279,7 +294,6 @@ Your job is requesting more resources than are currently available. Try:
 - [Set up your OSC account](osc-account-setup.md) if you haven't already
 - Learn to [connect via SSH](osc-ssh-connection.md)
 - [Submit your first job](../working-on-osc/osc-job-submission.md)
-- Review [OSC best practices](../working-on-osc/osc-best-practices.md)
 
 ## Resources
 

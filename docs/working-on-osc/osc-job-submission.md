@@ -1,16 +1,7 @@
+<!-- last-reviewed: 2026-02-19 -->
 # Job Submission Guide
 
 Learn how to submit and manage jobs on OSC using the SLURM job scheduler.
-
-**On this page:**
-
-- [Quick Start](#quick-start) — interactive & batch job in seconds
-- [SLURM Basics](#slurm-basics) — essential commands & job states
-- [Creating Job Scripts](#creating-job-scripts) — templates for CPU, GPU, multi-GPU
-- [Job Arrays](#job-arrays) — run many similar jobs efficiently
-- [Job Dependencies](#job-dependencies) — chain jobs together
-- [Monitoring Jobs](#monitoring-jobs) — status, details, output
-- [Troubleshooting](#troubleshooting) — pending, failing, timeout issues
 
 ## Overview
 
@@ -108,13 +99,13 @@ Every SLURM batch script has three sections:
 #SBATCH --account=PAS1234
 #SBATCH --time=02:00:00
 
-!!! note "Replace `PAS1234`"
-    `PAS1234` is a placeholder. Use your actual OSC project code, found at [my.osc.edu](https://my.osc.edu) under your project list. See [Account Setup](../osc-basics/osc-account-setup.md#check-your-projects) for details.
-
 module load python/3.9-2022.05         # 3. Execution block
 source ~/venvs/myproject/bin/activate
 python train.py
 ```
+
+!!! note "Replace `PAS1234`"
+    `PAS1234` is a placeholder. Use your actual OSC project code, found at [my.osc.edu](https://my.osc.edu) under your project list. See [Account Setup](../osc-basics/osc-account-setup.md#check-your-projects) for details.
 
 **Section 1 — Shebang line:** Must be the very first line. Tells the system to use Bash.
 
@@ -450,8 +441,8 @@ sbatch --dependency=afterany:$job1 job3.sh
 sbatch --dependency=afterok:$job1:$job2 job4.sh
 ```
 
-!!! tip "Consider Snakemake for complex pipelines"
-    If you have multi-step pipelines with many dependencies, [Snakemake](snakemake-orchestration.md) can manage job submission, dependency tracking, and partial reruns automatically.
+!!! tip "Consider a pipeline orchestrator for complex pipelines"
+    If you have multi-step pipelines with many dependencies, a tool like Nextflow or Prefect can manage job submission, dependency tracking, and partial reruns automatically. See [Pipeline Orchestration](pipeline-orchestration.md).
 
 ## Monitoring Jobs
 
@@ -690,7 +681,7 @@ sbatch --dependency=afterok:$job2 evaluate.sh
 
 - Learn [Environment Management](osc-environment-management.md)
 - Set up [PyTorch on OSC](../ml-workflows/pytorch-setup.md)
-- Automate pipelines with [Snakemake](snakemake-orchestration.md)
+- Automate pipelines with [Pipeline Orchestration](pipeline-orchestration.md)
 
 ## Resources
 

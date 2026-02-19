@@ -1,3 +1,4 @@
+<!-- last-reviewed: 2026-02-19 -->
 # Data & Experiment Tracking
 
 Managing datasets, tracking experiments, and reproducing results are core challenges in ML research. This guide covers practical tools for structured data and experiment tracking on OSC — DVC for data versioning, SQLite for metadata, MLflow and Weights & Biases for experiment tracking, TensorBoard for training visualization, and Parquet for fast data loading.
@@ -192,7 +193,8 @@ datasets:
 pip install mlflow
 
 # Set tracking URI to a local SQLite database
-export MLFLOW_TRACKING_URI=sqlite:///~/projects/my-ml-project/mlflow.db
+# Note: use ${HOME} instead of ~ (tilde is not expanded in SQLite URIs)
+export MLFLOW_TRACKING_URI=sqlite:///${HOME}/projects/my-ml-project/mlflow.db
 ```
 
 Add this to your `~/.bashrc` or project activation script so it's always set.

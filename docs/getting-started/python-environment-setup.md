@@ -1,3 +1,4 @@
+<!-- last-reviewed: 2026-02-19 -->
 # Python Environment Setup
 
 This guide walks you through setting up Python development environments for lab work. The approach uses **two environments** tuned for different workloads:

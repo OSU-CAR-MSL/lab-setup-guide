@@ -138,22 +138,20 @@ nav:
     - File Transfer: osc-basics/osc-file-transfer.md
 
   - Working on OSC:
-    - Best Practices: working-on-osc/osc-best-practices.md
     - Job Submission: working-on-osc/osc-job-submission.md
     - Environment Management: working-on-osc/osc-environment-management.md
-    - Snakemake Pipelines: working-on-osc/snakemake-orchestration.md
+    - Pipeline Orchestration: working-on-osc/pipeline-orchestration.md
     - CARLA Simulator: working-on-osc/carla-simulator.md
     - MATLAB & Simulink: working-on-osc/matlab-simulink.md
 
   - ML Workflows:
     - PyTorch & GPU Setup: ml-workflows/pytorch-setup.md
-    - ML Workflow Guide: ml-workflows/ml-workflow.md
+    - ML Project Template: ml-workflows/ml-workflow.md
     - Notebook-to-Script Workflow: ml-workflows/notebook-to-script.md
     - Data & Experiment Tracking: ml-workflows/data-experiment-tracking.md
 
   - Contributing:
-    - How This Site Works: contributing/how-this-site-works.md
-    - Adding a Page: contributing/adding-a-page.md
+    - Contributing Guide: contributing/how-this-site-works.md
     - GitHub Pages Setup: contributing/github-pages-setup.md
 
   - Assignments:

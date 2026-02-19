@@ -1,3 +1,4 @@
+<!-- last-reviewed: 2026-02-19 -->
 # CAR Mobility Systems Lab Setup Guide
 
 Welcome to the OSU CAR Mobility Systems Lab documentation! This guide helps lab members set up their development environment and work effectively on the Ohio Supercomputer Center (OSC).
@@ -21,7 +22,7 @@ New to the lab? Follow these steps to get up and running:
 
 Each tool in our stack addresses a specific challenge in the ML research workflow — from writing code locally to running large-scale experiments on OSC's supercomputers.
 
-| | VS Code | Git / GitHub | SSH | SLURM | Conda / uv | Snakemake | PyTorch | Copilot / Claude |
+| | VS Code | Git / GitHub | SSH | SLURM | Conda / uv | Nextflow / Prefect | PyTorch | Copilot / Claude |
 |:--|:--|:--|:--|:--|:--|:--|:--|:--|
 | **Edit & debug code** | Primary IDE and debugger | | | | | | | AI-powered suggestions |
 | **Collaborate on code** | | Version control & pull requests | | | Shared environment specs | | | |
@@ -64,10 +65,9 @@ Best practices and guides for running computational work.
 
 | Guide | Description |
 |-------|-------------|
-| [Best Practices](working-on-osc/osc-best-practices.md) | Tips for efficient work on OSC |
 | [Job Submission](working-on-osc/osc-job-submission.md) | Submit and manage SLURM jobs |
 | [Environment Management](working-on-osc/osc-environment-management.md) | Modules, Conda, and virtual environments |
-| [Snakemake Pipelines](working-on-osc/snakemake-orchestration.md) | Automate multi-step workflows with SLURM |
+| [Pipeline Orchestration](working-on-osc/pipeline-orchestration.md) | Automate multi-step workflows with Nextflow or Prefect |
 | [CARLA Simulator](working-on-osc/carla-simulator.md) | Run CARLA for autonomous driving research |
 | [MATLAB & Simulink](working-on-osc/matlab-simulink.md) | Use MATLAB and Simulink on OSC |
 
@@ -78,7 +78,7 @@ Guides specific to ML/DL research on OSC.
 | Guide | Description |
 |-------|-------------|
 | [PyTorch & GPU Setup](ml-workflows/pytorch-setup.md) | Install PyTorch, request GPUs, optimize training |
-| [ML Workflow Guide](ml-workflows/ml-workflow.md) | Best practices for ML projects |
+| [ML Project Template](ml-workflows/ml-workflow.md) | Project structure and data organization for ML on OSC |
 | [Notebook-to-Script Workflow](ml-workflows/notebook-to-script.md) | Convert Jupyter prototypes to production scripts |
 | [Data & Experiment Tracking](ml-workflows/data-experiment-tracking.md) | DVC, SQLite, MLflow, W&B, and Parquet for ML projects |
 
@@ -88,8 +88,7 @@ Learn how the site works and how to add new content.
 
 | Guide | Description |
 |-------|-------------|
-| [How This Site Works](contributing/how-this-site-works.md) | Architecture, deployment, and theme features |
-| [Adding a Page](contributing/adding-a-page.md) | Step-by-step guide to adding new pages |
+| [Contributing Guide](contributing/how-this-site-works.md) | Architecture, adding pages, deployment |
 | [GitHub Pages Setup](contributing/github-pages-setup.md) | Set up a documentation site with MkDocs or Quarto |
 
 ### Assignments
@@ -130,5 +129,5 @@ Hands-on tasks for new undergraduates joining the lab.
 |----------|------|
 | OSC Documentation | [osc.edu/resources](https://www.osc.edu/resources) |
 | OSC OnDemand Portal | [ondemand.osc.edu](https://ondemand.osc.edu) |
-| OSC Status Page | [osc.edu/status](https://www.osc.edu/services/status) |
+| OSC Status Page | [osc.edu/status](https://www.osc.edu/supercomputing/system-status) |
 | Lab GitHub | [github.com/OSU-CAR-MSL](https://github.com/OSU-CAR-MSL) |

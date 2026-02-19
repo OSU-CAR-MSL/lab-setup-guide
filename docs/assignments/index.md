@@ -1,3 +1,4 @@
+<!-- last-reviewed: 2026-02-19 -->
 # Assignments
 
 Welcome to the lab assignments section. These hands-on assignments are designed to get new undergraduates up to speed with the tools and workflows used in the CAR Mobility Systems Lab.

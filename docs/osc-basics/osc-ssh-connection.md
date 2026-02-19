@@ -1,3 +1,4 @@
+<!-- last-reviewed: 2026-02-19 -->
 # SSH Connection Guide
 
 This guide will help you set up SSH connections to OSC for secure and convenient access to the clusters.
@@ -303,7 +304,7 @@ mkdir $HOME\.ssh
 
 - [Set Up Remote Development with VS Code](osc-remote-development.md)
 - [Learn File Transfer Methods](osc-file-transfer.md)
-- [OSC Best Practices](../working-on-osc/osc-best-practices.md)
+- [Job Submission Guide](../working-on-osc/osc-job-submission.md)
 
 ## Additional Resources
 

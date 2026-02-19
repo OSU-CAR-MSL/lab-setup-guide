@@ -1,4 +1,5 @@
-# How This Website Works
+<!-- last-reviewed: 2026-02-19 -->
+# Contributing Guide
 
 This site is built with [MkDocs](https://www.mkdocs.org/) using the [Material for MkDocs](https://squidfunk.github.io/mkdocs-material/) theme. It turns plain markdown files into a professional documentation website, hosted for free on GitHub Pages.
 
@@ -11,15 +12,16 @@ lab-setup-guide/
 │   ├── index.md                # Homepage
 │   ├── getting-started/        # VS Code setup guides
 │   ├── osc-basics/             # OSC account, SSH, remote dev, file transfer
-│   ├── working-on-osc/         # Best practices, jobs, environments
+│   ├── working-on-osc/         # Jobs, environments, orchestration
 │   ├── ml-workflows/           # PyTorch, ML workflow, GPU computing
-│   ├── contributing/           # Site docs and how to add pages
+│   ├── contributing/           # This guide and GitHub Pages setup
 │   ├── resources/              # Troubleshooting and useful links
 │   └── stylesheets/
 │       └── extra.css           # Custom OSU scarlet branding
 └── .github/
     └── workflows/
-        └── deploy-docs.yml     # Automatic build & deploy pipeline
+        ├── deploy-docs.yml     # Automatic build & deploy pipeline
+        └── link-check.yml      # Weekly link checker & freshness audit
 ```
 
 ## How Deployment Works
@@ -50,49 +52,65 @@ osu-car-msl.github.io/lab-setup-guide/
 
 You never need to manually build or upload anything. Just push markdown and the site updates in about 45 seconds.
 
-## Local Preview vs Live Deployment
+## Adding a New Page
 
-A common question: *"Do I need to commit, build, then serve?"* The short answer is **no** — local preview and live deployment are completely separate workflows.
+### 1. Create the file
 
-### Local Preview (no commit needed)
+Create a `.md` file in the appropriate `docs/` subfolder. Every page should start with a level-1 heading:
 
-Run `mkdocs serve` from the repo root to start a local development server:
+```markdown
+# My New Guide
 
-```bash
-# Install dependencies (one time)
-pip install mkdocs-material mkdocs-minify-plugin
+A brief introduction to what this page covers.
 
-# Start local server with live reload
-mkdocs serve
+## First Section
+
+Your content here.
 ```
 
-Open [http://127.0.0.1:8000](http://127.0.0.1:8000) in your browser. The server watches for file changes and **auto-reloads instantly** when you save — no restart, no commit, no build step required.
+### 2. Add it to the navigation
 
-!!! tip "When to use this"
-    Use `mkdocs serve` whenever you're writing or editing documentation. Edit your markdown, save, and see the result immediately in your browser.
+Open `mkdocs.yml` and add your page to the `nav:` section:
 
-### Pre-Push Validation (optional)
+```yaml
+nav:
+  - Working on OSC:
+    - My New Guide: working-on-osc/my-new-guide.md   # path relative to docs/
+```
 
-Before pushing, you can run the same build command that CI uses to catch problems early:
+### 3. Validate
 
 ```bash
 mkdocs build --strict
 ```
 
-The `--strict` flag treats warnings as errors, catching broken internal links, missing nav entries, and other issues that would fail the deployment pipeline.
+The `--strict` flag catches broken links, missing nav entries, and other issues that would fail CI.
 
-### Live Deployment (commit + push)
-
-When you're happy with your changes, commit and push to `main`. GitHub Actions handles the rest automatically — no manual build or upload needed.
+### 4. Commit and push
 
 ```bash
-git add docs/my-new-page.md mkdocs.yml
-git commit -m "Add my new page"
+git add docs/working-on-osc/my-new-guide.md mkdocs.yml
+git commit -m "Add guide for my-new-guide"
 git push origin main
 # Site updates at osu-car-msl.github.io/lab-setup-guide/ in ~45 seconds
 ```
 
-### Quick Reference
+!!! warning "File paths in `nav:` are relative to `docs/`"
+    `docs/working-on-osc/my-guide.md` is listed as `working-on-osc/my-guide.md` in `mkdocs.yml`.
+
+## Local Preview
+
+Run `mkdocs serve` from the repo root to start a local development server:
+
+```bash
+# Install dependencies (one time)
+pip install -r requirements-docs.txt
+
+# Start local server with live reload
+mkdocs serve
+```
+
+Open [http://127.0.0.1:8000](http://127.0.0.1:8000). The server auto-reloads when you save — no commit needed.
 
 | What you want to do | Command | Commit needed? |
 |---|---|---|
@@ -114,36 +132,14 @@ The main configuration file at the repo root. It controls:
 
 ### `docs/` folder
 
-Every `.md` file in this folder becomes a page on the site. Subfolders are supported and help organize related content. The file path determines the URL:
+Every `.md` file in this folder becomes a page on the site. The file path determines the URL:
 
 | File path | URL |
 |-----------|-----|
 | `docs/index.md` | `/lab-setup-guide/` |
 | `docs/getting-started/vscode-setup.md` | `/lab-setup-guide/getting-started/vscode-setup/` |
-| `docs/contributing/adding-a-page.md` | `/lab-setup-guide/contributing/adding-a-page/` |
 
-### `.github/workflows/deploy-docs.yml`
-
-The GitHub Actions workflow that automates deployment. It triggers on:
-
-- Pushes to `main` that change `docs/` or `mkdocs.yml`
-- Manual trigger from the Actions tab on GitHub
-
-## Theme Features
-
-The Material theme gives us these features out of the box:
-
-- **Search** — Press ++s++ or ++slash++ to search all pages
-- **Dark/light mode** — Toggle in the header
-- **Code copy buttons** — One-click copy on all code blocks
-- **Navigation tabs** — Top-level sections appear as tabs
-- **Edit on GitHub** — Pencil icon links to the source file on GitHub
-- **Table of contents** — Auto-generated sidebar from headings
-- **Admonitions** — Callout boxes for tips, warnings, notes
-
-## Markdown Extensions Available
-
-You can use these in any markdown file:
+## Markdown Quick Reference
 
 ### Admonitions
 
@@ -178,16 +174,19 @@ print(torch.cuda.is_available())
     ```
 ```
 
-### Keyboard keys
+### Other features
 
-```markdown
-Press ++ctrl+c++ to copy.
-```
+- **Keyboard keys:** `++ctrl+c++`
+- **Task lists:** `- [x] Done` / `- [ ] Todo`
+- **Mermaid diagrams:** fenced with ` ```mermaid `
 
-### Task lists
+## Checklist
 
-```markdown
-- [x] Install VS Code
-- [ ] Set up SSH keys
-```
+Before pushing a new page:
 
+- [ ] File is in the correct `docs/` subfolder
+- [ ] File starts with a `# Title` heading
+- [ ] Page is added to `nav:` in `mkdocs.yml`
+- [ ] Links to other pages use correct relative paths
+- [ ] Code blocks specify the language for syntax highlighting
+- [ ] `mkdocs build --strict` passes

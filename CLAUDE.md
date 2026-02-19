@@ -19,18 +19,41 @@ mkdocs serve
 
 # Production build (used in CI)
 mkdocs build --strict
+
+# Content freshness check
+python scripts/check-freshness.py --max-age-days 180
+
+# SSOT duplication check (advisory)
+python scripts/check-duplication.py
 ```
 
 There are no tests or linters. The `--strict` flag in CI catches broken links and configuration errors.
 
 ## Architecture
 
-- **`mkdocs.yml`** — Central configuration: site metadata, theme settings, markdown extensions, plugins, and the `nav:` section that defines all page navigation. Every new page must be added here.
-- **`docs/`** — All Markdown content, organized into section subfolders (`getting-started/`, `osc-basics/`, `working-on-osc/`, `ml-workflows/`, `contributing/`, `assignments/`, `resources/`).
-- **`docs/stylesheets/extra.css`** — Custom OSU branding (scarlet `#bb0000` color scheme) applied on top of Material theme.
-- **`.github/workflows/deploy-docs.yml`** — GitHub Actions pipeline. Triggers on pushes to `main` that touch `docs/` or `mkdocs.yml`. Builds with `mkdocs build --strict` and deploys to GitHub Pages.
-- **`requirements-docs.txt`** — Python dependencies for MkDocs build. Referenced by CI cache key in the deploy workflow.
-- **`site/`** — Auto-generated build output (gitignored).
+```
+lab-setup-guide/
+├── mkdocs.yml                          # Nav, theme, extensions, plugins
+├── requirements-docs.txt               # Python deps for MkDocs build (CI cache key)
+├── CLAUDE.md                           # This file
+├── docs/                               # All Markdown content (27 pages)
+│   ├── index.md                        # Homepage with tool matrix and section tables
+│   ├── getting-started/                # 4 pages — VS Code, extensions, Python env, AI assistants
+│   ├── osc-basics/                     # 5 pages — clusters, account, SSH, remote dev, file transfer
+│   ├── working-on-osc/                 # 5 pages — jobs, envs, orchestration, CARLA, MATLAB
+│   ├── ml-workflows/                   # 4 pages — PyTorch, project template, notebook-to-script, tracking
+│   ├── contributing/                   # 2 pages — contributing guide, GitHub Pages setup
+│   ├── assignments/                    # 4 pages — index + 3 assignments
+│   ├── resources/                      # 2 pages — troubleshooting, useful links
+│   └── stylesheets/extra.css           # Custom OSU scarlet branding
+├── scripts/
+│   ├── check-freshness.py              # Flags pages with stale last-reviewed dates (>6 months)
+│   └── check-duplication.py            # Advisory SSOT duplication detector
+├── .github/workflows/
+│   ├── deploy-docs.yml                 # Build + deploy on push to main (docs/** or mkdocs.yml)
+│   └── link-check.yml                  # Lychee link checker + freshness + duplication (push + weekly cron)
+└── site/                               # Auto-generated build output (gitignored)
+```
 
 ## Content Architecture — Canonical Locations
 
@@ -44,6 +67,7 @@ Each topic has exactly one canonical page. Other pages cross-link to it instead 
 | VS Code extensions | `getting-started/vscode-extensions.md` |
 | Modules, venvs, conda | `working-on-osc/osc-environment-management.md` |
 | SLURM jobs, job arrays, job scripts | `working-on-osc/osc-job-submission.md` |
+| Pipeline orchestration (Nextflow, Prefect) | `working-on-osc/pipeline-orchestration.md` |
 | PyTorch install, GPU requesting, GPU perf, multi-GPU, memory mgmt | `ml-workflows/pytorch-setup.md` |
 | Experiment tracking (DVC, SQLite, MLflow, W&B, TensorBoard, Parquet) | `ml-workflows/data-experiment-tracking.md` |
 | Notebook-to-script conversion | `ml-workflows/notebook-to-script.md` |
@@ -60,6 +84,8 @@ Each topic has exactly one canonical page. Other pages cross-link to it instead 
 For partition details and GPU types, see the [Clusters Overview](../osc-basics/osc-clusters-overview.md).
 ```
 
+**Content freshness.** Every `.md` page in `docs/` must have `<!-- last-reviewed: YYYY-MM-DD -->` as its first line. Update the date when you meaningfully review or edit a page. The CI freshness check flags pages older than 6 months.
+
 **No link dumps.** The useful-links page is intentionally minimal — only OSC-specific portals, lab resources, and genuinely hard-to-find references. Don't add generic links (Python docs, ML courses, framework homepages) that any search engine would find.
 
 **Practical, not encyclopedic.** Include concrete commands, code snippets, and job script templates that people will actually copy. Skip generic explanations that the official docs already cover.
@@ -67,9 +93,15 @@ For partition details and GPU types, see the [Clusters Overview](../osc-basics/o
 ## Adding a New Page
 
 1. Create a `.md` file in the appropriate `docs/` subfolder.
-2. Add the page to the `nav:` section in `mkdocs.yml`.
-3. Check the canonical locations table above — if the new page overlaps with an existing topic, cross-link instead of duplicating.
-4. Run `mkdocs build --strict` to verify no broken links.
+2. Add `<!-- last-reviewed: YYYY-MM-DD -->` as the first line.
+3. Add the page to the `nav:` section in `mkdocs.yml`.
+4. Check the canonical locations table above — if the new page overlaps with an existing topic, cross-link instead of duplicating.
+5. Verify:
+   ```bash
+   mkdocs build --strict                            # broken links, missing nav
+   python scripts/check-freshness.py --max-age-days 180   # stale pages
+   python scripts/check-duplication.py              # SSOT violations (advisory)
+   ```
 
 ## Markdown Features Available
 
@@ -96,6 +128,20 @@ Assignment pages live in `docs/assignments/`. Each assignment follows a consiste
 
 When adding new assignments, also update `docs/assignments/index.md` (the table) and the `nav:` section in `mkdocs.yml`.
 
-## Deployment
+## Contributing
 
-Push to `main` triggers automatic deployment via GitHub Actions. Only changes to `docs/**`, `mkdocs.yml`, or the workflow file itself trigger builds. Manual builds can be triggered from the Actions tab.
+The contributing section has two pages:
+
+- `contributing/how-this-site-works.md` — Combined contributing guide: architecture, adding pages, local preview, deployment, and markdown reference
+- `contributing/github-pages-setup.md` — Setting up a separate documentation site with MkDocs or Quarto
+
+## CI / Deployment
+
+Two GitHub Actions workflows, both triggered on push to `main` when `docs/` or `mkdocs.yml` change:
+
+| Workflow | Trigger | Purpose | Blocking? |
+|----------|---------|---------|-----------|
+| `deploy-docs.yml` | Push to `main` + manual | `mkdocs build --strict` → GitHub Pages deploy | Yes — broken links fail the build |
+| `link-check.yml` | Push to `main` + weekly Monday cron | Lychee external link check, freshness audit, SSOT duplication check | No — `fail: false` (warning-only for now) |
+
+The link-check workflow excludes authenticated portals (`ondemand.osc.edu`, `my.osc.edu`) and localhost URLs. Flip `fail: false` → `fail: true` in `link-check.yml` once the initial report is clean.

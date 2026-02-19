@@ -1,3 +1,4 @@
+<!-- last-reviewed: 2026-02-19 -->
 # AI Coding Assistants
 
 Set up AI-powered coding tools to accelerate your development workflow in the lab.
@@ -246,7 +247,7 @@ Claude Code merges instructions from all `CLAUDE.md` files in the path hierarchy
 
 ### Example for an ML Project
 
-```markdown
+````markdown
 # CLAUDE.md
 
 ## Project Overview
@@ -276,7 +277,7 @@ python evaluate.py --checkpoint outputs/best_model.pt --data data/test/
 - Use Hydra for configuration management
 - Logging via Python `logging` module (not print)
 - Save checkpoints every 10 epochs to `outputs/checkpoints/`
-```
+````
 
 ## Settings Configuration
 

@@ -1,13 +1,7 @@
+<!-- last-reviewed: 2026-02-19 -->
 # Environment Management
 
 Learn how to manage software environments on OSC using modules and virtual environments.
-
-**On this page:**
-
-- [Module System](#module-system) — loading pre-installed software
-- [Python Virtual Environments](#python-virtual-environments) — venv & conda setup
-- [Using Environments in Job Scripts](#using-environments-in-job-scripts) — venv & conda in SLURM
-- [Managing Disk Space](#managing-disk-space) — quotas, cleanup, env sizes
 
 ## Overview
 
@@ -150,11 +144,13 @@ which python
 # Should show: /home/username/venvs/myproject/bin/python
 
 # Install packages
-pip install torch torchvision numpy pandas matplotlib
+pip install numpy pandas matplotlib
 
 # Deactivate when done
 deactivate
 ```
+
+For PyTorch-specific installation (matching CUDA versions, GPU verification), see [PyTorch & GPU Setup](../ml-workflows/pytorch-setup.md).
 
 #### Method 2: conda
 
@@ -597,6 +593,23 @@ module load cuda/11.8.0
     conda deactivate                 # Deactivate
     conda env export > env.yml       # Export
     ```
+
+## Secrets and API Keys
+
+Never put passwords or API keys in source code. Use environment variables instead:
+
+```bash
+# Set in your shell or job script (don't commit this line to Git)
+export API_KEY="your_key_here"
+```
+
+```python
+import os
+api_key = os.environ["API_KEY"]
+```
+
+- Add credential files to `.gitignore`
+- Set restrictive permissions on sensitive data: `chmod 700 ~/projects/sensitive_data`
 
 ## Next Steps
 

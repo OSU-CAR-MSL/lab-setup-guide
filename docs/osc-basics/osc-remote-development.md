@@ -1,3 +1,4 @@
+<!-- last-reviewed: 2026-02-19 -->
 # Remote Development on OSC
 
 Visual Studio Code's Remote-SSH extension allows you to develop on OSC as if you were working locally. This guide shows you how to set it up and use it effectively.
@@ -10,29 +11,7 @@ Visual Studio Code's Remote-SSH extension allows you to develop on OSC as if you
 
 ## Initial Setup
 
-### 1. Install Remote-SSH Extension
-
-If not already installed:
-
-```bash
-code --install-extension ms-vscode-remote.remote-ssh
-code --install-extension ms-vscode-remote.remote-ssh-edit
-```
-
-Or install via VS Code Extensions marketplace (`Ctrl+Shift+X`).
-
-### 2. Configure SSH Connection
-
-Ensure your `~/.ssh/config` file is set up (see [SSH Connection Guide](osc-ssh-connection.md)):
-
-```ssh-config
-Host pitzer
-    HostName pitzer.osc.edu
-    User your.osuusername
-    IdentityFile ~/.ssh/id_ed25519
-    ServerAliveInterval 60
-    ServerAliveCountMax 3
-```
+Make sure the [Remote-SSH extension is installed](../getting-started/vscode-extensions.md#1-remote-ssh) and your [SSH config is set up](osc-ssh-connection.md).
 
 ## Connecting to OSC
 
@@ -85,8 +64,8 @@ The integrated terminal runs on OSC:
 
 Example workflow:
 ```bash
-# Load modules
-module load python/3.9
+# Load modules (use `module spider python` to find available versions)
+module load python/3.9-2022.05
 
 # Check resources
 squeue -u $USER
@@ -247,10 +226,10 @@ This keeps your session alive even if VS Code disconnects.
 
     ```json
     {
-      "python.defaultInterpreterPath": "/usr/local/python/3.9/bin/python3",
+      "python.defaultInterpreterPath": "${HOME}/venvs/myproject/bin/python3",
       "python.terminal.activateEnvironment": true,
       "terminal.integrated.env.linux": {
-        "PATH": "/usr/local/python/3.9/bin:${env:PATH}"
+        "PATH": "${HOME}/venvs/myproject/bin:${env:PATH}"
       }
     }
     ```
@@ -318,7 +297,7 @@ Host pitzer01
 **Solutions**:
 1. Check your shell configuration (~/.bashrc)
 2. Simplify `.bashrc` (remove complex startup scripts)
-3. Try different shell: `"terminal.integrated.shell.linux": "/bin/bash"`
+3. Try setting the default profile: `"terminal.integrated.defaultProfile.linux": "bash"`
 
 ### Port Forwarding Not Working
 
@@ -352,10 +331,9 @@ Host pitzer01
 
 ## Next Steps
 
-- Learn about [OSC Best Practices](../working-on-osc/osc-best-practices.md)
 - Set up [PyTorch on OSC](../ml-workflows/pytorch-setup.md)
 - Explore [Job Submission Guide](../working-on-osc/osc-job-submission.md)
-- Read [ML Workflow Guide](../ml-workflows/ml-workflow.md)
+- Read [ML Project Template](../ml-workflows/ml-workflow.md)
 
 ## Resources
 

@@ -1,3 +1,4 @@
+<!-- last-reviewed: 2026-02-19 -->
 # CARLA Simulator on OSC
 
 How to install, run, and develop with the CARLA autonomous driving simulator on OSC.

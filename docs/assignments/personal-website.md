@@ -1,3 +1,4 @@
+<!-- last-reviewed: 2026-02-19 -->
 # Assignment 1: Personal Academic Website
 
 |                    |                                              |
@@ -13,7 +14,7 @@
 A live personal website at `https://YOURUSERNAME.github.io` using Quarto + GitHub Pages. Along the way you'll learn the Git workflow (clone, edit, commit, push, pull) we use daily in the lab.
 
 !!! warning "Windows users: use Git Bash"
-Use **Git Bash** for all terminal commands in this assignment — **not** PowerShell or Command Prompt. Git Bash is installed alongside Git (Part 0.1) and gives you the same Linux-style commands you'll see in tutorials. You can also use the VS Code integrated terminal set to Git Bash.
+    Use **Git Bash** for all terminal commands in this assignment — **not** PowerShell or Command Prompt. Git Bash is installed alongside Git (Part 0.1) and gives you the same Linux-style commands you'll see in tutorials. You can also use the VS Code integrated terminal set to Git Bash.
 
 ---
 
@@ -42,7 +43,9 @@ If you get stuck on any install step, ask in the lab Slack/Teams channel — set
 
 Download from [code.visualstudio.com](https://code.visualstudio.com/). Then install the **Quarto** extension (++ctrl+shift+x++ → search "quarto").
 
-??? note "Windows: Set Git Bash as your default VS Code terminal" 1. ++ctrl+shift+p++ → "Terminal: Select Default Profile" → choose **Git Bash** 2. Open a new terminal (++ctrl+grave++) — it should say "bash" in the top-right
+??? note "Windows: Set Git Bash as your default VS Code terminal"
+    1. ++ctrl+shift+p++ → "Terminal: Select Default Profile" → choose **Git Bash**
+    2. Open a new terminal (++ctrl+grave++) — it should say "bash" in the top-right
 
 ### 0.3 Install Quarto CLI
 
@@ -132,7 +135,7 @@ code .
 ```
 
 !!! note "If `code .` doesn't work"
-Open VS Code manually → File → Open Folder → navigate to the cloned folder. On Mac, press ++cmd+shift+p++ in VS Code → "Shell Command: Install 'code' command in PATH".
+    Open VS Code manually → File → Open Folder → navigate to the cloned folder. On Mac, press ++cmd+shift+p++ in VS Code → "Shell Command: Install 'code' command in PATH".
 
 ### 1.3 Enable GitHub Pages
 
@@ -163,7 +166,7 @@ To add a new blog post or research page, create a `.qmd` file in the right folde
 ---
 title: "Your Title"
 description: "A short summary."
-date: "2025-02-12"
+date: "2026-02-19"
 categories: [topic1, topic2]
 ---
 Your content here.
@@ -219,7 +222,7 @@ In research collaboration, teammates push changes you don't have locally. `git p
    ---
    title: "Getting Started in the CAR Lab"
    description: "My first week in the Mobility Systems Lab."
-   date: "2025-02-12"
+   date: "2026-02-19"
    categories: [lab, onboarding]
    ---
    ```

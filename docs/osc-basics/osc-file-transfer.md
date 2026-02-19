@@ -1,3 +1,4 @@
+<!-- last-reviewed: 2026-02-19 -->
 # File Transfer Guide
 
 Learn efficient methods to transfer files between your local machine and OSC.

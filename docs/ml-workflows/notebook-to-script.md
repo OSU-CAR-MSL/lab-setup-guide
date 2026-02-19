@@ -1,3 +1,4 @@
+<!-- last-reviewed: 2026-02-19 -->
 # Notebook-to-Script Workflow
 
 How to iterate quickly in Jupyter notebooks and run large-scale experiments as Python scripts on OSC.
@@ -361,5 +362,5 @@ graph TD
 
 - Review [Job Submission](../working-on-osc/osc-job-submission.md) for SLURM details
 - Set up [Data & Experiment Tracking](data-experiment-tracking.md) for experiment logging with MLflow or W&B
-- Use [Snakemake](../working-on-osc/snakemake-orchestration.md) for multi-step pipelines
+- Use a [pipeline orchestrator](../working-on-osc/pipeline-orchestration.md) for multi-step pipelines
 - Learn about [PyTorch & GPU Setup](pytorch-setup.md) for training at scale

@@ -1,3 +1,4 @@
+<!-- last-reviewed: 2026-02-19 -->
 # OSC Account Setup
 
 The Ohio Supercomputer Center (OSC) provides high-performance computing resources for research and education. This guide will help you get started with OSC access.
@@ -88,7 +89,7 @@ Now that you have OSC access:
 
 1. [Configure SSH Connection](osc-ssh-connection.md) - Set up convenient SSH access
 2. [Set Up Remote Development](osc-remote-development.md) - Use VS Code with OSC
-3. [Learn OSC Best Practices](../working-on-osc/osc-best-practices.md) - Work efficiently on OSC
+3. [Learn Job Submission](../working-on-osc/osc-job-submission.md) - Submit and manage SLURM jobs
 
 ## Important Resources
 

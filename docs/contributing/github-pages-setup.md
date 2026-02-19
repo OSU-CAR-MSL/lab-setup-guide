@@ -1,3 +1,4 @@
+<!-- last-reviewed: 2026-02-19 -->
 # GitHub Pages Setup
 
 This guide walks through setting up a documentation website using GitHub Pages — whether for a lab group, a research project, or a personal site. We cover two popular static site generators: **MkDocs Material** (what this site uses) and **Quarto** (great for academic and research content).
@@ -364,7 +365,6 @@ concurrency:
 
 ## Next Steps
 
-- [How This Site Works](how-this-site-works.md) — Architecture of the CAR-MSL documentation site
-- [Adding a Page](adding-a-page.md) — How to contribute new pages to this site
+- [Contributing Guide](how-this-site-works.md) — Architecture and how to add pages to the CAR-MSL documentation site
 - [MkDocs Material docs](https://squidfunk.github.io/mkdocs-material/) — Full reference for the MkDocs Material theme
 - [Quarto docs](https://quarto.org/docs/websites/) — Quarto website documentation

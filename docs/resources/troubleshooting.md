@@ -1,3 +1,4 @@
+<!-- last-reviewed: 2026-02-19 -->
 # Troubleshooting Guide
 
 Common issues and solutions for working on OSC.
@@ -541,5 +542,5 @@ When things go wrong:
 - [ ] Search error message online
 - [ ] Contact OSC support if needed
 
-For general best practices that help prevent these issues, see [OSC Best Practices](../working-on-osc/osc-best-practices.md).
+For cluster details and resource limits, see [Clusters Overview](../osc-basics/osc-clusters-overview.md). For job script patterns, see [Job Submission](../working-on-osc/osc-job-submission.md).
 

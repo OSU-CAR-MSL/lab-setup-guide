@@ -1,3 +1,4 @@
+<!-- last-reviewed: 2026-02-19 -->
 # Useful Links
 
 OSC-specific portals, lab resources, and quick-reference cheat sheets.
@@ -25,13 +26,7 @@ OSC-specific portals, lab resources, and quick-reference cheat sheets.
 - [SLURM sbatch Documentation](https://slurm.schedmd.com/sbatch.html) - Complete reference for batch job options
 - [OSC SLURM Migration Guide](https://www.osc.edu/resources/technical_support/supercomputers/slurm_migration) - OSC-specific SLURM details and examples
 
-## Python & ML on HPC
-
-- [PyTorch Installation Matrix](https://pytorch.org/get-started/locally/) - Find the right install command for your CUDA version
-- [Conda Forge](https://conda-forge.org/) - Community-maintained conda packages
-
 ## Cheat Sheets
 
 - [Git Cheat Sheet (PDF)](https://education.github.com/git-cheat-sheet-education.pdf)
 - [SLURM Commands Cheat Sheet (PDF)](https://slurm.schedmd.com/pdfs/summary.pdf)
-- [Linux Command Line Cheat Sheet](https://www.guru99.com/linux-commands-cheat-sheet.html)

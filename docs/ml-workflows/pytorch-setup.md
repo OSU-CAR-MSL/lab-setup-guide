@@ -1,16 +1,7 @@
+<!-- last-reviewed: 2026-02-19 -->
 # PyTorch & GPU Setup
 
 Everything you need to install PyTorch, request GPUs, and train efficiently on OSC.
-
-**On this page:**
-
-- [Quick Setup](#quick-setup) — copy-paste install in 5 commands
-- [Detailed Setup](#detailed-setup) — step-by-step with explanations
-- [Requesting GPUs](#requesting-gpus) — GPU types, interactive & batch requests
-- [Performance](#performance) — DataLoaders, mixed precision, gradient accumulation
-- [Multi-GPU Training](#multi-gpu-training) — DataParallel & DDP
-- [Memory Management](#memory-management) — monitoring & clearing GPU memory
-- [Troubleshooting](#troubleshooting) — CUDA errors, slow training, import issues
 
 ## Prerequisites
 
@@ -54,7 +45,7 @@ Common options:
 - **CUDA 11.8**: Stable, widely supported
 - **CUDA 12.1**: Newer, for latest features
 
-For PyTorch, **CUDA 11.8** is recommended (as of 2024).
+Check the [PyTorch installation matrix](https://pytorch.org/get-started/locally/) for current CUDA compatibility.
 
 ### Step 2: Load Required Modules
 
@@ -245,8 +236,8 @@ srun -p gpu --gpus-per-node=1 --cpus-per-task=8 --mem=64G --time=02:00:00 --pty 
 #!/bin/bash
 #SBATCH --job-name=gpu_job
 #SBATCH --partition=gpu
-#SBATCH --gpus-per-node=1           # Number of GPUs
-#SBATCH --gpus-per-node=v100:1      # Specific GPU type
+#SBATCH --gpus-per-node=1           # Any available GPU
+# #SBATCH --gpus-per-node=v100:1   # OR: request specific GPU type
 #SBATCH --cpus-per-task=4           # CPUs (for data loading)
 #SBATCH --mem=32G                   # Memory
 #SBATCH --time=08:00:00

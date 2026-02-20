@@ -381,7 +381,7 @@ Submit the following:
 
 | Problem | Fix |
 |---------|-----|
-| `ssh: connect to host pitzer.osc.edu port 22: Connection refused` | Check that OSC is not in maintenance (see [System Status](https://www.osc.edu/supercomputing/system-status)). Verify your SSH key is uploaded at [my.osc.edu](https://my.osc.edu) |
+| `ssh: connect to host pitzer.osc.edu port 22: Connection refused` | Check that OSC is not in maintenance (see [System Status](https://www.osc.edu/resources/system-status)). Verify your SSH key is uploaded at [my.osc.edu](https://my.osc.edu) |
 | `wandb: ERROR api_key not configured` | Run `wandb login` again and paste your API key from [wandb.ai/authorize](https://wandb.ai/authorize) |
 | Copilot not showing suggestions | Check that you're signed in (click the Copilot icon in the status bar). Make sure the file type is supported (`.py`, `.qmd`, etc.) |
 | `sqlite3.OperationalError: no such table` | Make sure you ran the `CREATE TABLE` statement before querying |

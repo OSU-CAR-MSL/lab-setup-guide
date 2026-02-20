@@ -620,5 +620,5 @@ api_key = os.environ["API_KEY"]
 
 ## Resources
 
-- [OSC Module System](https://www.osc.edu/resources/technical_support/supercomputers/modules)
+- [OSC Batch Execution Environment](https://www.osc.edu/supercomputing/batch-processing-at-osc/batch-execution-environment)
 - [Python venv Documentation](https://docs.python.org/3/library/venv.html)

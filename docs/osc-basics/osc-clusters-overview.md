@@ -299,5 +299,5 @@ Your job is requesting more resources than are currently available. Try:
 
 - [OSC Pitzer Documentation](https://www.osc.edu/resources/technical_support/supercomputers/pitzer)
 - [OSC Owens Documentation](https://www.osc.edu/resources/technical_support/supercomputers/owens)
-- [OSC Storage Overview](https://www.osc.edu/resources/getting_started/howto/howto_use_osc_storage)
+- [OSC Storage Overview](https://www.osc.edu/supercomputing/storage-environment-at-osc/available-file-systems)
 - [SLURM Documentation](https://slurm.schedmd.com/documentation.html)

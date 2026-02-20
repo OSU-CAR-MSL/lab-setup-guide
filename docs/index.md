@@ -117,5 +117,5 @@ Each tool in our stack addresses a specific challenge in the ML research workflo
 |----------|------|
 | OSC Documentation | [osc.edu/resources](https://www.osc.edu/resources) |
 | OSC OnDemand Portal | [ondemand.osc.edu](https://ondemand.osc.edu) |
-| OSC Status Page | [osc.edu/status](https://www.osc.edu/supercomputing/system-status) |
+| OSC Status Page | [osc.edu/status](https://www.osc.edu/resources/system-status) |
 | Lab GitHub | [github.com/OSU-CAR-MSL](https://github.com/OSU-CAR-MSL) |

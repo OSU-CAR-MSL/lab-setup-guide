@@ -688,5 +688,5 @@ sbatch --dependency=afterok:$job2 evaluate.sh
 
 ## Resources
 
-- [OSC SLURM Documentation](https://www.osc.edu/resources/technical_support/supercomputers/slurm_migration)
+- [OSC SLURM Documentation](https://www.osc.edu/supercomputing/batch-processing-at-osc/slurm_migration)
 - [SLURM Official Documentation](https://slurm.schedmd.com/)

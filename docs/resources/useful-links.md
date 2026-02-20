@@ -13,8 +13,8 @@ OSC-specific portals, lab resources, and quick-reference cheat sheets.
 
 - **Email**: [oschelp@osc.edu](mailto:oschelp@osc.edu)
 - **Phone**: (614) 292-9248
-- [Office Hours Schedule](https://www.osc.edu/content/office_hours_schedule)
-- [OSC System Status](https://www.osc.edu/supercomputing/system-status)
+- [Events Calendar / Office Hours](https://www.osc.edu/calendar)
+- [OSC System Status](https://www.osc.edu/resources/system-status)
 
 ## Lab Resources
 
@@ -24,7 +24,7 @@ OSC-specific portals, lab resources, and quick-reference cheat sheets.
 ## SLURM & HPC
 
 - [SLURM sbatch Documentation](https://slurm.schedmd.com/sbatch.html) - Complete reference for batch job options
-- [OSC SLURM Migration Guide](https://www.osc.edu/resources/technical_support/supercomputers/slurm_migration) - OSC-specific SLURM details and examples
+- [OSC SLURM Migration Guide](https://www.osc.edu/supercomputing/batch-processing-at-osc/slurm_migration) - OSC-specific SLURM details and examples
 
 ## Cheat Sheets
 

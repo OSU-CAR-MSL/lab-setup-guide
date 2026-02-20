@@ -188,7 +188,7 @@ After installation, Windows Terminal automatically detects your WSL distribution
 
 [WezTerm](https://wezfurlong.org/wezterm/) is a cross-platform terminal written in Rust with built-in multiplexing (similar to tmux), ligature support, and Lua-based configuration.
 
-Download the installer from [wezfurlong.org/wezterm/installation](https://wezfurlong.org/wezterm/installation.html).
+Download the installer from [wezterm.org/installation](https://wezterm.org/installation.html).
 
 WezTerm can launch WSL directly. Add this to your `~/.wezterm.lua` config:
 

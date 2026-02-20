@@ -240,7 +240,7 @@ ssh: connect to host pitzer.osc.edu port 22: Operation timed out
 
 **Solutions**:
 - Check if you're on OSU network or VPN
-- Verify OSC system status: [https://www.osc.edu/supercomputing/system-status](https://www.osc.edu/supercomputing/system-status)
+- Verify OSC system status: [https://www.osc.edu/resources/system-status](https://www.osc.edu/resources/system-status)
 - Try alternative cluster (Owens if Pitzer fails)
 
 ### Permission Denied (publickey)
@@ -308,6 +308,6 @@ mkdir $HOME\.ssh
 
 ## Additional Resources
 
-- [OSC SSH Documentation](https://www.osc.edu/resources/getting_started/howto/howto_connect_with_ssh)
+- [OSC Getting Connected](https://www.osc.edu/resources/getting_started/getting_connected)
 - [SSH Config File Documentation](https://www.ssh.com/academy/ssh/config)
 - [Troubleshooting Guide](../resources/troubleshooting.md)

@@ -61,7 +61,7 @@ ssh: connect to host pitzer.osc.edu port 22: Connection refused
    ```
 
 3. **Check system status**
-   - Visit: https://www.osc.edu/supercomputing/system-status
+   - Visit: https://www.osc.edu/resources/system-status
 
 4. **Try alternative cluster**
    ```bash
@@ -612,7 +612,7 @@ For GPU performance troubleshooting (slow training, profiling, DataLoader optimi
 ## Getting More Help
 
 - **OSC Support**: Email [oschelp@osc.edu](mailto:oschelp@osc.edu) or call (614) 292-9248
-- **System Status**: [osc.edu/supercomputing/system-status](https://www.osc.edu/supercomputing/system-status)
+- **System Status**: [osc.edu/resources/system-status](https://www.osc.edu/resources/system-status)
 - **Lab**: Ask lab members on Slack/Teams, or consult your PI
 - See [Useful Links](useful-links.md) for OSC portals and support contacts
 

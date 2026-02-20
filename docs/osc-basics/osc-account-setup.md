@@ -32,7 +32,7 @@ If you don't have access yet:
 #### Option B: Request New Project
 If your lab doesn't have an OSC project:
 
-1. Visit [OSC Project Request](https://www.osc.edu/supercomputing/allocations)
+1. Visit [OSC Project Request](https://www.osc.edu/resources/getting_started/allocations_and_accounts)
 2. Your PI should submit a project request
 3. Follow the allocation request process
 4. Wait for approval (typically 1-2 business days)
@@ -96,7 +96,7 @@ Now that you have OSC access:
 - **OSC Documentation**: [https://www.osc.edu/resources/technical_support/supercomputers](https://www.osc.edu/resources/technical_support/supercomputers)
 - **OSC Help**: Email [oschelp@osc.edu](mailto:oschelp@osc.edu)
 - **Office Hours**: OSC offers walk-in office hours - check their website
-- **Status Page**: [https://www.osc.edu/supercomputing/system-status](https://www.osc.edu/supercomputing/system-status)
+- **Status Page**: [https://www.osc.edu/resources/system-status](https://www.osc.edu/resources/system-status)
 
 ## Troubleshooting
 
@@ -107,7 +107,7 @@ Now that you have OSC access:
 
 ### SSH connection refused
 - Verify you're on OSU network or VPN
-- Check system status: [https://www.osc.edu/supercomputing/system-status](https://www.osc.edu/supercomputing/system-status)
+- Check system status: [https://www.osc.edu/resources/system-status](https://www.osc.edu/resources/system-status)
 - Verify the correct hostname (pitzer.osc.edu, not pitzer.org)
 
 ### Not listed on any projects

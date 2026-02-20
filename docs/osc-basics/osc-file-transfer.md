@@ -445,5 +445,5 @@ du -sh ~/*/  # See directory sizes
 
 ## Resources
 
-- [OSC Data Transfer Documentation](https://www.osc.edu/resources/getting_started/howto/howto_transfer_files)
+- [OSC Getting Connected](https://www.osc.edu/resources/getting_started/getting_connected)
 - [Rsync Manual](https://linux.die.net/man/1/rsync)

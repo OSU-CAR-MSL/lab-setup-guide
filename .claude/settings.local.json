@@ -42,7 +42,12 @@
       "Bash(/tmp/mkdocs-venv/bin/pip install:*)",
       "Bash(/tmp/mkdocs-venv/bin/mkdocs build:*)",
       "Bash(pip show:*)",
-      "Bash(pip index:*)"
+      "Bash(pip index:*)",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:gofastmcp.com)",
+      "WebFetch(domain:lethain.com)",
+      "WebFetch(domain:wezfurlong.org)",
+      "WebFetch(domain:wezterm.org)"
     ]
   }
 }

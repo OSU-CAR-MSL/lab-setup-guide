@@ -1,3 +1,8 @@
+---
+tags:
+  - OSC
+  - conda
+---
 <!-- last-reviewed: 2026-02-19 -->
 # Environment Management
 
@@ -41,7 +46,7 @@ module spider pytorch
 module spider cuda
 
 # Load a module
-module load python/3.9-2022.05
+module load python/3.11
 
 # Load specific version
 module load cuda/11.8.0
@@ -50,7 +55,7 @@ module load cuda/11.8.0
 module list
 
 # Show module information
-module show python/3.9-2022.05
+module show python/3.11
 
 # Unload a module
 module unload python
@@ -59,18 +64,15 @@ module unload python
 module purge
 
 # Swap modules
-module swap python/3.8 python/3.9
+module swap python/3.9 python/3.11
 ```
 
 ### Commonly Used Modules
 
 #### Python
 ```bash
-# Python 3.9 with conda
-module load python/3.9-2022.05
-
-# Python 3.10
-module load python/3.10-2022.05
+# Python 3.11 (recommended)
+module load python/3.11
 ```
 
 #### CUDA (for GPU work)
@@ -100,7 +102,7 @@ Some modules load dependencies automatically:
 
 ```bash
 # Load Python (includes conda)
-module load python/3.9-2022.05
+module load python/3.11
 
 # Check what was loaded
 module list
@@ -131,7 +133,7 @@ Virtual environments isolate project dependencies so different projects can use 
 
 ```bash
 # Load Python module
-module load python/3.9-2022.05
+module load python/3.11
 
 # Create virtual environment
 python -m venv ~/venvs/myproject
@@ -156,10 +158,10 @@ For PyTorch-specific installation (matching CUDA versions, GPU verification), se
 
 ```bash
 # Load conda
-module load python/3.9-2022.05
+module load python/3.11
 
 # Create conda environment
-conda create -n myproject python=3.9
+conda create -n myproject python=3.11
 
 # Activate
 conda activate myproject
@@ -230,7 +232,7 @@ python -m venv ~/venvs/ml_research
 #SBATCH --time=02:00:00
 
 # Load module
-module load python/3.9-2022.05
+module load python/3.11
 
 # Activate virtual environment
 source ~/venvs/myproject/bin/activate
@@ -254,7 +256,7 @@ deactivate
 #SBATCH --time=02:00:00
 
 # Load conda
-module load python/3.9-2022.05
+module load python/3.11
 
 # Activate conda environment
 source activate myproject
@@ -275,7 +277,7 @@ python train.py
 
 # Load all required modules
 module purge                    # Start clean
-module load python/3.9-2022.05
+module load python/3.11
 module load cuda/11.8.0
 module load git
 
@@ -297,7 +299,7 @@ Create `~/scripts/load_ml_modules.sh`:
 # Load modules for ML work
 
 module purge
-module load python/3.9-2022.05
+module load python/3.11
 module load cuda/11.8.0
 module load git
 
@@ -322,7 +324,7 @@ Create `~/scripts/activate_ml_env.sh`:
 
 # Load modules
 module purge
-module load python/3.9-2022.05
+module load python/3.11
 module load cuda/11.8.0
 
 # Activate virtual environment
@@ -348,7 +350,7 @@ source ~/scripts/activate_ml_env.sh
 
     ```bash
     # Create in project space
-    conda create -p /fs/project/PAS1234/envs/lab_shared python=3.9
+    conda create -p /fs/project/PAS1234/envs/lab_shared python=3.11
 
     # All lab members can activate
     conda activate /fs/project/PAS1234/envs/lab_shared
@@ -416,7 +418,7 @@ du -sh ~/*/  | sort -hr | head -10
 
     ```bash
     # Load commonly used modules
-    module load python/3.9-2022.05
+    module load python/3.11
 
     # Alias for activating environments
     alias activate-ml='source ~/venvs/ml_project/bin/activate'
@@ -452,7 +454,7 @@ Create `environment_setup.md` in your project:
 # Environment Setup
 
 ## Modules
-- python/3.9-2022.05
+- python/3.11
 - cuda/11.8.0
 
 ## Virtual Environment
@@ -460,7 +462,7 @@ Location: ~/venvs/myproject
 
 ## Installation
 \`\`\`bash
-module load python/3.9-2022.05 cuda/11.8.0
+module load python/3.11 cuda/11.8.0
 python -m venv ~/venvs/myproject
 source ~/venvs/myproject/bin/activate
 pip install -r requirements.txt
@@ -568,7 +570,7 @@ Verify the CUDA module is loaded (`module load cuda/11.8.0`) and that you're on 
 module purge
 
 # Load modules in correct order
-module load python/3.9-2022.05
+module load python/3.11
 module load cuda/11.8.0
 ```
 
@@ -576,7 +578,7 @@ module load cuda/11.8.0
 
     ```bash
     # Modules
-    module load python/3.9-2022.05   # Load Python
+    module load python/3.11   # Load Python
     module load cuda/11.8.0          # Load CUDA
     module list                      # Show loaded
     module purge                     # Unload all
@@ -588,7 +590,7 @@ module load cuda/11.8.0
     pip freeze > requirements.txt    # Export
 
     # conda
-    conda create -n name python=3.9  # Create
+    conda create -n name python=3.11  # Create
     conda activate name              # Activate
     conda deactivate                 # Deactivate
     conda env export > env.yml       # Export

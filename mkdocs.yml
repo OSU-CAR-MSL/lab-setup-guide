@@ -18,6 +18,7 @@ copyright: Copyright &copy; 2024-2026 OSU CAR Mobility Systems Lab
 # Theme configuration
 theme:
   name: material
+  custom_dir: overrides
   
   # Color palette with light/dark mode toggle
   palette:
@@ -39,17 +40,24 @@ theme:
   # Features
   features:
     - navigation.instant      # XHR loading for speed
+    - navigation.instant.prefetch
     - navigation.tracking     # URL updates with anchor
     - navigation.tabs         # Top-level sections as tabs
     - navigation.sections     # Render sections as groups in sidebar
     - navigation.expand       # Expand all collapsible sections
+    - navigation.indexes      # Section index pages
     - navigation.top          # Back-to-top button
     - search.suggest          # Search suggestions
     - search.highlight        # Highlight search terms on page
+    - search.share            # Share search results
     - content.code.copy       # Copy button on code blocks
     - content.code.annotate   # Code annotations
     - content.action.edit     # Edit this page link
+    - content.action.view     # View source alongside edit
+    - content.tooltips        # Improved tooltips
     - toc.follow              # Sidebar follows scroll
+    - navigation.footer       # Prev/next page links at bottom
+    - navigation.path         # Breadcrumb trail above page title
   
   # Icons
   icon:
@@ -72,7 +80,10 @@ markdown_extensions:
       line_spans: __span
       pygments_lang_class: true
   - pymdownx.inlinehilite
-  - pymdownx.snippets
+  - abbr
+  - pymdownx.snippets:
+      auto_append:
+        - includes/abbreviations.md
   - pymdownx.superfences:
       custom_fences:
         - name: mermaid
@@ -119,12 +130,19 @@ plugins:
       separator: '[\s\-,:!=\[\]()"/]+|(?!\b)(?=[A-Z][a-z])|\.(?!\d)|&[lg]t;'
   - minify:
       minify_html: true
+  - social                    # Auto-generate Open Graph preview cards
+  - glightbox                 # Click-to-zoom on images
+  - git-revision-date-localized:
+      enable_creation_date: true
+      type: date
+  - tags
 
 # Navigation structure - mirrors your docs/ folder
 nav:
   - Home: index.md
   
   - Getting Started:
+    - WSL2 Setup: getting-started/wsl-setup.md
     - VS Code Setup: getting-started/vscode-setup.md
     - VS Code Extensions: getting-started/vscode-extensions.md
     - Python Environment Setup: getting-started/python-environment-setup.md
@@ -136,6 +154,7 @@ nav:
     - SSH Connection: osc-basics/osc-ssh-connection.md
     - Remote Development: osc-basics/osc-remote-development.md
     - File Transfer: osc-basics/osc-file-transfer.md
+    - OnDemand Portal: osc-basics/osc-ondemand.md
 
   - Working on OSC:
     - Job Submission: working-on-osc/osc-job-submission.md
@@ -146,6 +165,7 @@ nav:
 
   - ML Workflows:
     - PyTorch & GPU Setup: ml-workflows/pytorch-setup.md
+    - PyG (PyTorch Geometric): ml-workflows/pyg-setup.md
     - ML Project Template: ml-workflows/ml-workflow.md
     - Notebook-to-Script Workflow: ml-workflows/notebook-to-script.md
     - Data & Experiment Tracking: ml-workflows/data-experiment-tracking.md
@@ -163,6 +183,7 @@ nav:
   - Resources:
     - Troubleshooting: resources/troubleshooting.md
     - Useful Links: resources/useful-links.md
+    - Tags: tags.md
 
 # Extra configuration
 extra:

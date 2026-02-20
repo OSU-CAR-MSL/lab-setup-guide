@@ -36,77 +36,65 @@ Each tool in our stack addresses a specific challenge in the ML research workflo
 
 ## :books: Documentation Sections
 
-### Getting Started
+<div class="grid cards" markdown>
 
-Set up your local development environment before connecting to OSC.
+-   :material-laptop:{ .lg .middle } **Getting Started**
 
-| Guide | Description |
-|-------|-------------|
-| [VS Code Setup](getting-started/vscode-setup.md) | Install and configure Visual Studio Code |
-| [VS Code Extensions](getting-started/vscode-extensions.md) | Required and recommended extensions |
-| [Python Environment Setup](getting-started/python-environment-setup.md) | WSL filesystem, `uv`, and local Python environments |
-| [AI Coding Assistants](getting-started/ai-coding-assistants.md) | Set up GitHub Copilot and Claude Code |
+    ---
 
-### OSC Basics
+    WSL2, VS Code, Python environments, and AI coding assistants for local development.
 
-Learn how to access and navigate the Ohio Supercomputer Center.
+    [:octicons-arrow-right-24: Get started](getting-started/wsl-setup.md)
 
-| Guide | Description |
-|-------|-------------|
-| [Clusters Overview](osc-basics/osc-clusters-overview.md) | HPC terminology, Pitzer and Owens specs, partitions |
-| [Account Setup](osc-basics/osc-account-setup.md) | Request and configure your OSC account |
-| [SSH Connection](osc-basics/osc-ssh-connection.md) | Connect from your local machine |
-| [Remote Development](osc-basics/osc-remote-development.md) | Use VS Code with OSC |
-| [File Transfer](osc-basics/osc-file-transfer.md) | Move files to and from OSC |
+-   :material-server-network:{ .lg .middle } **OSC Basics**
 
-### Working on OSC
+    ---
 
-Best practices and guides for running computational work.
+    Cluster specs, account setup, SSH, remote development, file transfer, and OnDemand.
 
-| Guide | Description |
-|-------|-------------|
-| [Job Submission](working-on-osc/osc-job-submission.md) | Submit and manage SLURM jobs |
-| [Environment Management](working-on-osc/osc-environment-management.md) | Modules, Conda, and virtual environments |
-| [Pipeline Orchestration](working-on-osc/pipeline-orchestration.md) | Automate multi-step workflows with Nextflow or Prefect |
-| [CARLA Simulator](working-on-osc/carla-simulator.md) | Run CARLA for autonomous driving research |
-| [MATLAB & Simulink](working-on-osc/matlab-simulink.md) | Use MATLAB and Simulink on OSC |
+    [:octicons-arrow-right-24: Learn OSC basics](osc-basics/osc-clusters-overview.md)
 
-### Machine Learning Workflows
+-   :material-cog-play:{ .lg .middle } **Working on OSC**
 
-Guides specific to ML/DL research on OSC.
+    ---
 
-| Guide | Description |
-|-------|-------------|
-| [PyTorch & GPU Setup](ml-workflows/pytorch-setup.md) | Install PyTorch, request GPUs, optimize training |
-| [ML Project Template](ml-workflows/ml-workflow.md) | Project structure and data organization for ML on OSC |
-| [Notebook-to-Script Workflow](ml-workflows/notebook-to-script.md) | Convert Jupyter prototypes to production scripts |
-| [Data & Experiment Tracking](ml-workflows/data-experiment-tracking.md) | DVC, SQLite, MLflow, W&B, and Parquet for ML projects |
+    SLURM job submission, environment management, pipeline orchestration, and simulators.
 
-### Contributing
+    [:octicons-arrow-right-24: Start working](working-on-osc/osc-job-submission.md)
 
-Learn how the site works and how to add new content.
+-   :material-brain:{ .lg .middle } **ML Workflows**
 
-| Guide | Description |
-|-------|-------------|
-| [Contributing Guide](contributing/how-this-site-works.md) | Architecture, adding pages, deployment |
-| [GitHub Pages Setup](contributing/github-pages-setup.md) | Set up a documentation site with MkDocs or Quarto |
+    ---
 
-### Assignments
+    PyTorch & GPU setup, PyG, project templates, notebook-to-script, and experiment tracking.
 
-Hands-on tasks for new undergraduates joining the lab.
+    [:octicons-arrow-right-24: ML guides](ml-workflows/pytorch-setup.md)
 
-| Assignment | Description |
-|------------|-------------|
-| [Assignment 1: Personal Website](assignments/personal-website.md) | Build and deploy your academic website with Git, Quarto, and GitHub Pages |
-| [Assignment 2a: Exploratory Data Analysis](assignments/exploratory-data-analysis.md) | EDA, visualizations, and baseline ML models with pandas and scikit-learn |
-| [Assignment 2b: Concepts, Admin & AI Setup](assignments/concepts-admin-setup.md) | OSC access, W&B, SQL, ML pipelines, Copilot, and Claude Code setup |
+-   :material-file-document-edit:{ .lg .middle } **Contributing**
 
-### Resources
+    ---
 
-| Guide | Description |
-|-------|-------------|
-| [Troubleshooting](resources/troubleshooting.md) | Common issues and solutions |
-| [Useful Links](resources/useful-links.md) | External resources and documentation |
+    How this site works, adding pages, and setting up your own documentation site.
+
+    [:octicons-arrow-right-24: Contribute](contributing/how-this-site-works.md)
+
+-   :material-school:{ .lg .middle } **Assignments**
+
+    ---
+
+    Hands-on tasks for new undergraduates: personal websites, EDA, and OSC onboarding.
+
+    [:octicons-arrow-right-24: View assignments](assignments/index.md)
+
+-   :material-lifebuoy:{ .lg .middle } **Resources**
+
+    ---
+
+    Troubleshooting guides, useful links, and OSC support contacts.
+
+    [:octicons-arrow-right-24: Get help](resources/troubleshooting.md)
+
+</div>
 
 ---
 

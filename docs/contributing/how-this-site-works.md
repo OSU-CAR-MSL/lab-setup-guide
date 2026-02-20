@@ -52,6 +52,8 @@ osu-car-msl.github.io/lab-setup-guide/
 
 You never need to manually build or upload anything. Just push markdown and the site updates in about 45 seconds.
 
+A separate CI workflow (`link-check.yml`) runs on each push and weekly to check external links, content freshness (pages not reviewed in 6+ months), and SSOT duplication.
+
 ## Adding a New Page
 
 ### 1. Create the file
@@ -67,6 +69,14 @@ A brief introduction to what this page covers.
 
 Your content here.
 ```
+
+!!! important "Content freshness tag required"
+    Every page must have `<!-- last-reviewed: YYYY-MM-DD -->` as its **very first line** (before the heading). Use today's date. CI will flag pages that haven't been reviewed in 6 months.
+
+    ```markdown
+    <!-- last-reviewed: 2026-02-19 -->
+    # My New Guide
+    ```
 
 ### 2. Add it to the navigation
 
@@ -185,8 +195,10 @@ print(torch.cuda.is_available())
 Before pushing a new page:
 
 - [ ] File is in the correct `docs/` subfolder
+- [ ] First line is `<!-- last-reviewed: YYYY-MM-DD -->` with today's date
 - [ ] File starts with a `# Title` heading
 - [ ] Page is added to `nav:` in `mkdocs.yml`
 - [ ] Links to other pages use correct relative paths
 - [ ] Code blocks specify the language for syntax highlighting
 - [ ] `mkdocs build --strict` passes
+- [ ] `python scripts/check-freshness.py --max-age-days 180` passes

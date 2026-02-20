@@ -39,3 +39,35 @@
 .md-footer {
   background-color: #333333;
 }
+
+/* Mobile table scroll */
+.md-typeset table {
+  overflow-x: auto;
+  display: block;
+}
+
+/* Zebra striping for tables */
+[data-md-color-scheme="default"] .md-typeset table tbody tr:nth-child(even) {
+  background-color: rgba(0, 0, 0, 0.03);
+}
+
+[data-md-color-scheme="slate"] .md-typeset table tbody tr:nth-child(even) {
+  background-color: rgba(255, 255, 255, 0.03);
+}
+
+/* Print styles */
+@media print {
+  .md-header,
+  .md-tabs,
+  .md-sidebar,
+  .md-footer,
+  .md-search,
+  .md-top {
+    display: none !important;
+  }
+
+  .md-content {
+    margin: 0 !important;
+    max-width: 100% !important;
+  }
+}

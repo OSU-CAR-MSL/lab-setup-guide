@@ -20,7 +20,7 @@ Before diving into OSC's clusters, familiarize yourself with these key HPC terms
 | **Batch Job** | A job submitted via a script that runs without user interaction |
 | **Interactive Job** | A job that provides a live shell session on a compute node |
 | **Scheduler** | Software (SLURM at OSC) that manages job queues and allocates resources |
-| **Module** | A system for loading and managing software packages (e.g., `module load python/3.9-2022.05`) |
+| **Module** | A system for loading and managing software packages (e.g., `module load python/3.11`) |
 | **Scratch Space** | High-performance temporary storage for active jobs — files are purged after inactivity |
 | **Home Directory** | Persistent personal storage with limited quota (`~/` or `/users/`) |
 | **Project Space** | Shared storage for a research group, tied to a project allocation |

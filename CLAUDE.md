@@ -11,7 +11,7 @@ MkDocs Material documentation site for the OSU CAR Mobility Systems Lab. All con
 ## Commands
 
 ```bash
-# Install dependencies (pinned in requirements-docs.txt)
+# Install dependencies (pinned in requirements-docs.txt; [imaging] extra pulls in Pillow + CairoSVG)
 pip install -r requirements-docs.txt
 
 # Local development server (auto-reloads at http://127.0.0.1:8000)
@@ -36,21 +36,27 @@ lab-setup-guide/
 ├── mkdocs.yml                          # Nav, theme, extensions, plugins
 ├── requirements-docs.txt               # Python deps for MkDocs build (CI cache key)
 ├── CLAUDE.md                           # This file
-├── docs/                               # All Markdown content (27 pages)
-│   ├── index.md                        # Homepage with tool matrix and section tables
-│   ├── getting-started/                # 4 pages — VS Code, extensions, Python env, AI assistants
-│   ├── osc-basics/                     # 5 pages — clusters, account, SSH, remote dev, file transfer
+├── overrides/                          # MkDocs Material theme overrides
+│   └── 404.html                        # Custom 404 page
+├── docs/                               # All Markdown content (31 pages)
+│   ├── index.md                        # Homepage with grid cards, tool matrix, tips
+│   ├── tags.md                         # Auto-generated tag index
+│   ├── includes/
+│   │   └── abbreviations.md            # Glossary for abbreviation tooltips
+│   ├── assets/                         # Logo, favicon (placeholder)
+│   ├── getting-started/                # 5 pages — WSL2, VS Code, extensions, Python env, AI assistants
+│   ├── osc-basics/                     # 6 pages — clusters, account, SSH, remote dev, file transfer, OnDemand
 │   ├── working-on-osc/                 # 5 pages — jobs, envs, orchestration, CARLA, MATLAB
-│   ├── ml-workflows/                   # 4 pages — PyTorch, project template, notebook-to-script, tracking
+│   ├── ml-workflows/                   # 5 pages — PyTorch, PyG, project template, notebook-to-script, tracking
 │   ├── contributing/                   # 2 pages — contributing guide, GitHub Pages setup
 │   ├── assignments/                    # 4 pages — index + 3 assignments
 │   ├── resources/                      # 2 pages — troubleshooting, useful links
-│   └── stylesheets/extra.css           # Custom OSU scarlet branding
+│   └── stylesheets/extra.css           # Custom OSU scarlet branding + print styles
 ├── scripts/
 │   ├── check-freshness.py              # Flags pages with stale last-reviewed dates (>6 months)
 │   └── check-duplication.py            # Advisory SSOT duplication detector
 ├── .github/workflows/
-│   ├── deploy-docs.yml                 # Build + deploy on push to main (docs/** or mkdocs.yml)
+│   ├── deploy-docs.yml                 # Build + deploy on push to main (docs/**, mkdocs.yml, overrides/**)
 │   └── link-check.yml                  # Lychee link checker + freshness + duplication (push + weekly cron)
 └── site/                               # Auto-generated build output (gitignored)
 ```
@@ -61,14 +67,17 @@ Each topic has exactly one canonical page. Other pages cross-link to it instead 
 
 | Topic | Canonical Page |
 |-------|---------------|
+| WSL2 installation and setup | `getting-started/wsl-setup.md` |
 | Cluster specs, partitions, storage quotas | `osc-basics/osc-clusters-overview.md` |
 | SSH keys and SSH config | `osc-basics/osc-ssh-connection.md` |
 | File transfer (SCP, rsync, SFTP) | `osc-basics/osc-file-transfer.md` |
+| OSC OnDemand portal and interactive apps | `osc-basics/osc-ondemand.md` |
 | VS Code extensions | `getting-started/vscode-extensions.md` |
 | Modules, venvs, conda | `working-on-osc/osc-environment-management.md` |
 | SLURM jobs, job arrays, job scripts | `working-on-osc/osc-job-submission.md` |
 | Pipeline orchestration (Nextflow, Prefect) | `working-on-osc/pipeline-orchestration.md` |
 | PyTorch install, GPU requesting, GPU perf, multi-GPU, memory mgmt | `ml-workflows/pytorch-setup.md` |
+| PyTorch Geometric (PyG) setup and GNN workflows | `ml-workflows/pyg-setup.md` |
 | Experiment tracking (DVC, SQLite, MLflow, W&B, TensorBoard, Parquet) | `ml-workflows/data-experiment-tracking.md` |
 | Notebook-to-script conversion | `ml-workflows/notebook-to-script.md` |
 | OSC portals and support contacts | `resources/useful-links.md` |
@@ -84,7 +93,7 @@ Each topic has exactly one canonical page. Other pages cross-link to it instead 
 For partition details and GPU types, see the [Clusters Overview](../osc-basics/osc-clusters-overview.md).
 ```
 
-**Content freshness.** Every `.md` page in `docs/` must have `<!-- last-reviewed: YYYY-MM-DD -->` as its first line. Update the date when you meaningfully review or edit a page. The CI freshness check flags pages older than 6 months.
+**Content freshness.** Every `.md` page in `docs/` must have `<!-- last-reviewed: YYYY-MM-DD -->` as its first line (or immediately after YAML front matter if tags are used). Update the date when you meaningfully review or edit a page. The CI freshness check flags pages older than 6 months.
 
 **No link dumps.** The useful-links page is intentionally minimal — only OSC-specific portals, lab resources, and genuinely hard-to-find references. Don't add generic links (Python docs, ML courses, framework homepages) that any search engine would find.
 
@@ -93,7 +102,7 @@ For partition details and GPU types, see the [Clusters Overview](../osc-basics/o
 ## Adding a New Page
 
 1. Create a `.md` file in the appropriate `docs/` subfolder.
-2. Add `<!-- last-reviewed: YYYY-MM-DD -->` as the first line.
+2. Add `<!-- last-reviewed: YYYY-MM-DD -->` as the first line (after optional YAML front matter for tags).
 3. Add the page to the `nav:` section in `mkdocs.yml`.
 4. Check the canonical locations table above — if the new page overlaps with an existing topic, cross-link instead of duplicating.
 5. Verify:
@@ -113,6 +122,13 @@ The site has these extensions configured in `mkdocs.yml` — use them in content
 - **Mermaid diagrams:** fenced with ` ```mermaid `
 - **Keyboard keys:** `++ctrl+c++`
 - **Task lists:** `- [x] Done` / `- [ ] Todo`
+- **Abbreviation tooltips:** HPC/ML terms auto-defined via `includes/abbreviations.md`
+- **Tags:** Pages can have YAML front matter `tags:` for the auto-generated tag index at `tags.md`
+- **Image lightbox:** Images are click-to-zoom via `glightbox` plugin
+- **Social cards:** Auto-generated Open Graph preview images via `social` plugin
+- **Navigation footer:** Prev/next page links at bottom of every page
+- **Breadcrumbs:** Navigation path shown above page titles
+- **Git revision dates:** "Last updated" shown on every page via `git-revision-date-localized` plugin
 
 ## Assignments
 
@@ -142,6 +158,6 @@ Two GitHub Actions workflows, both triggered on push to `main` when `docs/` or `
 | Workflow | Trigger | Purpose | Blocking? |
 |----------|---------|---------|-----------|
 | `deploy-docs.yml` | Push to `main` + manual | `mkdocs build --strict` → GitHub Pages deploy | Yes — broken links fail the build |
-| `link-check.yml` | Push to `main` + weekly Monday cron | Lychee external link check, freshness audit, SSOT duplication check | No — `fail: false` (warning-only for now) |
+| `link-check.yml` | Push to `main` + weekly Monday cron | Lychee external link check, freshness audit, SSOT duplication check | Yes — `fail: true` |
 
-The link-check workflow excludes authenticated portals (`ondemand.osc.edu`, `my.osc.edu`) and localhost URLs. Flip `fail: false` → `fail: true` in `link-check.yml` once the initial report is clean.
+The link-check workflow excludes authenticated portals (`ondemand.osc.edu`, `my.osc.edu`) and localhost URLs.

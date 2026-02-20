@@ -256,7 +256,7 @@ jupyter nbconvert --to script notebooks/prototype.ipynb
 #SBATCH --time=08:00:00
 #SBATCH --output=logs/train_%j.out
 
-module load python/3.9-2022.05
+module load python/3.11
 module load cuda/11.8.0
 source ~/venvs/myproject/bin/activate
 

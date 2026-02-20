@@ -1,3 +1,10 @@
+---
+tags:
+  - PyTorch
+  - GPU
+  - CUDA
+  - OSC
+---
 <!-- last-reviewed: 2026-02-19 -->
 # PyTorch & GPU Setup
 
@@ -15,7 +22,7 @@ For those who want to get started quickly:
 
 ```bash
 # 1. Load modules
-module load python/3.9-2022.05 cuda/11.8.0
+module load python/3.11 cuda/11.8.0
 
 # 2. Create virtual environment
 python -m venv ~/venvs/pytorch
@@ -54,7 +61,7 @@ Check the [PyTorch installation matrix](https://pytorch.org/get-started/locally/
 module purge
 
 # Load Python and CUDA
-module load python/3.9-2022.05
+module load python/3.11
 module load cuda/11.8.0
 
 # Verify
@@ -92,6 +99,8 @@ pip install torch torchvision torchaudio --index-url https://download.pytorch.or
 ```
 
 ### Step 5: Install Additional Packages
+
+For graph neural network libraries (PyTorch Geometric), see the [PyG Setup Guide](pyg-setup.md).
 
 ```bash
 # Core scientific packages
@@ -159,7 +168,7 @@ Test on GPU node:
 srun -p gpu --gpus-per-node=1 --time=00:10:00 --pty bash
 
 # Activate environment
-module load python/3.9-2022.05 cuda/11.8.0
+module load python/3.11 cuda/11.8.0
 source ~/venvs/pytorch/bin/activate
 
 # Run test
@@ -175,10 +184,10 @@ exit
 
     ```bash
     # Load conda
-    module load python/3.9-2022.05
+    module load python/3.11
 
     # Create conda environment
-    conda create -n pytorch python=3.9 -y
+    conda create -n pytorch python=3.11 -y
 
     # Activate
     conda activate pytorch
@@ -374,6 +383,34 @@ for i, (data, target) in enumerate(train_loader):
         optimizer.zero_grad()
 ```
 
+### torch.compile() (PyTorch 2.0+)
+
+`torch.compile()` JIT-compiles your model for faster execution. On OSC's A100 GPUs, it can provide significant speedups with minimal code changes.
+
+```python
+import torch
+
+model = MyModel().cuda()
+
+# Basic usage — tries the best available backend
+model = torch.compile(model)
+
+# Specify backend explicitly
+model = torch.compile(model, backend="inductor")  # Default, good general choice
+
+# Max performance (longer compile time, best runtime)
+model = torch.compile(model, mode="max-autotune")
+```
+
+!!! warning "Requires PyTorch 2.0+"
+    `torch.compile()` is only available in PyTorch 2.0 and later. Check your version with `torch.__version__`. If you're using an older version, upgrade with:
+    ```bash
+    pip install --upgrade torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
+    ```
+
+!!! tip "A100 GPUs benefit the most"
+    `torch.compile()` with `mode="max-autotune"` takes advantage of A100-specific features like TF32 tensor cores. Request A100s on Pitzer for best results: `--gpus-per-node=a100:1`.
+
 ??? tip "Gradient Checkpointing"
 
     Save memory by recomputing activations during backward pass:
@@ -498,9 +535,8 @@ Job script:
 #SBATCH --gpus-per-node=4
 #SBATCH --ntasks-per-node=4
 
-python -m torch.distributed.launch \
-    --nproc_per_node=4 \
-    train_ddp.py
+# torchrun replaces the deprecated torch.distributed.launch
+torchrun --nproc_per_node=4 train_ddp.py
 ```
 
 ## Memory Management
@@ -577,7 +613,7 @@ echo "Running on node: $(hostname)"
 echo "Job ID: $SLURM_JOB_ID"
 
 # Load modules
-module load python/3.9-2022.05
+module load python/3.11
 module load cuda/11.8.0
 
 # Activate environment

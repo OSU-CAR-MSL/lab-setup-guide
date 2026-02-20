@@ -1,3 +1,9 @@
+---
+tags:
+  - SLURM
+  - OSC
+  - GPU
+---
 <!-- last-reviewed: 2026-02-19 -->
 # Job Submission Guide
 
@@ -99,7 +105,7 @@ Every SLURM batch script has three sections:
 #SBATCH --account=PAS1234
 #SBATCH --time=02:00:00
 
-module load python/3.9-2022.05         # 3. Execution block
+module load python/3.11         # 3. Execution block
 source ~/venvs/myproject/bin/activate
 python train.py
 ```
@@ -121,7 +127,7 @@ python train.py
     #SBATCH --job-name=my_job       # ✅ Read by SLURM
     #SBATCH --time=02:00:00         # ✅ Read by SLURM
 
-    module load python/3.9-2022.05  # First executable line
+    module load python/3.11  # First executable line
 
     #SBATCH --mem=64G               # ❌ SILENTLY IGNORED
     ```
@@ -170,7 +176,7 @@ echo "Running on node: $(hostname)"
 echo "Job ID: $SLURM_JOB_ID"
 
 # Load modules
-module load python/3.9-2022.05
+module load python/3.11
 
 # Activate environment
 source ~/venvs/myproject/bin/activate
@@ -195,7 +201,7 @@ echo "Job ended at: $(date)"
 #SBATCH --output=logs/gpu_job_%j.out
 
 # Load modules
-module load python/3.9-2022.05
+module load python/3.11
 module load cuda/11.8.0
 
 # Activate environment
@@ -222,15 +228,12 @@ python train.py --device cuda --epochs 100
 #SBATCH --time=08:00:00
 #SBATCH --output=logs/multi_gpu_%j.out
 
-module load python/3.9-2022.05
+module load python/3.11
 module load cuda/11.8.0
 source ~/venvs/pytorch/bin/activate
 
-# Run with PyTorch DDP
-python -m torch.distributed.launch \
-    --nproc_per_node=4 \
-    train.py \
-    --distributed
+# Run with PyTorch DDP (torchrun replaces the deprecated torch.distributed.launch)
+torchrun --nproc_per_node=4 train.py --distributed
 ```
 
 ### Common Job Patterns
@@ -249,7 +252,7 @@ For data preprocessing, feature extraction, or file conversion jobs that don't n
 #SBATCH --time=04:00:00
 #SBATCH --output=logs/preprocess_%j.out
 
-module load python/3.9-2022.05
+module load python/3.11
 source ~/venvs/myproject/bin/activate
 
 # Use all allocated CPUs
@@ -276,7 +279,7 @@ For long training jobs that may hit walltime limits or need to recover from fail
 #SBATCH --time=24:00:00
 #SBATCH --output=logs/train_%j.out
 
-module load python/3.9-2022.05
+module load python/3.11
 module load cuda/11.8.0
 source ~/venvs/pytorch/bin/activate
 
@@ -334,7 +337,7 @@ Get notified when important jobs start, finish, or fail:
 #SBATCH --mail-type=BEGIN,END,FAIL
 #SBATCH --mail-user=name.1@osu.edu
 
-module load python/3.9-2022.05
+module load python/3.11
 module load cuda/11.8.0
 source ~/venvs/pytorch/bin/activate
 

@@ -139,7 +139,7 @@ git config --global core.autocrlf input
 On OSC, continue using the module system and `pip` as documented in the [Environment Management](../working-on-osc/osc-environment-management.md) guide:
 
 ```bash
-module load python/3.9-2022.05
+module load python/3.11
 python -m venv ~/venvs/myproject
 source ~/venvs/myproject/bin/activate
 pip install torch torchvision torch-geometric

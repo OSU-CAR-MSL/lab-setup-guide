@@ -2,7 +2,8 @@
 """Check docs pages for stale last-reviewed dates.
 
 Scans all docs/**/*.md files for a <!-- last-reviewed: YYYY-MM-DD --> comment
-on the first line and flags pages older than the threshold.
+in the first 10 lines (to support YAML front matter before the comment)
+and flags pages older than the threshold.
 """
 
 import argparse
@@ -12,6 +13,9 @@ from datetime import datetime, timedelta
 from pathlib import Path
 
 REVIEW_RE = re.compile(r"<!--\s*last-reviewed:\s*(\d{4}-\d{2}-\d{2})\s*-->")
+
+# Files that are included via snippets, not standalone pages
+EXCLUDE_PATTERNS = {"includes/"}
 
 
 def main() -> None:
@@ -28,8 +32,14 @@ def main() -> None:
     missing: list[str] = []
 
     for md in sorted(docs.rglob("*.md")):
-        first_line = md.read_text(encoding="utf-8").split("\n", 1)[0]
-        match = REVIEW_RE.search(first_line)
+        rel = str(md.relative_to(docs))
+        if any(rel.startswith(pat) for pat in EXCLUDE_PATTERNS):
+            continue
+
+        text = md.read_text(encoding="utf-8")
+        # Search first 10 lines for the review comment
+        head = "\n".join(text.split("\n", 10)[:10])
+        match = REVIEW_RE.search(head)
         if not match:
             missing.append(str(md))
             continue

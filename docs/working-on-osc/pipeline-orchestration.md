@@ -55,7 +55,7 @@ process PREPROCESS {
 
     script:
     """
-    module load python/3.9-2022.05
+    module load python/3.11
     source ~/venvs/ml_project/bin/activate
     python scripts/preprocess.py --input ${raw_data} --output processed.csv
     """
@@ -75,7 +75,7 @@ process TRAIN {
 
     script:
     """
-    module load python/3.9-2022.05
+    module load python/3.11
     module load cuda/11.8.0
     source ~/venvs/ml_project/bin/activate
     python scripts/train.py --data ${data} --output model.pt
@@ -99,7 +99,7 @@ process EVALUATE {
 
     script:
     """
-    module load python/3.9-2022.05
+    module load python/3.11
     module load cuda/11.8.0
     source ~/venvs/ml_project/bin/activate
     python scripts/evaluate.py --model ${model} --data ${data} --output metrics.json
@@ -193,7 +193,7 @@ nextflow main.nf -with-report report.html
 ### Setup
 
 ```bash
-module load python/3.9-2022.05
+module load python/3.11
 source ~/venvs/ml_project/bin/activate
 pip install prefect dask-jobqueue
 ```

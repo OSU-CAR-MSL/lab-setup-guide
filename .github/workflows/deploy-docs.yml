@@ -11,6 +11,8 @@ on:
     paths:
       - 'docs/**'
       - 'mkdocs.yml'
+      - 'requirements-docs.txt'
+      - 'overrides/**'
       - '.github/workflows/deploy-docs.yml'
   
   # Allows manual trigger from Actions tab

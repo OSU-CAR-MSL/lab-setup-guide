@@ -54,7 +54,8 @@ lab-setup-guide/
 │   └── stylesheets/extra.css           # Custom OSU scarlet branding + print styles
 ├── scripts/
 │   ├── check-freshness.py              # Flags pages with stale last-reviewed dates (>6 months)
-│   └── check-duplication.py            # Advisory SSOT duplication detector
+│   ├── check-duplication.py            # Advisory SSOT duplication detector
+│   └── mcp_lab_docs.py                 # MCP server — exposes docs as tools for Claude Code
 ├── .github/workflows/
 │   ├── deploy-docs.yml                 # Build + deploy on push to main (docs/**, mkdocs.yml, overrides/**)
 │   └── link-check.yml                  # Lychee link checker + freshness + duplication (push + weekly cron)
@@ -161,3 +162,26 @@ Two GitHub Actions workflows, both triggered on push to `main` when `docs/` or `
 | `link-check.yml` | Push to `main` + weekly Monday cron | Lychee external link check, freshness audit, SSOT duplication check | Yes — `fail: true` |
 
 The link-check workflow excludes authenticated portals (`ondemand.osc.edu`, `my.osc.edu`) and localhost URLs.
+
+## MCP Server
+
+`scripts/mcp_lab_docs.py` is a FastMCP server that exposes the documentation as queryable tools for any Claude Code session on this machine. It reads raw markdown files directly from `docs/` — no build step required.
+
+**Tools provided:**
+
+| Tool | Purpose |
+|------|---------|
+| `search_docs(query, limit=5)` | Case-insensitive search across all pages; returns matching lines with context |
+| `read_page(page_path)` | Returns full markdown content of a page (e.g. `ml-workflows/pytorch-setup.md`) |
+| `list_pages()` | Navigation tree parsed from `mkdocs.yml` — discover what pages exist |
+
+**Configuration** is in `~/.claude/settings.json` under the `lab-docs` key. It uses `uv run --with` to pull `mcp[cli]` and `pyyaml` at runtime, so no virtualenv setup is needed.
+
+```bash
+# Test the server starts cleanly
+uv run --with "mcp[cli]" --with pyyaml scripts/mcp_lab_docs.py
+# Ctrl+C to stop — it blocks on stdio input
+
+# Verify in Claude Code
+# Run /mcp — should show "lab-docs" with 3 tools
+```

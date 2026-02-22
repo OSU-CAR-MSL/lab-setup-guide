@@ -3,7 +3,7 @@ tags:
   - OSC
   - conda
 ---
-<!-- last-reviewed: 2026-02-19 -->
+<!-- last-reviewed: 2026-02-22 -->
 # Environment Management
 
 Learn how to manage software environments on OSC using modules and virtual environments.
@@ -46,7 +46,7 @@ module spider pytorch
 module spider cuda
 
 # Load a module
-module load python/3.11
+module load python/3.12
 
 # Load specific version
 module load cuda/11.8.0
@@ -72,7 +72,7 @@ module swap python/3.9 python/3.11
 #### Python
 ```bash
 # Python 3.11 (recommended)
-module load python/3.11
+module load python/3.12
 ```
 
 #### CUDA (for GPU work)
@@ -102,7 +102,7 @@ Some modules load dependencies automatically:
 
 ```bash
 # Load Python (includes conda)
-module load python/3.11
+module load python/3.12
 
 # Check what was loaded
 module list
@@ -133,7 +133,7 @@ Virtual environments isolate project dependencies so different projects can use 
 
 ```bash
 # Load Python module
-module load python/3.11
+module load python/3.12
 
 # Create virtual environment
 python -m venv ~/venvs/myproject
@@ -158,10 +158,10 @@ For PyTorch-specific installation (matching CUDA versions, GPU verification), se
 
 ```bash
 # Load conda
-module load python/3.11
+module load python/3.12
 
 # Create conda environment
-conda create -n myproject python=3.11
+conda create -n myproject python=3.12
 
 # Activate
 conda activate myproject
@@ -222,6 +222,29 @@ python -m venv ~/venvs/project2
 python -m venv ~/venvs/ml_research
 ```
 
+### Method 3: uv (Works on OSC with Caveats)
+
+`uv` can be used on OSC for project-level dependency management, but you **must** use OSC's system Python — not uv's managed Python downloads, which can segfault on RHEL 9.
+
+```bash
+# Install uv (one-time)
+curl -LsSf https://astral.sh/uv/install.sh | sh
+
+# Create a venv using OSC's system Python (critical!)
+uv venv --python /apps/python/3.12/bin/python3
+
+# Activate
+source .venv/bin/activate
+
+# Install from pyproject.toml
+uv sync
+```
+
+!!! warning "uv on OSC: critical caveats"
+    - **Always use `--python /apps/python/3.12/bin/python3`** when creating venvs. uv's standalone Python builds are not compatible with OSC's RHEL 9 libraries and will segfault.
+    - **Do NOT load `module load python/3.12` and then use `uv venv`** — uv ignores module-loaded Python by default. You must pass the explicit path.
+    - **PyTorch from PyPI works** — PyPI wheels bundle NVIDIA libraries, so you don't need `module load cuda`. But PyG extensions need a flat wheel index configured in `pyproject.toml`. See [PyG Setup](../ml-workflows/pyg-setup.md) for details.
+
 ## Using Environments in Job Scripts
 
 ### venv in SLURM Job
@@ -232,7 +255,7 @@ python -m venv ~/venvs/ml_research
 #SBATCH --time=02:00:00
 
 # Load module
-module load python/3.11
+module load python/3.12
 
 # Activate virtual environment
 source ~/venvs/myproject/bin/activate
@@ -256,7 +279,7 @@ deactivate
 #SBATCH --time=02:00:00
 
 # Load conda
-module load python/3.11
+module load python/3.12
 
 # Activate conda environment
 source activate myproject
@@ -277,7 +300,7 @@ python train.py
 
 # Load all required modules
 module purge                    # Start clean
-module load python/3.11
+module load python/3.12
 module load cuda/11.8.0
 module load git
 
@@ -299,7 +322,7 @@ Create `~/scripts/load_ml_modules.sh`:
 # Load modules for ML work
 
 module purge
-module load python/3.11
+module load python/3.12
 module load cuda/11.8.0
 module load git
 
@@ -324,7 +347,7 @@ Create `~/scripts/activate_ml_env.sh`:
 
 # Load modules
 module purge
-module load python/3.11
+module load python/3.12
 module load cuda/11.8.0
 
 # Activate virtual environment
@@ -350,7 +373,7 @@ source ~/scripts/activate_ml_env.sh
 
     ```bash
     # Create in project space
-    conda create -p /fs/project/PAS1234/envs/lab_shared python=3.11
+    conda create -p /fs/project/PAS1234/envs/lab_shared python=3.12
 
     # All lab members can activate
     conda activate /fs/project/PAS1234/envs/lab_shared
@@ -418,7 +441,7 @@ du -sh ~/*/  | sort -hr | head -10
 
     ```bash
     # Load commonly used modules
-    module load python/3.11
+    module load python/3.12
 
     # Alias for activating environments
     alias activate-ml='source ~/venvs/ml_project/bin/activate'
@@ -462,7 +485,7 @@ Location: ~/venvs/myproject
 
 ## Installation
 \`\`\`bash
-module load python/3.11 cuda/11.8.0
+module load python/3.12 cuda/11.8.0
 python -m venv ~/venvs/myproject
 source ~/venvs/myproject/bin/activate
 pip install -r requirements.txt
@@ -570,7 +593,7 @@ Verify the CUDA module is loaded (`module load cuda/11.8.0`) and that you're on 
 module purge
 
 # Load modules in correct order
-module load python/3.11
+module load python/3.12
 module load cuda/11.8.0
 ```
 
@@ -578,7 +601,7 @@ module load cuda/11.8.0
 
     ```bash
     # Modules
-    module load python/3.11   # Load Python
+    module load python/3.12   # Load Python
     module load cuda/11.8.0          # Load CUDA
     module list                      # Show loaded
     module purge                     # Unload all
@@ -590,7 +613,7 @@ module load cuda/11.8.0
     pip freeze > requirements.txt    # Export
 
     # conda
-    conda create -n name python=3.11  # Create
+    conda create -n name python=3.12  # Create
     conda activate name              # Activate
     conda deactivate                 # Deactivate
     conda env export > env.yml       # Export

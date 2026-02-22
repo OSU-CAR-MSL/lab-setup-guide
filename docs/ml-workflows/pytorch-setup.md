@@ -5,7 +5,7 @@ tags:
   - CUDA
   - OSC
 ---
-<!-- last-reviewed: 2026-02-19 -->
+<!-- last-reviewed: 2026-02-22 -->
 # PyTorch & GPU Setup
 
 Everything you need to install PyTorch, request GPUs, and train efficiently on OSC.
@@ -22,7 +22,7 @@ For those who want to get started quickly:
 
 ```bash
 # 1. Load modules
-module load python/3.11 cuda/11.8.0
+module load python/3.12 cuda/11.8.0
 
 # 2. Create virtual environment
 python -m venv ~/venvs/pytorch
@@ -37,6 +37,12 @@ pip install torch torchvision torchaudio --index-url https://download.pytorch.or
 # 5. Install common ML packages
 pip install numpy pandas matplotlib scikit-learn jupyter tensorboard
 ```
+
+!!! tip "Alternative: uv on OSC"
+    If you use `uv` for project management, you can install PyTorch from PyPI (which bundles CUDA libraries automatically). See [Python Environment Setup](../getting-started/python-environment-setup.md) for details. The key difference: **PyPI torch bundles nvidia libs, so you do NOT need `module load cuda` or the `--index-url` pytorch wheel URL.** But you must use OSC's system Python: `uv venv --python /apps/python/3.12/bin/python3`.
+
+!!! warning "Version Constraint Triangle (PyTorch + PyG + CUDA)"
+    If you plan to use PyTorch Geometric (PyG), there is a **three-way version coupling** between PyTorch, PyG extension wheels, and CUDA. PyPI may ship torch 2.10+ but PyG only has compiled wheels up to torch 2.8.0. Installing mismatched versions compiles fine but **segfaults at runtime** (silent C++ ABI mismatch). Always check [data.pyg.org/whl/](https://data.pyg.org/whl/) for the latest torch version supported by PyG before upgrading. See [PyG Setup](pyg-setup.md) for full details.
 
 ## Detailed Setup
 
@@ -61,7 +67,7 @@ Check the [PyTorch installation matrix](https://pytorch.org/get-started/locally/
 module purge
 
 # Load Python and CUDA
-module load python/3.11
+module load python/3.12
 module load cuda/11.8.0
 
 # Verify
@@ -168,7 +174,7 @@ Test on GPU node:
 srun -p gpu --gpus-per-node=1 --time=00:10:00 --pty bash
 
 # Activate environment
-module load python/3.11 cuda/11.8.0
+module load python/3.12 cuda/11.8.0
 source ~/venvs/pytorch/bin/activate
 
 # Run test
@@ -184,10 +190,10 @@ exit
 
     ```bash
     # Load conda
-    module load python/3.11
+    module load python/3.12
 
     # Create conda environment
-    conda create -n pytorch python=3.11 -y
+    conda create -n pytorch python=3.12 -y
 
     # Activate
     conda activate pytorch
@@ -613,7 +619,7 @@ echo "Running on node: $(hostname)"
 echo "Job ID: $SLURM_JOB_ID"
 
 # Load modules
-module load python/3.11
+module load python/3.12
 module load cuda/11.8.0
 
 # Activate environment

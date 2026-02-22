@@ -1,4 +1,4 @@
-<!-- last-reviewed: 2026-02-19 -->
+<!-- last-reviewed: 2026-02-22 -->
 # Python Environment Setup
 
 This guide walks you through setting up Python development environments for lab work. The approach uses **two environments** tuned for different workloads:
@@ -6,10 +6,10 @@ This guide walks you through setting up Python development environments for lab 
 | Environment | Where | Package Manager | Use Case |
 |-------------|-------|----------------|----------|
 | **Local (WSL)** | `~/projects/` on WSL native filesystem | **`uv`** | Docs, light dev, scripting, Claude Code |
-| **OSC** | `~/venvs/` on OSC home directory | **`pip` + `venv`** (via `module load`) | ML training, torch-geometric, CUDA workloads |
+| **OSC** | `~/venvs/` or project `.venv/` on OSC | **`uv`** or **`pip` + `venv`** (via `module load`) | ML training, torch-geometric, CUDA workloads |
 
-!!! info "Why different tools for each?"
-    **`uv`** is 10-100x faster than pip, manages Python versions, and handles everything you need for local work. On OSC, the `module` system provides pre-built Python, CUDA, and compiler toolchains that `pip` integrates with natively. `uv` would bypass the module system and likely break packages with C extensions like torch-geometric.
+!!! info "uv works on both, with a caveat on OSC"
+    **`uv`** is 10-100x faster than pip and handles everything you need for local work. It **also works on OSC**, but you must use OSC's system Python (`uv venv --python /apps/python/3.12/bin/python3`) instead of uv's managed Python downloads, which can segfault on RHEL 9. PyTorch from PyPI bundles NVIDIA libraries, so `module load cuda` is not needed. See [Environment Management](../working-on-osc/osc-environment-management.md) for the full OSC setup.
 
 ---
 
@@ -136,17 +136,32 @@ git config --global core.autocrlf input
 
 ## Step 5: OSC Environments
 
-On OSC, continue using the module system and `pip` as documented in the [Environment Management](../working-on-osc/osc-environment-management.md) guide:
+On OSC, you can use either `pip` + `venv` (traditional) or `uv` (faster). Both work, but `uv` requires using OSC's system Python explicitly.
 
-```bash
-module load python/3.11
-python -m venv ~/venvs/myproject
-source ~/venvs/myproject/bin/activate
-pip install torch torchvision torch-geometric
-```
+=== "uv (Recommended)"
 
-!!! note "Why not `uv` on OSC?"
-    OSC's `module load python` sets up compiler flags, library paths, and CUDA integration. `pip` within that environment respects these paths and builds C extensions correctly. `uv` would use its own Python and skip the module system, breaking packages like torch-geometric. The speed benefit of `uv` matters less on OSC where you set up environments infrequently.
+    ```bash
+    # Create venv with OSC's system Python (critical — don't skip --python)
+    uv venv --python /apps/python/3.12/bin/python3
+
+    # Activate
+    source .venv/bin/activate
+
+    # Install from pyproject.toml
+    uv sync
+    ```
+
+=== "pip + venv (Traditional)"
+
+    ```bash
+    module load python/3.12
+    python -m venv ~/venvs/myproject
+    source ~/venvs/myproject/bin/activate
+    pip install torch torchvision torch-geometric
+    ```
+
+!!! warning "uv on OSC: use system Python"
+    `uv`'s standalone Python downloads can **segfault** on OSC's RHEL 9. Always pass `--python /apps/python/3.12/bin/python3` when creating venvs. PyTorch from PyPI bundles NVIDIA libraries, so `module load cuda` is not needed. See [Environment Management](../working-on-osc/osc-environment-management.md) for details.
 
 ---
 

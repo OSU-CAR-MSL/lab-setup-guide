@@ -5,7 +5,7 @@ tags:
   - CUDA
   - GPU
 ---
-<!-- last-reviewed: 2026-02-19 -->
+<!-- last-reviewed: 2026-02-22 -->
 # PyG (PyTorch Geometric) Setup
 
 [PyTorch Geometric (PyG)](https://pyg.org/) is the leading library for deep learning on graphs and other irregular structures. It provides efficient implementations of graph neural network layers (GCN, GAT, GraphSAGE, GIN, and many more), standard benchmark datasets, mini-batch loaders for large graphs, and utilities for graph transforms and sampling. If your research involves graph neural networks — whether for citation networks, molecular property prediction, point clouds, or CAN bus intrusion detection — PyG is the go-to framework on top of PyTorch.
@@ -18,7 +18,7 @@ Before installing PyG, you need a working PyTorch installation with CUDA support
 
 - An OSC account with GPU access
 - SSH connection configured (see [SSH Connection](../osc-basics/osc-ssh-connection.md))
-- Python 3.11 virtual environment with PyTorch + CUDA installed
+- Python 3.12 virtual environment with PyTorch + CUDA installed
 - Familiarity with SLURM job submission (see [Job Submission](../working-on-osc/osc-job-submission.md))
 
 ---
@@ -31,7 +31,7 @@ PyG depends on several compiled extension packages (`torch-scatter`, `torch-spar
 
 ```bash
 # Load required modules
-module load python/3.11
+module load python/3.12
 module load cuda/11.8.0
 
 # Activate your PyTorch virtual environment
@@ -79,6 +79,47 @@ Install the compiled extension packages from PyG's wheel index. The URL must mat
 pip install torch-geometric
 ```
 
+### Alternative: uv with `pyproject.toml`
+
+If you manage your project with `uv`, configure PyG's flat wheel index in `pyproject.toml` instead of using `-f` flags:
+
+```toml
+[project]
+requires-python = ">=3.12,<3.13"
+dependencies = [
+    "torch>=2.8.0,<2.9",
+    "torch-geometric>=2.7.0",
+    "torch-scatter",
+    "torch-sparse",
+    "torch-cluster",
+]
+
+[[tool.uv.index]]
+name = "pyg"
+url = "https://data.pyg.org/whl/torch-2.8.0+cu126.html"
+format = "flat"
+explicit = true
+
+[tool.uv.sources]
+torch-scatter = { index = "pyg" }
+torch-sparse = { index = "pyg" }
+torch-cluster = { index = "pyg" }
+```
+
+Then install with:
+
+```bash
+# Use OSC's system Python (never uv's managed Python on OSC)
+uv venv --python /apps/python/3.12/bin/python3
+uv sync
+```
+
+!!! warning "uv PyG traps"
+    - **Use `[[tool.uv.index]]` with `format = "flat"` and `explicit = true`**, not `[tool.uv] find-links`. `find-links` doesn't support the `explicit` flag, so non-PyG packages may accidentally resolve from the flat index.
+    - **Always pin `torch<next_minor`** (e.g., `<2.9`). Without an upper bound, uv resolves to the latest PyPI version (2.10+), which has no PyG wheels.
+    - **Pin `requires-python` with an upper bound** (e.g., `<3.13`). Without it, uv resolves for all supported Pythons including 3.13, where PyG wheels may not exist.
+    - **Never use uv-managed Python on OSC.** Standalone Python builds from uv can segfault on RHEL 9. Always point to OSC's system Python: `uv venv --python /apps/python/3.12/bin/python3`.
+
 !!! warning "Version Mismatch Will Cause Silent Failures"
     The most common PyG installation problem is a mismatch between the PyTorch/CUDA version in the wheel URL and the PyTorch/CUDA version actually installed. If the versions don't match, the extension libraries may install but fail at import time with `undefined symbol` errors or segfaults. Always verify with the check in Step 2 before installing.
 
@@ -96,7 +137,7 @@ After installation, run this script on a GPU node to verify everything works:
 srun -p gpu --gpus-per-node=1 --time=00:10:00 --pty bash
 
 # Activate environment
-module load python/3.11 cuda/11.8.0
+module load python/3.12 cuda/11.8.0
 source ~/venvs/pytorch/bin/activate
 
 # Run the verification script
@@ -328,7 +369,7 @@ echo "Running on node: $(hostname)"
 echo "Job ID: $SLURM_JOB_ID"
 
 # Load modules
-module load python/3.11
+module load python/3.12
 module load cuda/11.8.0
 
 # Activate environment

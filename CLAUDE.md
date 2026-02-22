@@ -163,6 +163,20 @@ Two GitHub Actions workflows, both triggered on push to `main` when `docs/` or `
 
 The link-check workflow excludes authenticated portals (`ondemand.osc.edu`, `my.osc.edu`) and localhost URLs.
 
+## Cross-Repo Context
+
+This documentation repo receives tested version pins and workflow learnings from other lab repos.
+
+| Repo | Location (OSC) | What This Repo Gets From It |
+|------|----------------|----------------------------|
+| **KD-GAT** | `~/CAN-Graph-Test/KD-GAT` | Tested PyTorch/PyG version pins, uv workflow patterns, SLURM settings |
+| **dotfiles** | `~/dotfiles` | Module version aliases (e.g., `modpy`), env var patterns |
+
+**When to update this repo:**
+- KD-GAT upgrades PyTorch/PyG → update `pytorch-setup.md`, `pyg-setup.md`
+- KD-GAT changes Python module version → update all pages referencing `module load python/X.Y`
+- dotfiles adds new tooling → update `osc-environment-management.md`
+
 ## MCP Server
 
 `scripts/mcp_lab_docs.py` is a FastMCP server that exposes the documentation as queryable tools for any Claude Code session on this machine. It reads raw markdown files directly from `docs/` — no build step required.

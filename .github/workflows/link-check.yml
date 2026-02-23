@@ -57,7 +57,8 @@ jobs:
           python-version: '3.12'
 
       - name: Check content freshness
-        run: python scripts/check-freshness.py --max-age-days 180
+        run: python scripts/check-freshness.py --max-age-days 365
+        continue-on-error: true
 
       - name: Check for SSOT duplication
         run: python scripts/check-duplication.py

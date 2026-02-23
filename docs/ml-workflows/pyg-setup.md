@@ -8,7 +8,7 @@ tags:
 <!-- last-reviewed: 2026-02-22 -->
 # PyG (PyTorch Geometric) Setup
 
-[PyTorch Geometric (PyG)]([https://pyg.org/](https://pytorch-geometric.readthedocs.io/en/latest/#)) is the leading library for deep learning on graphs and other irregular structures. It provides efficient implementations of graph neural network layers (GCN, GAT, GraphSAGE, GIN, and many more), standard benchmark datasets, mini-batch loaders for large graphs, and utilities for graph transforms and sampling. If your research involves graph neural networks — whether for citation networks, molecular property prediction, point clouds, or CAN bus intrusion detection — PyG is the go-to framework on top of PyTorch.
+[PyTorch Geometric (PyG)](https://pytorch-geometric.readthedocs.io/en/latest/#) is the leading library for deep learning on graphs and other irregular structures. It provides efficient implementations of graph neural network layers (GCN, GAT, GraphSAGE, GIN, and many more), standard benchmark datasets, mini-batch loaders for large graphs, and utilities for graph transforms and sampling. If your research involves graph neural networks — whether for citation networks, molecular property prediction, point clouds, or CAN bus intrusion detection — PyG is the go-to framework on top of PyTorch.
 
 ---
 

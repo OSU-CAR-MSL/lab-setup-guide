@@ -1,4 +1,4 @@
-<!-- last-reviewed: 2026-02-19 -->
+<!-- last-reviewed: 2026-02-22 -->
 # Pipeline Orchestration
 
 Automate multi-step computational pipelines on OSC with proper dependency tracking, resource allocation, and failure recovery.
@@ -55,7 +55,7 @@ process PREPROCESS {
 
     script:
     """
-    module load python/3.11
+    module load python/3.12
     source ~/venvs/ml_project/bin/activate
     python scripts/preprocess.py --input ${raw_data} --output processed.csv
     """
@@ -75,7 +75,7 @@ process TRAIN {
 
     script:
     """
-    module load python/3.11
+    module load python/3.12
     module load cuda/11.8.0
     source ~/venvs/ml_project/bin/activate
     python scripts/train.py --data ${data} --output model.pt
@@ -99,7 +99,7 @@ process EVALUATE {
 
     script:
     """
-    module load python/3.11
+    module load python/3.12
     module load cuda/11.8.0
     source ~/venvs/ml_project/bin/activate
     python scripts/evaluate.py --model ${model} --data ${data} --output metrics.json
@@ -186,61 +186,113 @@ nextflow main.nf -with-report report.html
 | Stale work directory | Previous run left partial results | Delete `work/` or use `-resume` |
 | `No such variable` | Bash variable conflicts with Nextflow | Escape shell variables: `\$USER` instead of `$USER` |
 
-## Alternative: Prefect
+## Alternative: Ray
 
-[Prefect](https://www.prefect.io/) is a Python-native orchestrator — useful if your entire pipeline is Python and you want programmatic control over task dependencies. It requires more setup than Nextflow but integrates well with Python ML tooling.
+[Ray](https://docs.ray.io/) is a Python-native distributed compute framework — ideal when your entire pipeline is Python and you need GPU resource management, distributed HPO, and fault tolerance. It integrates with SLURM via `ray symmetric-run` (Ray 2.49+) for multi-node clusters.
+
+**Why Ray for ML workloads:**
+
+- Native SLURM integration — `ray symmetric-run` bootstraps a Ray cluster across SLURM-allocated nodes
+- GPU resource management per task/actor — no manual `CUDA_VISIBLE_DEVICES` juggling
+- Ray Tune for distributed hyperparameter optimization with early stopping
+- Fault tolerance — tasks retry automatically on GPU failures
+- Zero code change to scale from single-GPU to multi-node
 
 ### Setup
 
 ```bash
-module load python/3.11
+module load python/3.12
 source ~/venvs/ml_project/bin/activate
-pip install prefect dask-jobqueue
+pip install "ray[tune]" optuna
 ```
+
+No OSC module needed — Ray runs entirely from your Python environment.
 
 ### Minimal Example
 
+A training pipeline using `ray.remote` tasks submitted from a SLURM job:
+
 ```python
-from prefect import flow, task
-from prefect_dask import DaskTaskRunner
-from dask_jobqueue import SLURMCluster
+import ray
 
-@task
-def preprocess(raw_path: str) -> str:
-    # ... preprocessing logic ...
-    return "data/processed.csv"
+@ray.remote(num_gpus=1)
+def train(data_path: str, config: dict) -> str:
+    import torch
+    # ... training logic using config ...
+    torch.save(model.state_dict(), "model.pt")
+    return "model.pt"
 
-@task
-def train(data_path: str) -> str:
-    # ... training logic ...
-    return "models/best_model.pt"
-
-@task
+@ray.remote(num_gpus=1)
 def evaluate(model_path: str, data_path: str) -> dict:
     # ... evaluation logic ...
-    return {"accuracy": 0.95}
-
-@flow(task_runner=DaskTaskRunner(
-    cluster_class=SLURMCluster,
-    cluster_kwargs={
-        "account": "PAS1234",
-        "cores": 4,
-        "memory": "16GB",
-        "walltime": "02:00:00",
-    },
-    adapt_kwargs={"minimum": 1, "maximum": 10},
-))
-def ml_pipeline(raw_data: str = "data/raw.csv"):
-    processed = preprocess(raw_data)
-    model = train(processed)
-    evaluate(model, processed)
+    return {"f1": 0.95, "accuracy": 0.97}
 
 if __name__ == "__main__":
-    ml_pipeline()
+    ray.init()  # Connects to Ray cluster (started by SLURM bootstrap)
+
+    data = "data/processed.csv"
+    config = {"lr": 1e-3, "hidden_dim": 128, "epochs": 50}
+
+    model_ref = train.remote(data, config)
+    metrics = ray.get(evaluate.remote(ray.get(model_ref), data))
+    print(metrics)
 ```
 
-!!! note "Prefect server"
-    For the Prefect UI and run history, start a local server in a tmux session: `prefect server start`. For simple pipelines, you can skip the server and run flows directly.
+To run on SLURM, submit via `sbatch` with Ray cluster bootstrap:
+
+```bash
+#!/bin/bash
+#SBATCH --nodes=1 --gpus-per-node=1 --cpus-per-task=8
+#SBATCH --time=04:00:00 --account=PAS1234
+
+module load python/3.12
+source ~/venvs/ml_project/bin/activate
+
+python train_pipeline.py
+```
+
+For multi-node jobs, replace the Python call with `ray symmetric-run`:
+
+```bash
+srun --nodes=$SLURM_JOB_NUM_NODES --ntasks=$SLURM_JOB_NUM_NODES \
+    ray symmetric-run -- python train_pipeline.py
+```
+
+### Ray Tune for Hyperparameter Optimization
+
+```python
+from ray import tune
+from ray.tune.search.optuna import OptunaSearch
+
+def train_fn(config):
+    import ray.train
+    # ... build model from config, train one epoch at a time ...
+    for epoch in range(100):
+        loss, f1 = train_one_epoch(config)
+        ray.train.report({"val_f1": f1, "val_loss": loss})
+
+tuner = tune.Tuner(
+    tune.with_resources(train_fn, {"gpu": 1, "cpu": 4}),
+    tune_config=tune.TuneConfig(
+        search_alg=OptunaSearch(metric="val_f1", mode="max"),
+        scheduler=tune.schedulers.ASHAScheduler(
+            max_t=100, grace_period=10, reduction_factor=3,
+        ),
+        num_samples=50,
+        max_concurrent_trials=4,  # match available GPUs
+    ),
+    param_space={
+        "lr": tune.loguniform(1e-5, 1e-2),
+        "hidden_dim": tune.choice([64, 128, 256]),
+        "dropout": tune.uniform(0.1, 0.5),
+    },
+)
+results = tuner.fit()
+print(f"Best F1: {results.get_best_result('val_f1', 'max').metrics['val_f1']}")
+```
+
+!!! tip "Single-node vs multi-node"
+    For single-node jobs (1 GPU), `ray.init()` works out of the box — no special setup. For multi-node clusters, use `ray symmetric-run` in your SLURM script to bootstrap Ray across all allocated nodes automatically.
 
 ## Next Steps
 

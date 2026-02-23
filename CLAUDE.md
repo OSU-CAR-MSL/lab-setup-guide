@@ -169,7 +169,7 @@ This documentation repo receives tested version pins and workflow learnings from
 
 | Repo | Location (OSC) | What This Repo Gets From It |
 |------|----------------|----------------------------|
-| **KD-GAT** | `~/CAN-Graph-Test/KD-GAT` | Tested PyTorch/PyG version pins, uv workflow patterns, SLURM settings |
+| **KD-GAT** | `~/KD-GAT` | Tested PyTorch/PyG version pins, uv workflow patterns, SLURM settings |
 | **dotfiles** | `~/dotfiles` | Module version aliases (e.g., `modpy`), env var patterns |
 
 **When to update this repo:**

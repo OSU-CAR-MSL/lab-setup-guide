@@ -21,7 +21,7 @@ mkdocs serve
 mkdocs build --strict
 
 # Content freshness check
-python scripts/check-freshness.py --max-age-days 180
+python scripts/check-freshness.py --max-age-days 365
 
 # SSOT duplication check (advisory)
 python scripts/check-duplication.py
@@ -53,7 +53,7 @@ lab-setup-guide/
 │   ├── resources/                      # 2 pages — troubleshooting, useful links
 │   └── stylesheets/extra.css           # Custom OSU scarlet branding + print styles
 ├── scripts/
-│   ├── check-freshness.py              # Flags pages with stale last-reviewed dates (>6 months)
+│   ├── check-freshness.py              # Flags pages with stale last-reviewed dates (>12 months)
 │   ├── check-duplication.py            # Advisory SSOT duplication detector
 │   └── mcp_lab_docs.py                 # MCP server — exposes docs as tools for Claude Code
 ├── .github/workflows/
@@ -94,7 +94,7 @@ Each topic has exactly one canonical page. Other pages cross-link to it instead 
 For partition details and GPU types, see the [Clusters Overview](../osc-basics/osc-clusters-overview.md).
 ```
 
-**Content freshness.** Every `.md` page in `docs/` must have `<!-- last-reviewed: YYYY-MM-DD -->` as its first line (or immediately after YAML front matter if tags are used). Update the date when you meaningfully review or edit a page. The CI freshness check flags pages older than 6 months.
+**Content freshness.** Every `.md` page in `docs/` must have `<!-- last-reviewed: YYYY-MM-DD -->` as its first line (or immediately after YAML front matter if tags are used). Update the date when you meaningfully review or edit a page. The CI freshness check flags pages older than 12 months.
 
 **No link dumps.** The useful-links page is intentionally minimal — only OSC-specific portals, lab resources, and genuinely hard-to-find references. Don't add generic links (Python docs, ML courses, framework homepages) that any search engine would find.
 
@@ -109,7 +109,7 @@ For partition details and GPU types, see the [Clusters Overview](../osc-basics/o
 5. Verify:
    ```bash
    mkdocs build --strict                            # broken links, missing nav
-   python scripts/check-freshness.py --max-age-days 180   # stale pages
+   python scripts/check-freshness.py --max-age-days 365   # stale pages
    python scripts/check-duplication.py              # SSOT violations (advisory)
    ```
 

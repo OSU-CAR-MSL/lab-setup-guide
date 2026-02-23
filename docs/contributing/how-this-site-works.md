@@ -71,7 +71,7 @@ Your content here.
 ```
 
 !!! important "Content freshness tag required"
-    Every page must have `<!-- last-reviewed: YYYY-MM-DD -->` as its **very first line** (before the heading). Use today's date. CI will flag pages that haven't been reviewed in 6 months.
+    Every page must have `<!-- last-reviewed: YYYY-MM-DD -->` as its **very first line** (before the heading). Use today's date. CI will flag pages that haven't been reviewed in 12 months.
 
     ```markdown
     <!-- last-reviewed: 2026-02-19 -->
@@ -201,4 +201,4 @@ Before pushing a new page:
 - [ ] Links to other pages use correct relative paths
 - [ ] Code blocks specify the language for syntax highlighting
 - [ ] `mkdocs build --strict` passes
-- [ ] `python scripts/check-freshness.py --max-age-days 180` passes
+- [ ] `python scripts/check-freshness.py --max-age-days 365` passes

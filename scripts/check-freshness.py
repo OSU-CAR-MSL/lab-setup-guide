@@ -21,7 +21,7 @@ EXCLUDE_PATTERNS = {"includes/"}
 def main() -> None:
     parser = argparse.ArgumentParser(description="Check content freshness")
     parser.add_argument(
-        "--max-age-days", type=int, default=180, help="Flag pages older than N days"
+        "--max-age-days", type=int, default=365, help="Flag pages older than N days"
     )
     parser.add_argument("--docs-dir", type=str, default="docs", help="Docs directory")
     args = parser.parse_args()

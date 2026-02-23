@@ -304,7 +304,7 @@ For more on working with AI assistants, see [AI Coding Assistants](../getting-st
 
 ## Part 5: Create a CLAUDE.md
 
-`CLAUDE.md` is a project configuration file that gives [Claude Code](https://claude.ai/claude-code) context about your project. This connects Assignment 2a and 2b — you'll write one for your EDA project.
+`CLAUDE.md` is a project configuration file that gives [Claude Code](https://claude.ai) context about your project. This connects Assignment 2a and 2b — you'll write one for your EDA project.
 
 Create a `CLAUDE.md` file in the root of your EDA repository from Assignment 2a:
 

@@ -1,4 +1,4 @@
-<!-- last-reviewed: 2026-02-19 -->
+<!-- last-reviewed: 2026-02-25 -->
 # Notebook-to-Script Workflow
 
 How to iterate quickly in Jupyter notebooks and run large-scale experiments as Python scripts on OSC.
@@ -256,8 +256,8 @@ jupyter nbconvert --to script notebooks/prototype.ipynb
 #SBATCH --time=08:00:00
 #SBATCH --output=logs/train_%j.out
 
-module load python/3.11
-module load cuda/11.8.0
+module load python/3.12
+module load cuda/12.x
 source ~/venvs/myproject/bin/activate
 
 SCRATCH=/fs/scratch/PAS1234/$USER/my_project

@@ -1,4 +1,4 @@
-<!-- last-reviewed: 2026-02-19 -->
+<!-- last-reviewed: 2026-02-25 -->
 # Assignment 2b: Concepts, Admin & AI Setup
 
 |                    |                                                           |
@@ -316,7 +316,7 @@ Exploratory data analysis of the HCRL Survival IDS dataset for
 automotive CAN bus intrusion detection.
 
 ## Tech Stack
-- Python 3.11+
+- Python 3.12+
 - pandas, matplotlib, seaborn for EDA
 - scikit-learn for baseline ML models
 - Jupyter notebooks for analysis

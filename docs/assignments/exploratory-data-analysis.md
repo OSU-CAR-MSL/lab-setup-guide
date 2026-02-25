@@ -1,4 +1,4 @@
-<!-- last-reviewed: 2026-02-19 -->
+<!-- last-reviewed: 2026-02-25 -->
 # Assignment 2a: Exploratory Data Analysis
 
 |                    |                                                        |
@@ -54,7 +54,7 @@ cd eda-assignment
 === "conda"
 
     ```bash
-    conda create -n eda python=3.11 pandas matplotlib seaborn scikit-learn jupyter -y
+    conda create -n eda python=3.12 pandas matplotlib seaborn scikit-learn jupyter -y
     conda activate eda
     ```
 

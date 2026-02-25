@@ -1,4 +1,4 @@
-<!-- last-reviewed: 2026-02-19 -->
+<!-- last-reviewed: 2026-02-25 -->
 # ML Project Template
 
 A starting-point structure and checklist for running ML experiments on OSC.
@@ -103,7 +103,7 @@ Thumbs.db
 
 ## Checklist
 
-- [ ] **Environment** — venv or conda created and documented in `requirements.txt` ([Environment Management](../working-on-osc/osc-environment-management.md))
+- [ ] **Environment** — uv venv (or plain venv) created and documented in `pyproject.toml` or `requirements.txt` ([Environment Management](../working-on-osc/osc-environment-management.md))
 - [ ] **PyTorch** — installed with correct CUDA version, verified on GPU node ([PyTorch & GPU Setup](pytorch-setup.md))
 - [ ] **Training script** — uses `argparse`, device setup, checkpointing, and logging
 - [ ] **Job scripts** — SLURM batch scripts for training and sweeps ([Job Submission](../working-on-osc/osc-job-submission.md))

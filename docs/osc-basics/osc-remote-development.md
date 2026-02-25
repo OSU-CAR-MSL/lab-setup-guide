@@ -3,7 +3,7 @@ tags:
   - OSC
   - SSH
 ---
-<!-- last-reviewed: 2026-02-19 -->
+<!-- last-reviewed: 2026-02-25 -->
 # Remote Development on OSC
 
 Visual Studio Code's Remote-SSH extension allows you to develop on OSC as if you were working locally. This guide shows you how to set it up and use it effectively.
@@ -70,7 +70,7 @@ The integrated terminal runs on OSC:
 Example workflow:
 ```bash
 # Load modules (use `module spider python` to find available versions)
-module load python/3.11
+module load python/3.12
 
 # Check resources
 squeue -u $USER
@@ -131,7 +131,7 @@ VS Code automatically detects and forwards ports:
 
 ```bash
 # In VS Code terminal on OSC
-module load python/3.11
+module load python/3.12
 jupyter notebook --no-browser --port=8888
 ```
 
@@ -288,7 +288,7 @@ Host pitzer01
 **Solutions**:
 1. Load Python module in terminal:
    ```bash
-   module load python/3.11
+   module load python/3.12
    which python3
    ```
 2. Set interpreter in VS Code:

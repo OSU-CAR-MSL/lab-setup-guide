@@ -1,4 +1,4 @@
-<!-- last-reviewed: 2026-02-19 -->
+<!-- last-reviewed: 2026-02-25 -->
 # AI Coding Assistants
 
 Set up AI-powered coding tools to accelerate your development workflow in the lab.
@@ -26,8 +26,8 @@ AI coding assistants can help you write code faster, understand unfamiliar codeb
 | **Interface** | VS Code extension (inline + chat) | Terminal CLI |
 | **Best For** | Inline completions while coding | Multi-file edits, project-wide tasks |
 | **Context** | Current file + open tabs | Entire project directory |
-| **Cost** | Free with GitHub Education | Pay-per-use (API key) |
-| **Works on OSC** | Yes (VS Code Remote-SSH) | Yes (install via npm on login node) |
+| **Cost** | Free with GitHub Education | API key or Claude.ai subscription |
+| **Works on OSC** | Yes (VS Code Remote-SSH) | Yes (install via curl on login node) |
 
 ## GitHub Copilot
 
@@ -127,22 +127,14 @@ Claude Code is a terminal-based tool that:
 
 ### Installation
 
-Claude Code requires Node.js (v18+). On your local machine:
+Install Claude Code using the official installer:
 
 ```bash
-# Install globally
-npm install -g @anthropic-ai/claude-code
+# Install on your local machine or OSC
+curl -fsSL https://claude.ai/install.sh | sh
 ```
 
-On OSC, you can install it in your home directory:
-
-```bash
-# Load Node.js module
-module load nodejs
-
-# Install globally for your user
-npm install -g @anthropic-ai/claude-code
-```
+This installs the `claude` binary to `~/.claude/bin/`. No Node.js required.
 
 ### Authentication
 
@@ -185,12 +177,12 @@ Run a single command without entering interactive mode:
 claude -p "Explain the architecture of this project"
 ```
 
-#### Non-Interactive Mode (Scripting)
+#### Print Mode (Scripting)
 
-Pipe input for use in scripts:
+Run a single prompt and get output directly:
 
 ```bash
-echo "Generate a .gitignore for a Python ML project" | claude --no-input
+claude -p "Generate a .gitignore for a Python ML project"
 ```
 
 ## Project Configuration with CLAUDE.md
@@ -398,14 +390,14 @@ When an AI assistant suggests something unfamiliar:
 ### Claude Code "Command Not Found"
 
 ```bash
-# Check if Node.js is loaded
-module load nodejs
-
 # Check installation
 which claude
 
 # Reinstall if needed
-npm install -g @anthropic-ai/claude-code
+curl -fsSL https://claude.ai/install.sh | sh
+
+# Ensure ~/.claude/bin is in your PATH
+export PATH="$HOME/.claude/bin:$PATH"
 ```
 
 ### Claude Code API Key Issues

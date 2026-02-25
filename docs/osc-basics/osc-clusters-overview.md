@@ -1,4 +1,4 @@
-<!-- last-reviewed: 2026-02-19 -->
+<!-- last-reviewed: 2026-02-25 -->
 # OSC Clusters Overview
 
 Understand OSC's high-performance computing clusters, available resources, and how to choose the right configuration for your workloads.
@@ -20,7 +20,7 @@ Before diving into OSC's clusters, familiarize yourself with these key HPC terms
 | **Batch Job** | A job submitted via a script that runs without user interaction |
 | **Interactive Job** | A job that provides a live shell session on a compute node |
 | **Scheduler** | Software (SLURM at OSC) that manages job queues and allocates resources |
-| **Module** | A system for loading and managing software packages (e.g., `module load python/3.11`) |
+| **Module** | A system for loading and managing software packages (e.g., `module load python/3.12`) |
 | **Scratch Space** | High-performance temporary storage for active jobs — files are purged after inactivity |
 | **Home Directory** | Persistent personal storage with limited quota (`~/` or `/users/`) |
 | **Project Space** | Shared storage for a research group, tied to a project allocation |
@@ -45,7 +45,7 @@ Pitzer is OSC's newer and more powerful cluster, ideal for GPU-accelerated and l
 | **GPU Nodes** | NVIDIA V100 (32 GB) and A100 (40 GB / 80 GB) |
 | **GPUs per GPU Node** | Up to 4 V100s or up to 4 A100s |
 | **Interconnect** | Intel Omni-Path / HDR InfiniBand |
-| **Operating System** | CentOS 7 |
+| **Operating System** | RHEL 9 |
 
 !!! tip "Recommended for ML workloads"
     Pitzer's A100 GPUs provide the best performance for deep learning training. Request them with `--gpus-per-node=a100:1`.
@@ -64,7 +64,7 @@ Owens is OSC's older cluster, well-suited for CPU-intensive workloads and smalle
 | **GPU Nodes** | NVIDIA P100 (16 GB) |
 | **GPUs per GPU Node** | 1 P100 |
 | **Interconnect** | Intel Omni-Path |
-| **Operating System** | CentOS 7 |
+| **Operating System** | RHEL 9 |
 
 ### Cluster Comparison
 
@@ -278,7 +278,7 @@ If `nvidia-smi` shows no GPUs, make sure you requested GPU resources:
 And load the CUDA module in your script:
 
 ```bash
-module load cuda/11.8.0
+module load cuda/12.x
 ```
 
 ### Jobs Pending with "Resources" Reason

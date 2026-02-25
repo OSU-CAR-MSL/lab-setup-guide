@@ -5,7 +5,7 @@ tags:
   - CUDA
   - GPU
 ---
-<!-- last-reviewed: 2026-02-22 -->
+<!-- last-reviewed: 2026-02-25 -->
 # PyG (PyTorch Geometric) Setup
 
 [PyTorch Geometric (PyG)](https://pyg.org/) is the leading library for deep learning on graphs and other irregular structures. It provides efficient implementations of graph neural network layers (GCN, GAT, GraphSAGE, GIN, and many more), standard benchmark datasets, mini-batch loaders for large graphs, and utilities for graph transforms and sampling. If your research involves graph neural networks — whether for citation networks, molecular property prediction, point clouds, or CAN bus intrusion detection — PyG is the go-to framework on top of PyTorch.
@@ -27,15 +27,12 @@ Before installing PyG, you need a working PyTorch installation with CUDA support
 
 PyG depends on several compiled extension packages (`torch-scatter`, `torch-sparse`, `torch-cluster`, `torch-spline-conv`) that must match your exact PyTorch version and CUDA version. Installing from pre-built wheels avoids lengthy compilation on login nodes.
 
-### Step 1: Load Modules and Activate Your Environment
+### Step 1: Activate Your Environment
 
 ```bash
-# Load required modules
-module load python/3.12
-module load cuda/11.8.0
-
 # Activate your PyTorch virtual environment
-source ~/venvs/pytorch/bin/activate
+source .venv/bin/activate        # uv
+# or: source ~/venvs/pytorch/bin/activate  # venv + pip
 ```
 
 ### Step 2: Verify PyTorch Version and CUDA
@@ -52,26 +49,15 @@ Note the output — you'll use these versions in the wheel URL below.
 
 Install the compiled extension packages from PyG's wheel index. The URL must match your **PyTorch version** and **CUDA version** exactly:
 
-=== "PyTorch 2.1.x + CUDA 11.8"
+=== "PyTorch 2.8.x + CUDA 12.6 (current)"
 
     ```bash
-    pip install torch-scatter torch-sparse torch-cluster torch-spline-conv \
-        -f https://data.pyg.org/whl/torch-2.1.0+cu118.html
+    pip install torch-scatter torch-sparse torch-cluster \
+        -f https://data.pyg.org/whl/torch-2.8.0+cu126.html
     ```
 
-=== "PyTorch 2.2.x + CUDA 12.1"
-
-    ```bash
-    pip install torch-scatter torch-sparse torch-cluster torch-spline-conv \
-        -f https://data.pyg.org/whl/torch-2.2.0+cu121.html
-    ```
-
-=== "PyTorch 2.3.x + CUDA 12.1"
-
-    ```bash
-    pip install torch-scatter torch-sparse torch-cluster torch-spline-conv \
-        -f https://data.pyg.org/whl/torch-2.3.0+cu121.html
-    ```
+!!! tip "Check the wheel index for your version"
+    Browse [https://data.pyg.org/whl/](https://data.pyg.org/whl/) to find the correct URL for your specific PyTorch + CUDA combination. The URL must match your installed versions exactly.
 
 ### Step 4: Install PyTorch Geometric
 
@@ -136,9 +122,8 @@ After installation, run this script on a GPU node to verify everything works:
 # Request an interactive GPU session
 srun -p gpu --gpus-per-node=1 --time=00:10:00 --pty bash
 
-# Activate environment
-module load python/3.12 cuda/11.8.0
-source ~/venvs/pytorch/bin/activate
+# Activate environment (PyPI torch bundles CUDA — no module load needed)
+source .venv/bin/activate
 
 # Run the verification script
 python test_pyg.py
@@ -368,12 +353,8 @@ echo "Job started at: $(date)"
 echo "Running on node: $(hostname)"
 echo "Job ID: $SLURM_JOB_ID"
 
-# Load modules
-module load python/3.12
-module load cuda/11.8.0
-
-# Activate environment
-source ~/venvs/pytorch/bin/activate
+# Activate environment (PyPI torch bundles CUDA — no module load needed)
+source .venv/bin/activate
 
 # Point datasets and caches to scratch
 export TORCH_HOME=/fs/scratch/PAS1234/$USER/torch_cache
@@ -413,7 +394,7 @@ For details on SLURM directives, job arrays, and monitoring jobs, see the [Job S
 | **Version mismatch** | `undefined symbol` or `ImportError` when importing `torch_scatter` / `torch_sparse` | Uninstall all PyG packages (`pip uninstall torch-scatter torch-sparse torch-cluster torch-spline-conv torch-geometric`), verify your PyTorch + CUDA versions, and reinstall with the correct wheel URL. |
 | **`ModuleNotFoundError: No module named 'torch_geometric'`** | Import fails | Confirm your venv is activated (`which python` should point to your venv). Reinstall with `pip install torch-geometric`. |
 | **CUDA out of memory** | `RuntimeError: CUDA out of memory` during training | Reduce batch size, use `NeighborLoader` for large graphs, enable mixed precision, or request a GPU with more memory (A100 has 40 GB vs V100's 32 GB). |
-| **CUDA not available** | `torch.cuda.is_available()` returns `False` | Ensure you requested a GPU partition (`--partition=gpu --gpus-per-node=1`), loaded the CUDA module (`module load cuda/11.8.0`), and installed the CUDA build of PyTorch. See [PyTorch & GPU Setup](pytorch-setup.md#cuda-not-available). |
+| **CUDA not available** | `torch.cuda.is_available()` returns `False` | Ensure you requested a GPU partition (`--partition=gpu --gpus-per-node=1`) and installed PyTorch with CUDA support (PyPI wheels bundle CUDA automatically). See [PyTorch & GPU Setup](pytorch-setup.md#cuda-not-available). |
 | **Slow data loading** | GPU utilization low, training bottlenecked on CPU | Increase `num_workers` in `DataLoader` (match `--cpus-per-task`), enable `pin_memory=True`, cache preprocessed data to scratch as `.pt` files. |
 | **Dataset download fails** | Timeout or connection error when downloading benchmark datasets | Compute nodes may lack internet access. Download datasets on the login node first (`python -c "from torch_geometric.datasets import Planetoid; Planetoid(root='...', name='Cora')"`), then point your training script to the cached path. |
 | **`torch-sparse` build fails** | Compilation errors during `pip install` | You're building from source instead of using a pre-built wheel. Make sure the `-f` URL matches your exact PyTorch + CUDA versions. If no wheel exists, install build dependencies first: `pip install ninja cmake`. |

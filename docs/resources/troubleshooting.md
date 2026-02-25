@@ -4,7 +4,7 @@ tags:
   - SSH
   - GPU
 ---
-<!-- last-reviewed: 2026-02-19 -->
+<!-- last-reviewed: 2026-02-25 -->
 # Troubleshooting Guide
 
 Common issues and solutions for working on OSC.
@@ -259,14 +259,14 @@ Module 'xyz' not found
 2. **Recreate if corrupted**
    ```bash
    rm -rf ~/venvs/myproject
-   module load python/3.11
+   module load python/3.12
    python -m venv ~/venvs/myproject
    ```
 
 3. **Check Python module loaded**
    ```bash
    module list | grep python
-   module load python/3.11
+   module load python/3.12
    ```
 
 ### Package Installation Fails
@@ -302,7 +302,7 @@ Module 'xyz' not found
 
 **Problem:** `torch.cuda.is_available()` returns False
 
-Quick checks: verify you're on a GPU node (`nvidia-smi`), that the CUDA module is loaded (`module load cuda/11.8.0`), and that PyTorch was installed with CUDA support. For full diagnostic steps and reinstall commands, see [PyTorch & GPU Setup — Troubleshooting](../ml-workflows/pytorch-setup.md#troubleshooting).
+Quick checks: verify you're on a GPU node (`nvidia-smi`), that the CUDA module is loaded (`module load cuda/12.x`), and that PyTorch was installed with CUDA support. For full diagnostic steps and reinstall commands, see [PyTorch & GPU Setup — Troubleshooting](../ml-workflows/pytorch-setup.md#troubleshooting).
 
 ### CUDA Out of Memory
 
@@ -366,7 +366,7 @@ squeue -u $USER
    **Module not loaded:**
    ```bash
    # Add to job script
-   module load python/3.11
+   module load python/3.12
    ```
 
    **Environment not activated:**

@@ -1,7 +1,7 @@
-<!-- last-reviewed: 2026-02-22 -->
+<!-- last-reviewed: 2026-02-25 -->
 # Pipeline Orchestration
 
-Automate multi-step computational pipelines on OSC with proper dependency tracking, resource allocation, and failure recovery.
+Automate multi-step computational pipelines on OSC with proper dependency tracking, resource allocation, and failure recovery using Ray.
 
 ## When You Need an Orchestrator
 
@@ -10,7 +10,7 @@ Automate multi-step computational pipelines on OSC with proper dependency tracki
 | **Single `sbatch` script** | One-off jobs, simple tasks | No dependency tracking, manual reruns |
 | **Job arrays** | Many identical jobs with different parameters | All jobs must use same resources |
 | **Dependency chains** (`--dependency`) | Sequential multi-stage pipelines | Manual setup, fragile, no partial reruns |
-| **Pipeline orchestrator** | Multi-step pipelines with complex dependencies | Initial setup time |
+| **Ray** | Multi-step pipelines with complex dependencies | Initial setup time |
 
 Use an orchestrator when your workflow has:
 
@@ -21,174 +21,9 @@ Use an orchestrator when your workflow has:
 
 For simpler job patterns (single jobs, job arrays, dependency chains), see [Job Submission](osc-job-submission.md).
 
-## Nextflow (Recommended)
+## Ray on SLURM
 
-Nextflow is available as an OSC module — no installation needed. It integrates natively with SLURM and handles job submission, dependency tracking, and failure recovery.
-
-### Setup
-
-```bash
-module load nextflow
-nextflow -version
-```
-
-### Pipeline Structure
-
-A Nextflow pipeline is a `.nf` file defining processes (steps) and a workflow that connects them. Create `main.nf`:
-
-```groovy
-#!/usr/bin/env nextflow
-
-params.raw_data = "data/raw_data.csv"
-params.outdir   = "results"
-
-process PREPROCESS {
-    cpus 4
-    memory '16 GB'
-    time '1h'
-
-    input:
-    path raw_data
-
-    output:
-    path "processed.csv"
-
-    script:
-    """
-    module load python/3.12
-    source ~/venvs/ml_project/bin/activate
-    python scripts/preprocess.py --input ${raw_data} --output processed.csv
-    """
-}
-
-process TRAIN {
-    cpus 8
-    memory '64 GB'
-    time '8h'
-    clusterOptions '--gpus-per-node=1 --partition=gpu'
-
-    input:
-    path data
-
-    output:
-    path "model.pt"
-
-    script:
-    """
-    module load python/3.12
-    module load cuda/11.8.0
-    source ~/venvs/ml_project/bin/activate
-    python scripts/train.py --data ${data} --output model.pt
-    """
-}
-
-process EVALUATE {
-    cpus 4
-    memory '32 GB'
-    time '1h'
-    clusterOptions '--gpus-per-node=1 --partition=gpu'
-
-    input:
-    path model
-    path data
-
-    output:
-    path "metrics.json"
-
-    publishDir params.outdir, mode: 'copy'
-
-    script:
-    """
-    module load python/3.12
-    module load cuda/11.8.0
-    source ~/venvs/ml_project/bin/activate
-    python scripts/evaluate.py --model ${model} --data ${data} --output metrics.json
-    """
-}
-
-workflow {
-    raw = Channel.fromPath(params.raw_data)
-    processed = PREPROCESS(raw)
-    model = TRAIN(processed)
-    EVALUATE(model, processed)
-}
-```
-
-### SLURM Configuration
-
-Create `nextflow.config` in your project root:
-
-```groovy
-process {
-    executor = 'slurm'
-    queue    = 'serial'              // default partition
-    account  = 'PAS1234'            // your OSC project
-    time     = '2h'                 // default walltime
-    memory   = '16 GB'
-    cpus     = 4
-}
-
-executor {
-    queueSize   = 50                // max concurrent SLURM jobs
-    pollInterval = '30 sec'
-}
-
-// Where Nextflow stores intermediate files
-workDir = '/fs/scratch/PAS1234/$USER/nf-work'
-```
-
-Per-process resources in `main.nf` override these defaults, so GPU processes automatically get the right partition and resources.
-
-### Running Pipelines
-
-```bash
-# Dry run — show what would execute
-nextflow main.nf -preview
-
-# Run the pipeline (Nextflow submits SLURM jobs for you)
-nextflow main.nf
-
-# Resume after a failure (only reruns failed/changed steps)
-nextflow main.nf -resume
-
-# Run with different parameters
-nextflow main.nf --raw_data data/experiment2.csv --outdir results/exp2
-```
-
-!!! tip "Run Nextflow from a login node or tmux session"
-    The Nextflow controller process runs on the login node and submits SLURM jobs on your behalf. Use `tmux` for long pipelines so the controller survives SSH disconnects:
-    ```bash
-    tmux new -s pipeline
-    nextflow main.nf
-    # Detach: Ctrl+B, then D
-    # Reattach: tmux attach -t pipeline
-    ```
-
-### Monitoring
-
-```bash
-# Watch pipeline progress (built-in)
-# Nextflow prints a live progress table to the terminal
-
-# View execution report after completion
-nextflow log last
-
-# Generate HTML execution report
-nextflow main.nf -with-report report.html
-```
-
-### Common Errors
-
-| Error | Cause | Solution |
-|-------|-------|----------|
-| Process fails but pipeline continues | Default error strategy | Add `errorStrategy 'retry'` with `maxRetries 2` to process |
-| Output files not found | NFS lag after SLURM job completes | Add `beforeScript 'sleep 10'` or increase poll interval |
-| Stale work directory | Previous run left partial results | Delete `work/` or use `-resume` |
-| `No such variable` | Bash variable conflicts with Nextflow | Escape shell variables: `\$USER` instead of `$USER` |
-
-## Alternative: Ray
-
-[Ray](https://docs.ray.io/) is a Python-native distributed compute framework — ideal when your entire pipeline is Python and you need GPU resource management, distributed HPO, and fault tolerance. It integrates with SLURM via `ray symmetric-run` (Ray 2.49+) for multi-node clusters.
+[Ray](https://docs.ray.io/) is a Python-native distributed compute framework — ideal when your entire pipeline is Python and you need GPU resource management, distributed HPO, and fault tolerance.
 
 **Why Ray for ML workloads:**
 
@@ -201,64 +36,147 @@ nextflow main.nf -with-report report.html
 ### Setup
 
 ```bash
-module load python/3.12
-source ~/venvs/ml_project/bin/activate
-pip install "ray[tune]" optuna
+# In your project environment
+source .venv/bin/activate
+uv add "ray[default]>=2.49" optuna
 ```
 
 No OSC module needed — Ray runs entirely from your Python environment.
 
-### Minimal Example
+## Subprocess-per-Stage Pattern
 
-A training pipeline using `ray.remote` tasks submitted from a SLURM job:
+For ML pipelines, each stage (preprocessing, training, evaluation, export) benefits from running as a separate `subprocess.run()` call rather than in the same Python process. This pattern provides:
+
+- **CUDA context isolation** — each stage gets a fresh GPU context, avoiding memory leaks between stages
+- **Fault isolation** — a crash in one stage doesn't take down the orchestrator
+- **Stage-level restartability** — failed stages can be retried independently
+- **Clean dependency boundaries** — stages communicate through files (Parquet, checkpoints), not shared memory
+
+```python
+import subprocess
+import sys
+
+def run_stage(script: str, args: list[str] | None = None) -> None:
+    """Run a pipeline stage as a subprocess."""
+    cmd = [sys.executable, script] + (args or [])
+    result = subprocess.run(cmd, check=True)
+    if result.returncode != 0:
+        raise RuntimeError(f"Stage {script} failed with code {result.returncode}")
+```
+
+## Pipeline DAG Example
+
+A training pipeline using `ray.remote` tasks with dependency chaining and fan-out per dataset:
 
 ```python
 import ray
 
-@ray.remote(num_gpus=1)
+@ray.remote(num_cpus=4)
+def preprocess(dataset_name: str, raw_dir: str, out_dir: str) -> str:
+    """Preprocess a single dataset (CPU-only stage)."""
+    import subprocess, sys
+    subprocess.run(
+        [sys.executable, "scripts/preprocess.py",
+         "--dataset", dataset_name,
+         "--raw-dir", raw_dir,
+         "--out-dir", out_dir],
+        check=True,
+    )
+    return f"{out_dir}/{dataset_name}.parquet"
+
+@ray.remote(num_gpus=1, num_cpus=4)
 def train(data_path: str, config: dict) -> str:
-    import torch
-    # ... training logic using config ...
-    torch.save(model.state_dict(), "model.pt")
-    return "model.pt"
+    """Train a model on one dataset (GPU stage)."""
+    import subprocess, sys, json
+    subprocess.run(
+        [sys.executable, "scripts/train.py",
+         "--data", data_path,
+         "--config", json.dumps(config)],
+        check=True,
+    )
+    return f"checkpoints/{config['run_name']}/best.pt"
 
 @ray.remote(num_gpus=1)
 def evaluate(model_path: str, data_path: str) -> dict:
-    # ... evaluation logic ...
-    return {"f1": 0.95, "accuracy": 0.97}
+    """Evaluate a trained model."""
+    import subprocess, sys, json
+    result = subprocess.run(
+        [sys.executable, "scripts/evaluate.py",
+         "--model", model_path,
+         "--data", data_path,
+         "--output", "metrics.json"],
+        check=True, capture_output=True, text=True,
+    )
+    return json.loads(open("metrics.json").read())
 
 if __name__ == "__main__":
-    ray.init()  # Connects to Ray cluster (started by SLURM bootstrap)
+    ray.init()
 
-    data = "data/processed.csv"
-    config = {"lr": 1e-3, "hidden_dim": 128, "epochs": 50}
+    datasets = ["road_attack", "road_benign", "survival"]
+    configs = [
+        {"run_name": ds, "lr": 1e-3, "hidden_dim": 128}
+        for ds in datasets
+    ]
 
-    model_ref = train.remote(data, config)
-    metrics = ray.get(evaluate.remote(ray.get(model_ref), data))
-    print(metrics)
+    # Fan-out: preprocess all datasets in parallel
+    data_refs = [
+        preprocess.remote(ds, "data/raw", "data/processed")
+        for ds in datasets
+    ]
+
+    # Chain: train after each dataset is preprocessed
+    model_refs = [
+        train.remote(data_ref, cfg)
+        for data_ref, cfg in zip(data_refs, configs)
+    ]
+
+    # Chain: evaluate after each model is trained
+    metric_refs = [
+        evaluate.remote(model_ref, data_ref)
+        for model_ref, data_ref in zip(model_refs, data_refs)
+    ]
+
+    # Collect results
+    metrics = ray.get(metric_refs)
+    for ds, m in zip(datasets, metrics):
+        print(f"{ds}: {m}")
 ```
 
-To run on SLURM, submit via `sbatch` with Ray cluster bootstrap:
+## Multi-Node with `ray symmetric-run`
+
+For multi-node jobs, Ray 2.49+ provides `ray symmetric-run` to bootstrap a Ray cluster across SLURM-allocated nodes automatically:
+
+```bash
+#!/bin/bash
+#SBATCH --job-name=ray_pipeline
+#SBATCH --account=PAS1234
+#SBATCH --nodes=2
+#SBATCH --gpus-per-node=4
+#SBATCH --cpus-per-task=32
+#SBATCH --time=08:00:00
+#SBATCH --output=logs/ray_pipeline_%j.out
+
+source .venv/bin/activate
+
+# ray symmetric-run starts Ray on all SLURM nodes, then runs your script
+srun --nodes=$SLURM_JOB_NUM_NODES --ntasks=$SLURM_JOB_NUM_NODES \
+    ray symmetric-run -- python pipeline.py
+```
+
+For single-node jobs (1-4 GPUs), `ray.init()` works out of the box — no special setup:
 
 ```bash
 #!/bin/bash
 #SBATCH --nodes=1 --gpus-per-node=1 --cpus-per-task=8
 #SBATCH --time=04:00:00 --account=PAS1234
 
-module load python/3.12
-source ~/venvs/ml_project/bin/activate
-
-python train_pipeline.py
+source .venv/bin/activate
+python pipeline.py
 ```
 
-For multi-node jobs, replace the Python call with `ray symmetric-run`:
+## Ray Tune for HPO
 
-```bash
-srun --nodes=$SLURM_JOB_NUM_NODES --ntasks=$SLURM_JOB_NUM_NODES \
-    ray symmetric-run -- python train_pipeline.py
-```
-
-### Ray Tune for Hyperparameter Optimization
+Ray Tune provides distributed hyperparameter optimization with Optuna search and ASHA early stopping:
 
 ```python
 from ray import tune
@@ -291,11 +209,71 @@ results = tuner.fit()
 print(f"Best F1: {results.get_best_result('val_f1', 'max').metrics['val_f1']}")
 ```
 
-!!! tip "Single-node vs multi-node"
-    For single-node jobs (1 GPU), `ray.init()` works out of the box — no special setup. For multi-node clusters, use `ray symmetric-run` in your SLURM script to bootstrap Ray across all allocated nodes automatically.
+!!! tip "W&B integration"
+    Ray Tune integrates with Weights & Biases via `WandbLoggerCallback`:
+    ```python
+    from ray.air.integrations.wandb import WandbLoggerCallback
+
+    tuner = tune.Tuner(
+        train_fn,
+        run_config=tune.RunConfig(
+            callbacks=[WandbLoggerCallback(project="my-hpo")]
+        ),
+        # ... rest of config ...
+    )
+    ```
+
+## Benchmark Mode
+
+Add per-stage timing and GPU snapshots with an environment variable toggle:
+
+```python
+import os
+import time
+import torch
+
+BENCHMARK = os.environ.get("BENCHMARK", "0") == "1"
+
+def benchmark_stage(name: str):
+    """Context manager for timing a pipeline stage."""
+    class _Timer:
+        def __enter__(self):
+            if BENCHMARK:
+                torch.cuda.synchronize() if torch.cuda.is_available() else None
+                self.start = time.perf_counter()
+            return self
+
+        def __exit__(self, *args):
+            if BENCHMARK:
+                torch.cuda.synchronize() if torch.cuda.is_available() else None
+                elapsed = time.perf_counter() - self.start
+                gpu_mem = (torch.cuda.max_memory_allocated() / 1e9
+                           if torch.cuda.is_available() else 0)
+                print(f"[BENCH] {name}: {elapsed:.1f}s, GPU peak: {gpu_mem:.2f} GB")
+    return _Timer()
+```
+
+Enable in your SLURM script:
+
+```bash
+export BENCHMARK=1
+python pipeline.py
+```
+
+## Troubleshooting
+
+| Problem | Cause | Solution |
+|---------|-------|----------|
+| Worker OOM | Ray worker runs out of memory | Increase `--mem` in SLURM script, or reduce `num_cpus`/`num_gpus` per task so fewer tasks run concurrently |
+| `ray.get()` timeout | Task takes longer than expected | Set `ray.get(ref, timeout=None)` for long tasks, or increase the timeout |
+| Temp dir fills up | Ray writes to `/tmp` by default | Set `ray.init(configure_logging=True, _temp_dir="/fs/scratch/PAS1234/$USER/ray_tmp")` |
+| "No available node" | Requested more GPUs than available | Check `ray.cluster_resources()` and reduce `num_gpus` per task |
+| Port conflict | Multiple Ray clusters on same node | Let Ray auto-select ports: `ray.init(dashboard_port=0)` |
+| Stale Ray cluster | Previous run left orphaned processes | Run `ray stop --force` before starting a new cluster |
 
 ## Next Steps
 
 - [Job Submission](osc-job-submission.md) — SLURM fundamentals, job arrays, dependency chains
 - [ML Project Template](../ml-workflows/ml-workflow.md) — project structure for ML experiments
-- [Data & Experiment Tracking](../ml-workflows/data-experiment-tracking.md) — MLflow, W&B, DVC
+- [Data & Experiment Tracking](../ml-workflows/data-experiment-tracking.md) — W&B, DVC, DuckDB analytics
+- [DuckDB Analytics Layer](../ml-workflows/duckdb-analytics.md) — querying experiment results with SQL

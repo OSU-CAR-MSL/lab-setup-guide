@@ -1,4 +1,4 @@
-<!-- last-reviewed: 2026-02-19 -->
+<!-- last-reviewed: 2026-02-25 -->
 # MATLAB & Simulink on OSC
 
 How to use MATLAB and Simulink on OSC for computation, simulation, and batch processing.
@@ -409,7 +409,7 @@ Job script with GPU:
 #SBATCH --output=logs/matlab_gpu_%j.out
 
 module load matlab
-module load cuda/11.8.0
+module load cuda/12.x
 
 matlab -batch "my_gpu_script"
 ```

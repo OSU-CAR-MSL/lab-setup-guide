@@ -1,9 +1,9 @@
 ---
 tags:
   - OSC
-  - conda
+  - uv
 ---
-<!-- last-reviewed: 2026-02-22 -->
+<!-- last-reviewed: 2026-02-25 -->
 # Environment Management
 
 Learn how to manage software environments on OSC using modules and virtual environments.
@@ -17,11 +17,9 @@ OSC uses two main systems for environment management:
 ```mermaid
 flowchart TD
     A{Need custom\nPython packages?} -->|No| B[Modules only]
-    A -->|Yes| C{Need system-level\nlibraries or\nnon-Python tools?}
-    C -->|No| D[venv\nRecommended]
-    C -->|Yes| E[conda]
-    D --> F[pip install in venv]
-    E --> G[conda install packages]
+    A -->|Yes| C["uv venv (Recommended)"]
+    C --> D[uv add / pip install]
+    C -.->|Need RAPIDS\nGPU preprocessing?| E["See RAPIDS page\n(conda-only)"]
 ```
 
 ## Module System
@@ -49,13 +47,13 @@ module spider cuda
 module load python/3.12
 
 # Load specific version
-module load cuda/11.8.0
+module load cuda/12.x
 
 # List loaded modules
 module list
 
 # Show module information
-module show python/3.11
+module show python/3.12
 
 # Unload a module
 module unload python
@@ -64,25 +62,28 @@ module unload python
 module purge
 
 # Swap modules
-module swap python/3.9 python/3.11
+module swap python/3.11 python/3.12
 ```
 
 ### Commonly Used Modules
 
 #### Python
 ```bash
-# Python 3.11 (recommended)
+# Python 3.12 (recommended)
 module load python/3.12
 ```
 
 #### CUDA (for GPU work)
 ```bash
-# CUDA 11.8
-module load cuda/11.8.0
-
-# CUDA 12.1
-module load cuda/12.1.0
+# Load the latest CUDA 12.x release
+module load cuda/12.x
 ```
+
+!!! tip "CUDA version"
+    Examples use `cuda/12.x` as a placeholder. Run `module avail cuda` to see
+    available versions, then load the latest 12.x release (e.g. `module load cuda/12.4.0`).
+    When using **uv** with PyTorch from PyPI, you do NOT need to load a CUDA module —
+    PyTorch bundles its own CUDA libraries.
 
 #### Git
 ```bash
@@ -129,7 +130,37 @@ Virtual environments isolate project dependencies so different projects can use 
 
 ### Creating Virtual Environments
 
-#### Method 1: venv (Recommended)
+#### Method 1: uv (Recommended)
+
+`uv` is the recommended tool for project-level dependency management on OSC. You **must** use OSC's system Python — not uv's managed Python downloads, which can segfault on RHEL 9.
+
+```bash
+# Install uv (one-time)
+curl -LsSf https://astral.sh/uv/install.sh | sh
+
+# Create a venv using OSC's system Python (critical!)
+uv venv --python /apps/python/3.12/bin/python3
+
+# Activate
+source .venv/bin/activate
+
+# Install from pyproject.toml
+uv sync
+
+# Or add packages directly
+uv add numpy pandas matplotlib
+```
+
+!!! warning "uv on OSC: critical caveats"
+    - **Always use `--python /apps/python/3.12/bin/python3`** when creating venvs. uv's standalone Python builds are not compatible with OSC's RHEL 9 libraries and will segfault.
+    - **Do NOT load `module load python/3.12` and then use `uv venv`** — uv ignores module-loaded Python by default. You must pass the explicit path.
+    - **PyTorch from PyPI works** — PyPI wheels bundle NVIDIA libraries, so you don't need `module load cuda`. But PyG extensions need a flat wheel index configured in `pyproject.toml`. See [PyG Setup](../ml-workflows/pyg-setup.md) for details.
+
+For PyTorch-specific installation (matching CUDA versions, GPU verification), see [PyTorch & GPU Setup](../ml-workflows/pytorch-setup.md).
+
+#### Method 2: venv + pip
+
+If you don't use `uv`, the standard library `venv` module works fine:
 
 ```bash
 # Load Python module
@@ -152,60 +183,27 @@ pip install numpy pandas matplotlib
 deactivate
 ```
 
-For PyTorch-specific installation (matching CUDA versions, GPU verification), see [PyTorch & GPU Setup](../ml-workflows/pytorch-setup.md).
-
-#### Method 2: conda
-
-```bash
-# Load conda
-module load python/3.12
-
-# Create conda environment
-conda create -n myproject python=3.12
-
-# Activate
-conda activate myproject
-
-# Install packages
-conda install pytorch torchvision cudatoolkit=11.8 -c pytorch
-
-# Deactivate
-conda deactivate
-
-# Remove environment
-conda remove -n myproject --all
-```
-
 ### Managing Environments
 
 #### List Environments
 
 ```bash
-# venv: Check directory
+# uv / venv: Check directory
 ls ~/venvs/
-
-# conda: List environments
-conda env list
+ls .venv/  # uv convention (project-local)
 ```
 
 #### Export/Import Environments
 
-**venv:**
 ```bash
-# Export requirements
+# Export requirements (venv + pip)
 pip freeze > requirements.txt
 
 # Install from requirements
 pip install -r requirements.txt
-```
 
-**conda:**
-```bash
-# Export environment
-conda env export > environment.yml
-
-# Create from file
-conda env create -f environment.yml
+# uv uses pyproject.toml — no separate export needed
+# uv sync installs from pyproject.toml + uv.lock
 ```
 
 ### Organizing Virtual Environments
@@ -222,28 +220,29 @@ python -m venv ~/venvs/project2
 python -m venv ~/venvs/ml_research
 ```
 
-### Method 3: uv (Works on OSC with Caveats)
+??? note "Legacy: conda (RAPIDS only)"
 
-`uv` can be used on OSC for project-level dependency management, but you **must** use OSC's system Python — not uv's managed Python downloads, which can segfault on RHEL 9.
+    Conda is only needed for RAPIDS GPU preprocessing, which requires conda-only packages.
+    For all other workflows, use **uv** or **venv + pip**.
 
-```bash
-# Install uv (one-time)
-curl -LsSf https://astral.sh/uv/install.sh | sh
+    ```bash
+    # Load conda
+    module load python/3.12
 
-# Create a venv using OSC's system Python (critical!)
-uv venv --python /apps/python/3.12/bin/python3
+    # Create conda environment
+    conda create -n myproject python=3.12
 
-# Activate
-source .venv/bin/activate
+    # Activate
+    conda activate myproject
 
-# Install from pyproject.toml
-uv sync
-```
+    # Deactivate
+    conda deactivate
 
-!!! warning "uv on OSC: critical caveats"
-    - **Always use `--python /apps/python/3.12/bin/python3`** when creating venvs. uv's standalone Python builds are not compatible with OSC's RHEL 9 libraries and will segfault.
-    - **Do NOT load `module load python/3.12` and then use `uv venv`** — uv ignores module-loaded Python by default. You must pass the explicit path.
-    - **PyTorch from PyPI works** — PyPI wheels bundle NVIDIA libraries, so you don't need `module load cuda`. But PyG extensions need a flat wheel index configured in `pyproject.toml`. See [PyG Setup](../ml-workflows/pyg-setup.md) for details.
+    # Remove environment
+    conda remove -n myproject --all
+    ```
+
+    For RAPIDS setup, see [GPU Preprocessing (RAPIDS)](../ml-workflows/rapids-gpu-preprocessing.md).
 
 ## Using Environments in Job Scripts
 
@@ -271,26 +270,6 @@ python train.py
 deactivate
 ```
 
-### conda in SLURM Job
-
-```bash
-#!/bin/bash
-#SBATCH --job-name=my_job
-#SBATCH --time=02:00:00
-
-# Load conda
-module load python/3.12
-
-# Activate conda environment
-source activate myproject
-
-# Or use conda activate
-conda activate myproject
-
-# Run code
-python train.py
-```
-
 ### Multiple Module Loading
 
 ```bash
@@ -301,7 +280,7 @@ python train.py
 # Load all required modules
 module purge                    # Start clean
 module load python/3.12
-module load cuda/11.8.0
+module load cuda/12.x
 module load git
 
 # Activate environment
@@ -323,7 +302,7 @@ Create `~/scripts/load_ml_modules.sh`:
 
 module purge
 module load python/3.12
-module load cuda/11.8.0
+module load cuda/12.x
 module load git
 
 echo "Modules loaded for ML work"
@@ -348,7 +327,7 @@ Create `~/scripts/activate_ml_env.sh`:
 # Load modules
 module purge
 module load python/3.12
-module load cuda/11.8.0
+module load cuda/12.x
 
 # Activate virtual environment
 source ~/venvs/ml_project/bin/activate
@@ -368,21 +347,6 @@ source ~/scripts/activate_ml_env.sh
 ??? note "Advanced: Shared Lab Environments"
 
     For lab collaboration, create shared environments in project space:
-
-    **Shared Conda Environment:**
-
-    ```bash
-    # Create in project space
-    conda create -p /fs/project/PAS1234/envs/lab_shared python=3.12
-
-    # All lab members can activate
-    conda activate /fs/project/PAS1234/envs/lab_shared
-
-    # Install packages (requires write access)
-    conda install pytorch torchvision cudatoolkit=11.8 -c pytorch
-    ```
-
-    **Shared venv (Alternative):**
 
     ```bash
     # Create in project space
@@ -404,9 +368,7 @@ For PyTorch-specific environment setup (CUDA versions, GPU verification, etc.), 
 ```bash
 # Check venv sizes
 du -sh ~/venvs/*
-
-# Check conda environments
-conda clean --all --dry-run
+du -sh .venv/
 ```
 
 ### Clean Up
@@ -415,11 +377,9 @@ conda clean --all --dry-run
 # Remove unused venv
 rm -rf ~/venvs/old_project
 
-# Clean conda cache
-conda clean --all
-
-# Clean pip cache
+# Clean pip/uv cache
 pip cache purge
+uv cache clean
 
 # Remove old packages
 pip uninstall <package>
@@ -440,9 +400,6 @@ du -sh ~/*/  | sort -hr | head -10
     Add to `~/.bashrc` for automatic setup:
 
     ```bash
-    # Load commonly used modules
-    module load python/3.12
-
     # Alias for activating environments
     alias activate-ml='source ~/venvs/ml_project/bin/activate'
     alias activate-pytorch='source ~/venvs/pytorch/bin/activate'
@@ -451,7 +408,7 @@ du -sh ~/*/  | sort -hr | head -10
     export PYTHONUNBUFFERED=1
     ```
 
-    **Warning**: Don't load modules that conflict or slow down login.
+    **Warning**: Don't load modules in `.bashrc` that conflict or slow down login.
 
 ## Best Practices
 
@@ -476,19 +433,14 @@ Create `environment_setup.md` in your project:
 ```markdown
 # Environment Setup
 
-## Modules
-- python/3.11
-- cuda/11.8.0
+## Environment
+- uv venv with Python 3.12
 
-## Virtual Environment
-Location: ~/venvs/myproject
-
-## Installation
+## Setup
 \`\`\`bash
-module load python/3.12 cuda/11.8.0
-python -m venv ~/venvs/myproject
-source ~/venvs/myproject/bin/activate
-pip install -r requirements.txt
+uv venv --python /apps/python/3.12/bin/python3
+source .venv/bin/activate
+uv sync
 \`\`\`
 ```
 
@@ -581,7 +533,7 @@ quota -s
 
 **Problem**: `torch.cuda.is_available()` returns False
 
-Verify the CUDA module is loaded (`module load cuda/11.8.0`) and that you're on a GPU node. For full diagnostic steps and PyTorch reinstall commands, see [PyTorch & GPU Setup — Troubleshooting](../ml-workflows/pytorch-setup.md#troubleshooting).
+Verify the CUDA module is loaded (`module load cuda/12.x`) and that you're on a GPU node. For full diagnostic steps and PyTorch reinstall commands, see [PyTorch & GPU Setup — Troubleshooting](../ml-workflows/pytorch-setup.md#troubleshooting).
 
 ### Conflicting Modules
 
@@ -594,29 +546,29 @@ module purge
 
 # Load modules in correct order
 module load python/3.12
-module load cuda/11.8.0
+module load cuda/12.x
 ```
 
 ??? note "Quick Reference"
 
     ```bash
     # Modules
-    module load python/3.12   # Load Python
-    module load cuda/11.8.0          # Load CUDA
+    module load python/3.12          # Load Python
+    module load cuda/12.x            # Load CUDA (not needed for PyPI torch)
     module list                      # Show loaded
     module purge                     # Unload all
 
-    # venv
+    # uv (recommended)
+    uv venv --python /apps/python/3.12/bin/python3  # Create
+    source .venv/bin/activate        # Activate
+    uv sync                          # Install from pyproject.toml
+    uv add <package>                 # Add a dependency
+
+    # venv + pip
     python -m venv ~/venvs/name      # Create
     source ~/venvs/name/bin/activate # Activate
     deactivate                       # Deactivate
     pip freeze > requirements.txt    # Export
-
-    # conda
-    conda create -n name python=3.12  # Create
-    conda activate name              # Activate
-    conda deactivate                 # Deactivate
-    conda env export > env.yml       # Export
     ```
 
 ## Secrets and API Keys

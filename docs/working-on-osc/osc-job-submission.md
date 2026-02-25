@@ -4,7 +4,7 @@ tags:
   - OSC
   - GPU
 ---
-<!-- last-reviewed: 2026-02-19 -->
+<!-- last-reviewed: 2026-02-25 -->
 # Job Submission Guide
 
 Learn how to submit and manage jobs on OSC using the SLURM job scheduler.
@@ -105,7 +105,7 @@ Every SLURM batch script has three sections:
 #SBATCH --account=PAS1234
 #SBATCH --time=02:00:00
 
-module load python/3.11         # 3. Execution block
+module load python/3.12         # 3. Execution block
 source ~/venvs/myproject/bin/activate
 python train.py
 ```
@@ -127,7 +127,7 @@ python train.py
     #SBATCH --job-name=my_job       # ✅ Read by SLURM
     #SBATCH --time=02:00:00         # ✅ Read by SLURM
 
-    module load python/3.11  # First executable line
+    module load python/3.12  # First executable line
 
     #SBATCH --mem=64G               # ❌ SILENTLY IGNORED
     ```
@@ -176,7 +176,7 @@ echo "Running on node: $(hostname)"
 echo "Job ID: $SLURM_JOB_ID"
 
 # Load modules
-module load python/3.11
+module load python/3.12
 
 # Activate environment
 source ~/venvs/myproject/bin/activate
@@ -201,8 +201,8 @@ echo "Job ended at: $(date)"
 #SBATCH --output=logs/gpu_job_%j.out
 
 # Load modules
-module load python/3.11
-module load cuda/11.8.0
+module load python/3.12
+module load cuda/12.x
 
 # Activate environment
 source ~/venvs/pytorch/bin/activate
@@ -228,8 +228,8 @@ python train.py --device cuda --epochs 100
 #SBATCH --time=08:00:00
 #SBATCH --output=logs/multi_gpu_%j.out
 
-module load python/3.11
-module load cuda/11.8.0
+module load python/3.12
+module load cuda/12.x
 source ~/venvs/pytorch/bin/activate
 
 # Run with PyTorch DDP (torchrun replaces the deprecated torch.distributed.launch)
@@ -252,7 +252,7 @@ For data preprocessing, feature extraction, or file conversion jobs that don't n
 #SBATCH --time=04:00:00
 #SBATCH --output=logs/preprocess_%j.out
 
-module load python/3.11
+module load python/3.12
 source ~/venvs/myproject/bin/activate
 
 # Use all allocated CPUs
@@ -279,8 +279,8 @@ For long training jobs that may hit walltime limits or need to recover from fail
 #SBATCH --time=24:00:00
 #SBATCH --output=logs/train_%j.out
 
-module load python/3.11
-module load cuda/11.8.0
+module load python/3.12
+module load cuda/12.x
 source ~/venvs/pytorch/bin/activate
 
 # Automatically resume from latest checkpoint if one exists
@@ -337,8 +337,8 @@ Get notified when important jobs start, finish, or fail:
 #SBATCH --mail-type=BEGIN,END,FAIL
 #SBATCH --mail-user=name.1@osu.edu
 
-module load python/3.11
-module load cuda/11.8.0
+module load python/3.12
+module load cuda/12.x
 source ~/venvs/pytorch/bin/activate
 
 echo "Training started at $(date) on $(hostname)"
@@ -445,7 +445,7 @@ sbatch --dependency=afterok:$job1:$job2 job4.sh
 ```
 
 !!! tip "Consider a pipeline orchestrator for complex pipelines"
-    If you have multi-step pipelines with many dependencies, a tool like Nextflow or Prefect can manage job submission, dependency tracking, and partial reruns automatically. See [Pipeline Orchestration](pipeline-orchestration.md).
+    If you have multi-step pipelines with many dependencies, Ray can manage task scheduling, dependency tracking, and fault tolerance from Python. See [Pipeline Orchestration](pipeline-orchestration.md).
 
 ## Monitoring Jobs
 
@@ -626,7 +626,7 @@ cat logs/job_<jobid>.err
 #SBATCH --gpus-per-node=1
 
 # Check CUDA module loaded
-module load cuda/11.8.0
+module load cuda/12.x
 
 # Verify in code
 nvidia-smi

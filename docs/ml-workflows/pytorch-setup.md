@@ -5,7 +5,7 @@ tags:
   - CUDA
   - OSC
 ---
-<!-- last-reviewed: 2026-02-22 -->
+<!-- last-reviewed: 2026-02-25 -->
 # PyTorch & GPU Setup
 
 Everything you need to install PyTorch, request GPUs, and train efficiently on OSC.
@@ -18,90 +18,79 @@ Everything you need to install PyTorch, request GPUs, and train efficiently on O
 
 ## Quick Setup
 
-For those who want to get started quickly:
+=== "uv (Recommended)"
 
-```bash
-# 1. Load modules
-module load python/3.12 cuda/11.8.0
+    ```bash
+    # 1. Create venv with OSC's system Python (never use uv-managed Python on OSC)
+    uv venv --python /apps/python/3.12/bin/python3
 
-# 2. Create virtual environment
-python -m venv ~/venvs/pytorch
+    # 2. Activate
+    source .venv/bin/activate
 
-# 3. Activate
-source ~/venvs/pytorch/bin/activate
+    # 3. Install PyTorch (PyPI wheels bundle CUDA — no module load cuda needed)
+    uv add "torch>=2.8.0,<2.9" torchvision torchaudio
 
-# 4. Install PyTorch with CUDA 11.8
-pip install --upgrade pip
-pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
+    # 4. Install common ML packages
+    uv add numpy pandas matplotlib scikit-learn jupyter tensorboard
+    ```
 
-# 5. Install common ML packages
-pip install numpy pandas matplotlib scikit-learn jupyter tensorboard
-```
+=== "pip + venv"
 
-!!! tip "Alternative: uv on OSC"
-    If you use `uv` for project management, you can install PyTorch from PyPI (which bundles CUDA libraries automatically). See [Python Environment Setup](../getting-started/python-environment-setup.md) for details. The key difference: **PyPI torch bundles nvidia libs, so you do NOT need `module load cuda` or the `--index-url` pytorch wheel URL.** But you must use OSC's system Python: `uv venv --python /apps/python/3.12/bin/python3`.
+    ```bash
+    # 1. Load Python module
+    module load python/3.12
+
+    # 2. Create virtual environment
+    python -m venv ~/venvs/pytorch
+
+    # 3. Activate
+    source ~/venvs/pytorch/bin/activate
+
+    # 4. Install PyTorch (PyPI wheels bundle CUDA — no --index-url needed)
+    pip install --upgrade pip
+    pip install "torch>=2.8.0,<2.9" torchvision torchaudio
+
+    # 5. Install common ML packages
+    pip install numpy pandas matplotlib scikit-learn jupyter tensorboard
+    ```
+
+!!! tip "No `module load cuda` needed with PyPI torch"
+    PyTorch wheels on PyPI bundle their own NVIDIA libraries. You do **not** need `module load cuda` or `--index-url` pytorch wheel URLs. Only load a CUDA module if you are compiling custom CUDA extensions or using venv/pip with the legacy pytorch wheel index.
 
 !!! warning "Version Constraint Triangle (PyTorch + PyG + CUDA)"
     If you plan to use PyTorch Geometric (PyG), there is a **three-way version coupling** between PyTorch, PyG extension wheels, and CUDA. PyPI may ship torch 2.10+ but PyG only has compiled wheels up to torch 2.8.0. Installing mismatched versions compiles fine but **segfaults at runtime** (silent C++ ABI mismatch). Always check [data.pyg.org/whl/](https://data.pyg.org/whl/) for the latest torch version supported by PyG before upgrading. See [PyG Setup](pyg-setup.md) for full details.
 
 ## Detailed Setup
 
-### Step 1: Choose CUDA Version
+### Step 1: Create Virtual Environment
 
-Check available CUDA versions:
+=== "uv (Recommended)"
 
-```bash
-module spider cuda
-```
+    ```bash
+    # Use OSC's system Python (never uv-managed Python on OSC)
+    uv venv --python /apps/python/3.12/bin/python3
+    source .venv/bin/activate
+    ```
 
-Common options:
-- **CUDA 11.8**: Stable, widely supported
-- **CUDA 12.1**: Newer, for latest features
+=== "venv + pip"
 
-Check the [PyTorch installation matrix](https://pytorch.org/get-started/locally/) for current CUDA compatibility.
+    ```bash
+    module load python/3.12
+    python -m venv ~/venvs/pytorch
+    source ~/venvs/pytorch/bin/activate
+    pip install --upgrade pip
+    ```
 
-### Step 2: Load Required Modules
+### Step 2: Install PyTorch
 
-```bash
-# Start with clean environment
-module purge
-
-# Load Python and CUDA
-module load python/3.12
-module load cuda/11.8.0
-
-# Verify
-module list
-```
-
-### Step 3: Create Virtual Environment
+PyTorch wheels on PyPI now bundle CUDA libraries. No `--index-url` or `module load cuda` is needed.
 
 ```bash
-# Create environment
-python -m venv ~/venvs/pytorch
+# uv
+uv add "torch>=2.8.0,<2.9" torchvision torchaudio
 
-# Activate
-source ~/venvs/pytorch/bin/activate
-
-# Verify Python location
-which python
-# Should show: /home/username/venvs/pytorch/bin/python
-```
-
-### Step 4: Install PyTorch
-
-#### For CUDA 11.8
-
-```bash
-pip install --upgrade pip
-pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
-```
-
-#### For CUDA 12.1
-
-```bash
-pip install --upgrade pip
-pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
+# pip
+pip install "torch>=2.8.0,<2.9" torchvision torchaudio
 ```
 
 ### Step 5: Install Additional Packages
@@ -174,8 +163,8 @@ Test on GPU node:
 srun -p gpu --gpus-per-node=1 --time=00:10:00 --pty bash
 
 # Activate environment
-module load python/3.12 cuda/11.8.0
-source ~/venvs/pytorch/bin/activate
+source .venv/bin/activate  # uv
+# or: source ~/venvs/pytorch/bin/activate  # venv + pip
 
 # Run test
 python test_pytorch.py
@@ -183,27 +172,6 @@ python test_pytorch.py
 # Exit
 exit
 ```
-
-??? note "Alternative: Conda Setup"
-
-    If you prefer conda:
-
-    ```bash
-    # Load conda
-    module load python/3.12
-
-    # Create conda environment
-    conda create -n pytorch python=3.12 -y
-
-    # Activate
-    conda activate pytorch
-
-    # Install PyTorch with CUDA
-    conda install pytorch torchvision torchaudio pytorch-cuda=11.8 -c pytorch -c nvidia
-
-    # Install additional packages
-    conda install numpy pandas matplotlib scikit-learn jupyter -y
-    ```
 
 ## Requesting GPUs
 
@@ -411,7 +379,7 @@ model = torch.compile(model, mode="max-autotune")
 !!! warning "Requires PyTorch 2.0+"
     `torch.compile()` is only available in PyTorch 2.0 and later. Check your version with `torch.__version__`. If you're using an older version, upgrade with:
     ```bash
-    pip install --upgrade torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
+    pip install --upgrade "torch>=2.8.0,<2.9" torchvision torchaudio
     ```
 
 !!! tip "A100 GPUs benefit the most"
@@ -618,12 +586,8 @@ echo "Job started at: $(date)"
 echo "Running on node: $(hostname)"
 echo "Job ID: $SLURM_JOB_ID"
 
-# Load modules
-module load python/3.12
-module load cuda/11.8.0
-
-# Activate environment
-source ~/venvs/pytorch/bin/activate
+# Activate environment (PyPI torch bundles CUDA — no module load cuda needed)
+source .venv/bin/activate
 
 # Verify GPU
 nvidia-smi
@@ -750,7 +714,7 @@ python -c "import torch; print(torch.cuda.is_available())"
 
 # 5. Reinstall PyTorch
 pip uninstall torch torchvision torchaudio
-pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
+pip install "torch>=2.8.0,<2.9" torchvision torchaudio
 ```
 
 ### Slow Training

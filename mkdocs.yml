@@ -166,13 +166,16 @@ nav:
   - ML Workflows:
     - PyTorch & GPU Setup: ml-workflows/pytorch-setup.md
     - PyG (PyTorch Geometric): ml-workflows/pyg-setup.md
+    - GPU Preprocessing (RAPIDS): ml-workflows/rapids-gpu-preprocessing.md
     - ML Project Template: ml-workflows/ml-workflow.md
     - Notebook-to-Script Workflow: ml-workflows/notebook-to-script.md
     - Data & Experiment Tracking: ml-workflows/data-experiment-tracking.md
+    - DuckDB Analytics Layer: ml-workflows/duckdb-analytics.md
 
   - Contributing:
     - Contributing Guide: contributing/how-this-site-works.md
     - GitHub Pages Setup: contributing/github-pages-setup.md
+    - GitHub Projects: contributing/github-projects.md
 
   - Assignments:
     - Overview: assignments/index.md

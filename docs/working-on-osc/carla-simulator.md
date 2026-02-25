@@ -1,4 +1,4 @@
-<!-- last-reviewed: 2026-02-19 -->
+<!-- last-reviewed: 2026-02-25 -->
 # CARLA Simulator on OSC
 
 How to install, run, and develop with the CARLA autonomous driving simulator on OSC.
@@ -44,7 +44,7 @@ rm CARLA_0.9.15.tar.gz
 ### Install the CARLA Python Client
 
 ```bash
-module load python/3.11
+module load python/3.12
 source ~/venvs/carla_project/bin/activate
 
 # Install the CARLA Python package
@@ -97,7 +97,7 @@ ps aux | grep CarlaUE4
 #### Connect with a Python Client
 
 ```bash
-module load python/3.11
+module load python/3.12
 source ~/venvs/carla_project/bin/activate
 
 python - <<'EOF'
@@ -141,8 +141,8 @@ EOF
 echo "Job started at: $(date)"
 echo "Node: $(hostname)"
 
-module load python/3.11
-module load cuda/11.8.0
+module load python/3.12
+module load cuda/12.x
 source ~/venvs/carla_project/bin/activate
 
 SCRATCH=/fs/scratch/PAS1234/$USER
@@ -320,8 +320,8 @@ You can run multiple independent CARLA instances using job arrays. Each job star
 #SBATCH --time=04:00:00
 #SBATCH --output=logs/carla_par_%A_%a.out
 
-module load python/3.11
-module load cuda/11.8.0
+module load python/3.12
+module load cuda/12.x
 source ~/venvs/carla_project/bin/activate
 
 SCRATCH=/fs/scratch/PAS1234/$USER
@@ -386,8 +386,8 @@ For reinforcement learning or imitation learning, a common pattern is to run the
 #SBATCH --time=24:00:00
 #SBATCH --output=logs/carla_train_%j.out
 
-module load python/3.11
-module load cuda/11.8.0
+module load python/3.12
+module load cuda/12.x
 source ~/venvs/carla_project/bin/activate
 
 SCRATCH=/fs/scratch/PAS1234/$USER

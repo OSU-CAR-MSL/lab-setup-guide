@@ -1,4 +1,4 @@
-<!-- last-reviewed: 2026-02-19 -->
+<!-- last-reviewed: 2026-02-25 -->
 # Data & Experiment Tracking
 
 Managing datasets, tracking experiments, and reproducing results are core challenges in ML research. This guide covers practical tools for structured data and experiment tracking on OSC — DVC for data versioning, SQLite for metadata, MLflow and Weights & Biases for experiment tracking, TensorBoard for training visualization, and Parquet for fast data loading.
@@ -18,18 +18,24 @@ A tracking stack solves these by versioning data, logging every run, and making 
 
 ---
 
+!!! tip "Choosing Your Approach"
+    - **Small datasets / sharing with collaborators** → DVC
+    - **Many runs / analytics-heavy** → Parquet datalake + DuckDB ([DuckDB Analytics Layer](duckdb-analytics.md))
+    - **Real-time monitoring** → W&B
+
 ## Tool Overview
 
 | Tool | Purpose | Best For |
 |------|---------|----------|
 | **DVC** | Dataset versioning + remote storage | Large datasets, data pipelines |
+| **DuckDB** | SQL analytics over Parquet files | Leaderboards, experiment comparison, export pipelines |
 | **SQLite** | Lightweight relational database | Structured metadata, queryable results |
 | **MLflow** | Experiment tracking UI + API | Comparing runs, logging metrics/artifacts |
 | **W&B** | Cloud experiment tracking + visualization | Team dashboards, no port forwarding needed |
 | **TensorBoard** | Training visualization | Loss curves, model graphs, quick local checks |
 | **Parquet** | Columnar data format | Fast reads of large tabular datasets |
 
-These tools complement each other — a typical project might use DVC for data versioning, SQLite for metadata, MLflow or W&B for experiment tracking, TensorBoard for quick training visualization, and Parquet for fast data loading.
+These tools complement each other — a typical project might use DVC for data versioning, W&B for live monitoring, and Parquet + DuckDB for post-hoc analytics and export.
 
 ---
 
@@ -440,6 +446,14 @@ class SensorDataset(Dataset):
 
 !!! note
     Exact numbers depend on your data. The relative speedups are what matter — Parquet is significantly faster than CSV, and pre-cached tensors are fastest of all.
+
+---
+
+## Parquet Datalake for Experiment Results
+
+For projects with many training runs, storing results as Parquet files creates a queryable datalake that DuckDB can analyze instantly with SQL — leaderboards, metric trends, config comparisons, and JSON exports for dashboards. This pattern scales better than SQLite for analytics-heavy workflows.
+
+For full details — Parquet layout, DuckDB views, export scripts, and interactive queries — see the [DuckDB Analytics Layer](duckdb-analytics.md) page.
 
 ---
 

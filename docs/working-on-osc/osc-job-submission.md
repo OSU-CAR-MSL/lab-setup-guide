@@ -4,7 +4,7 @@ tags:
   - OSC
   - GPU
 ---
-<!-- last-reviewed: 2026-02-25 -->
+<!-- last-reviewed: 2026-02-26 -->
 # Job Submission Guide
 
 Learn how to submit and manage jobs on OSC using the SLURM job scheduler.
@@ -106,7 +106,7 @@ Every SLURM batch script has three sections:
 #SBATCH --time=02:00:00
 
 module load python/3.12         # 3. Execution block
-source ~/venvs/myproject/bin/activate
+source .venv/bin/activate       # uv (recommended) — or ~/venvs/myproject/bin/activate for pip+venv
 python train.py
 ```
 
@@ -179,7 +179,7 @@ echo "Job ID: $SLURM_JOB_ID"
 module load python/3.12
 
 # Activate environment
-source ~/venvs/myproject/bin/activate
+source .venv/bin/activate  # uv (recommended) — or ~/venvs/myproject/bin/activate for pip+venv
 
 # Run your code
 python train.py --epochs 100
@@ -202,7 +202,7 @@ echo "Job ended at: $(date)"
 
 # Load modules
 module load python/3.12
-module load cuda/12.x
+# module load cuda/12.4  # Only needed for custom CUDA extensions — PyPI torch bundles CUDA
 
 # Activate environment
 source ~/venvs/pytorch/bin/activate
@@ -229,7 +229,7 @@ python train.py --device cuda --epochs 100
 #SBATCH --output=logs/multi_gpu_%j.out
 
 module load python/3.12
-module load cuda/12.x
+# module load cuda/12.4  # Only needed for custom CUDA extensions — PyPI torch bundles CUDA
 source ~/venvs/pytorch/bin/activate
 
 # Run with PyTorch DDP (torchrun replaces the deprecated torch.distributed.launch)
@@ -253,7 +253,7 @@ For data preprocessing, feature extraction, or file conversion jobs that don't n
 #SBATCH --output=logs/preprocess_%j.out
 
 module load python/3.12
-source ~/venvs/myproject/bin/activate
+source .venv/bin/activate  # uv (recommended) — or ~/venvs/myproject/bin/activate for pip+venv
 
 # Use all allocated CPUs
 export OMP_NUM_THREADS=$SLURM_CPUS_PER_TASK
@@ -280,7 +280,7 @@ For long training jobs that may hit walltime limits or need to recover from fail
 #SBATCH --output=logs/train_%j.out
 
 module load python/3.12
-module load cuda/12.x
+# module load cuda/12.4  # Only needed for custom CUDA extensions — PyPI torch bundles CUDA
 source ~/venvs/pytorch/bin/activate
 
 # Automatically resume from latest checkpoint if one exists
@@ -338,7 +338,7 @@ Get notified when important jobs start, finish, or fail:
 #SBATCH --mail-user=name.1@osu.edu
 
 module load python/3.12
-module load cuda/12.x
+# module load cuda/12.4  # Only needed for custom CUDA extensions — PyPI torch bundles CUDA
 source ~/venvs/pytorch/bin/activate
 
 echo "Training started at $(date) on $(hostname)"
@@ -625,12 +625,15 @@ cat logs/job_<jobid>.err
 # Verify GPU requested
 #SBATCH --gpus-per-node=1
 
-# Check CUDA module loaded
-module load cuda/12.x
-
-# Verify in code
+# Verify GPU is visible
 nvidia-smi
+
+# Check in Python
+python -c "import torch; print(torch.cuda.is_available())"
 ```
+
+!!! note
+    If you installed PyTorch from PyPI, you do **not** need `module load cuda`. PyPI wheels bundle CUDA. Only load a CUDA module if you are compiling custom CUDA extensions.
 
 ## Example Workflows
 

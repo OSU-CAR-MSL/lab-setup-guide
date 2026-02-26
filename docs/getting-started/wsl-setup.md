@@ -2,7 +2,7 @@
 tags:
   - WSL2
 ---
-<!-- last-reviewed: 2026-02-19 -->
+<!-- last-reviewed: 2026-02-26 -->
 # WSL2 Setup
 
 This guide walks you through installing and configuring the Windows Subsystem for Linux 2 (WSL2), the foundation for local development in the lab.
@@ -210,50 +210,7 @@ return config
 
 ## VS Code Integration
 
-VS Code connects to WSL through the **WSL extension**, giving you a full Linux development experience with a native Windows editor.
-
-### Setup
-
-1. **Install the WSL extension** in VS Code:
-    - Open VS Code
-    - Go to Extensions (++ctrl+shift+x++)
-    - Search for `ms-vscode-remote.remote-wsl` and install it
-
-    Or from the terminal:
-
-    ```bash
-    code --install-extension ms-vscode-remote.remote-wsl
-    ```
-
-2. **Open a WSL folder** from your WSL terminal:
-
-    ```bash
-    code ~/projects/my-repo
-    ```
-
-    The first time you do this, VS Code downloads and installs its server component inside WSL. This takes a minute but only happens once.
-
-3. **Verify the connection** -- look at the bottom-left corner of the VS Code window. It should show:
-
-    ```
-    WSL: Ubuntu
-    ```
-
-    This confirms VS Code is running against the WSL filesystem, not the Windows filesystem.
-
-!!! warning "Always open from WSL, not Windows"
-    Opening a `/mnt/c/` path from Windows Explorer ("Open with Code") connects VS Code to the Windows filesystem, bypassing WSL. Always open projects from the WSL terminal with `code ~/projects/...` to get the full WSL integration.
-
-### How It Works
-
-When connected to WSL, VS Code runs two components:
-
-- **UI (Windows):** The editor window, menus, and theme rendering
-- **Server (WSL):** File access, terminal, extensions, and language servers
-
-This means extensions like Python, Pylance, and Ruff run inside WSL where they have native access to your Linux filesystem and tools. The integrated terminal (++ctrl+grave++) opens a proper WSL shell.
-
-For more on VS Code configuration, extensions, and keyboard shortcuts, see the [VS Code Setup](vscode-setup.md) guide.
+VS Code integrates seamlessly with WSL via the Remote - WSL extension. Install the extension, then open a WSL terminal and run `code .` to launch VS Code connected to your WSL environment. For full VS Code setup instructions, see the [VS Code Setup Guide](vscode-setup.md).
 
 ---
 

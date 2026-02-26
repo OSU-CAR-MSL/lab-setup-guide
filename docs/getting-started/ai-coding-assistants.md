@@ -1,4 +1,4 @@
-<!-- last-reviewed: 2026-02-25 -->
+<!-- last-reviewed: 2026-02-26 -->
 # AI Coding Assistants
 
 Set up AI-powered coding tools to accelerate your development workflow in the lab.
@@ -102,9 +102,6 @@ Add these to your VS Code `settings.json` (++ctrl+comma++ → Open Settings JSON
         "*": true,
         "markdown": true,
         "yaml": true
-    },
-    "github.copilot.advanced": {
-        "length": 500
     }
 }
 ```
@@ -131,10 +128,10 @@ Install Claude Code using the official installer:
 
 ```bash
 # Install on your local machine or OSC
-curl -fsSL https://claude.ai/install.sh | sh
+curl -fsSL https://claude.ai/install.sh | bash
 ```
 
-This installs the `claude` binary to `~/.claude/bin/`. No Node.js required.
+This installs the `claude` binary to `~/.local/bin/`. No Node.js required.
 
 ### Authentication
 
@@ -171,17 +168,10 @@ Then type natural language requests:
 
 #### One-Shot Mode
 
-Run a single command without entering interactive mode:
+Run a single prompt and print the output without entering interactive mode:
 
 ```bash
 claude -p "Explain the architecture of this project"
-```
-
-#### Print Mode (Scripting)
-
-Run a single prompt and get output directly:
-
-```bash
 claude -p "Generate a .gitignore for a Python ML project"
 ```
 

@@ -1,4 +1,4 @@
-<!-- last-reviewed: 2026-02-25 -->
+<!-- last-reviewed: 2026-02-26 -->
 # DuckDB Analytics Layer
 
 Query and analyze ML experiment results using DuckDB over a Parquet datalake — fast SQL analytics without a database server.
@@ -169,9 +169,9 @@ if __name__ == "__main__":
 DuckDB's CLI or Python API makes ad-hoc analysis fast:
 
 ```bash
-# Install DuckDB CLI (one-time)
-pip install duckdb-cli
-# Or use Python
+# Install DuckDB Python package (one-time)
+pip install duckdb
+# Quick test
 python -c "import duckdb; print(duckdb.sql('SELECT 42').fetchone())"
 ```
 
@@ -184,12 +184,12 @@ FROM leaderboard
 LIMIT 10;
 ```
 
-### KD Impact Analysis
+### Hyperparameter Impact Analysis
 
 ```sql
--- Compare runs with and without knowledge distillation
+-- Compare runs grouped by a config flag
 SELECT
-    c.use_kd,
+    c.use_augmentation,
     COUNT(*) AS num_runs,
     AVG(m.value) AS avg_f1,
     MAX(m.value) AS best_f1
@@ -197,7 +197,7 @@ FROM configs c
 JOIN metrics m ON c.run_id = m.run_id
 WHERE m.metric = 'val_f1'
   AND m.epoch = (SELECT MAX(epoch) FROM metrics WHERE run_id = m.run_id)
-GROUP BY c.use_kd;
+GROUP BY c.use_augmentation;
 ```
 
 ### Metric Trend for a Specific Run
@@ -206,7 +206,7 @@ GROUP BY c.use_kd;
 -- Loss and F1 over epochs for a specific run
 SELECT epoch, metric, value
 FROM metrics
-WHERE run_id = 'run_20260225_001'
+WHERE run_id = 'run_20260101_001'
   AND metric IN ('val_loss', 'val_f1')
 ORDER BY epoch;
 ```

@@ -1,4 +1,4 @@
-<!-- last-reviewed: 2026-02-19 -->
+<!-- last-reviewed: 2026-02-26 -->
 # Assignment 1: Personal Academic Website
 
 |                    |                                              |
@@ -213,7 +213,7 @@ Run all commands in the **VS Code integrated terminal** (++ctrl+grave++). Do the
 3. Open `cv.qmd` locally — your edits from GitHub are now here
 
 !!! tip "Why this matters"
-In research collaboration, teammates push changes you don't have locally. `git pull` keeps you in sync.
+    In research collaboration, teammates push changes you don't have locally. `git pull` keeps you in sync.
 
 ### Task 3: Add a Blog Post
 

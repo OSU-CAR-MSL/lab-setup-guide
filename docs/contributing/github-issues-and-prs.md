@@ -427,3 +427,9 @@ gh pr create --title "..." --body "..." --web
 | Force-pushing after review comments | Reviewers lose track of what changed. Push new commits instead. |
 | Not pulling before branching | `git pull` on main first, then create your branch |
 | Filing issues without searching first | Use `gh search issues` to check for duplicates |
+
+## Related Guides
+
+- [Contributing Guide](how-this-site-works.md) — How this site works, adding new pages
+- [Project Management](github-projects.md) — GitHub Projects boards, workflows, and automation
+- [GitHub Pages Setup](github-pages-setup.md) — Setting up MkDocs or Quarto documentation sites

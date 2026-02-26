@@ -1,4 +1,4 @@
-<!-- last-reviewed: 2026-02-19 -->
+<!-- last-reviewed: 2026-02-26 -->
 # Contributing Guide
 
 This site is built with [MkDocs](https://www.mkdocs.org/) using the [Material for MkDocs](https://squidfunk.github.io/mkdocs-material/) theme. It turns plain markdown files into a professional documentation website, hosted for free on GitHub Pages.
@@ -15,6 +15,7 @@ lab-setup-guide/
 │   ├── working-on-osc/         # Jobs, environments, orchestration
 │   ├── ml-workflows/           # PyTorch, ML workflow, GPU computing
 │   ├── contributing/           # This guide and GitHub Pages setup
+│   ├── assignments/            # Hands-on tasks for new lab members
 │   ├── resources/              # Troubleshooting and useful links
 │   └── stylesheets/
 │       └── extra.css           # Custom OSU scarlet branding
@@ -52,7 +53,7 @@ osu-car-msl.github.io/lab-setup-guide/
 
 You never need to manually build or upload anything. Just push markdown and the site updates in about 45 seconds.
 
-A separate CI workflow (`link-check.yml`) runs on each push and weekly to check external links, content freshness (pages not reviewed in 6+ months), and SSOT duplication.
+A separate CI workflow (`link-check.yml`) runs on each push and weekly to check external links, content freshness (pages not reviewed in 12+ months), and SSOT duplication.
 
 ## Adding a New Page
 
@@ -74,7 +75,7 @@ Your content here.
     Every page must have `<!-- last-reviewed: YYYY-MM-DD -->` as its **very first line** (before the heading). Use today's date. CI will flag pages that haven't been reviewed in 12 months.
 
     ```markdown
-    <!-- last-reviewed: 2026-02-19 -->
+    <!-- last-reviewed: 2026-02-26 -->
     # My New Guide
     ```
 
@@ -202,3 +203,9 @@ Before pushing a new page:
 - [ ] Code blocks specify the language for syntax highlighting
 - [ ] `mkdocs build --strict` passes
 - [ ] `python scripts/check-freshness.py --max-age-days 365` passes
+
+## Related Guides
+
+- [Issues, PRs & Code Review](github-issues-and-prs.md) — Filing issues, opening pull requests, and reviewing code
+- [Project Management](github-projects.md) — GitHub Projects boards, workflows, and automation
+- [GitHub Pages Setup](github-pages-setup.md) — Setting up MkDocs or Quarto documentation sites

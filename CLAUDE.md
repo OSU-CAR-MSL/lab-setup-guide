@@ -29,9 +29,9 @@ lab-setup-guide/
 │   ├── getting-started/        # 5 pages
 │   ├── osc-basics/             # 6 pages
 │   ├── working-on-osc/         # 5 pages
-│   ├── ml-workflows/           # 5 pages
-│   ├── contributing/           # 2 pages
-│   ├── assignments/            # 4 pages
+│   ├── ml-workflows/           # 7 pages
+│   ├── contributing/           # 4 pages
+│   ├── assignments/            # 6 pages
 │   └── resources/              # 2 pages
 ├── scripts/                    # check-freshness.py, check-duplication.py, mcp_lab_docs.py
 └── .github/workflows/          # deploy-docs.yml, link-check.yml

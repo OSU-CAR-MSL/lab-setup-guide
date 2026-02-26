@@ -1,4 +1,4 @@
-<!-- last-reviewed: 2026-02-19 -->
+<!-- last-reviewed: 2026-02-26 -->
 # Assignments
 
 Welcome to the lab assignments section. These hands-on assignments are designed to get new undergraduates up to speed with the tools and workflows used in the CAR Mobility Systems Lab.
@@ -21,6 +21,25 @@ Welcome to the lab assignments section. These hands-on assignments are designed 
 | 1 | **[Build Your Personal Academic Website](personal-website.md)** | Git, GitHub, VS Code, Quarto, GitHub Pages | 3--4 hrs | Beginner |
 | 2a | **[Exploratory Data Analysis](exploratory-data-analysis.md)** | pandas, matplotlib, seaborn, scikit-learn, Quarto blog | 6--8 hrs | Beginner |
 | 2b | **[Concepts, Admin & AI Setup](concepts-admin-setup.md)** | OSC, W&B, SQL, ML pipelines, Copilot, Claude | 5--7 hrs | Beginner |
+| 3a | **[Package Management Concepts](package-management-concepts.md)** | pip, conda, uv, venvs, dependency resolution | 3--4 hrs | Beginner |
+| 3b | **[Neural Network from Scratch](neural-network-from-scratch.md)** | numpy, forward pass, backprop, decision boundaries | 5--7 hrs | Beginner--Intermediate |
 
 !!! info "Assignments 2a and 2b"
     Assignments 2a and 2b are assigned together — you have **2 weeks** to complete both. They are designed to be worked on in parallel: 2a is hands-on coding, 2b is conceptual setup. Part 5 of 2b (creating a CLAUDE.md) connects to your 2a EDA project.
+
+!!! info "Assignments 3a and 3b"
+    Assignments 3a and 3b are assigned together — you have **2 weeks** to complete both.
+    3a is conceptual (package management), 3b is hands-on coding (neural networks).
+    Both include a blog post deliverable.
+
+---
+
+## Building Your Portfolio
+
+Every assignment includes a blog post deliverable. These aren't throwaway homework — they're the start of a professional portfolio. Future employers, grad school committees, and lab collaborators will look at your public work.
+
+!!! tip "Turn assignments into portfolio pieces"
+    1. **Write a clear intro** — assume the reader has no context about the assignment. What problem are you exploring, and why?
+    2. **Lead with your best visualizations** — a compelling plot is worth more than a wall of text.
+    3. **Add a "What I Learned" section** — reflection shows depth of understanding.
+    4. **Use category tags** on your Quarto blog — makes it easy to find related posts later.

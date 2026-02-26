@@ -1,7 +1,10 @@
-<!-- last-reviewed: 2026-02-19 -->
+<!-- last-reviewed: 2026-02-26 -->
 # SSH Connection Guide
 
 This guide will help you set up SSH connections to OSC for secure and convenient access to the clusters.
+
+!!! note "Windows users: run SSH from WSL"
+    All SSH commands in this guide should be run inside your WSL terminal, not PowerShell or Command Prompt. If you haven't set up WSL yet, see the [WSL Setup Guide](../getting-started/wsl-setup.md) first.
 
 ## Basic SSH Connection
 
@@ -181,15 +184,13 @@ ssh-add $HOME\.ssh\id_ed25519
 
 ### Option 1: OSU VPN (Recommended)
 
-1. Install [Cisco AnyConnect](https://osuitsm.service-now.com/selfservice/kb_view.do?sysparm_article=kb04733)
+1. Install [Cisco AnyConnect](https://www.osu.edu/downloads/)
 2. Connect to OSU VPN
 3. SSH to OSC normally
 
-### Option 2: Direct Connection (if enabled)
+### Option 2: Direct Connection via Duo 2FA
 
-OSC systems are accessible from off-campus, but you must:
-1. Use 2-factor authentication
-2. Your account must have off-campus access enabled
+OSC systems are accessible from off-campus without VPN, but you must authenticate with Duo two-factor authentication at each login.
 
 ## Port Forwarding
 

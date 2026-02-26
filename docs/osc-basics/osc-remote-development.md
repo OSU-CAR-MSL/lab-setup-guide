@@ -3,7 +3,7 @@ tags:
   - OSC
   - SSH
 ---
-<!-- last-reviewed: 2026-02-25 -->
+<!-- last-reviewed: 2026-02-26 -->
 # Remote Development on OSC
 
 Visual Studio Code's Remote-SSH extension allows you to develop on OSC as if you were working locally. This guide shows you how to set it up and use it effectively.
@@ -46,59 +46,6 @@ On your first connection:
 2. This takes 1-2 minutes
 3. A progress notification appears in the bottom-right
 4. Future connections are much faster
-
-## Working Remotely
-
-### Opening Folders and Files
-
-1. **Open Folder**: `File` → `Open Folder` or `Ctrl+K Ctrl+O`
-   - Navigate to your home directory or project folder
-   - Click "OK"
-
-2. **Open File**: `File` → `Open File` or `Ctrl+O`
-
-3. **Quick Open**: `Ctrl+P` to quickly open files by name
-
-### Integrated Terminal
-
-The integrated terminal runs on OSC:
-
-1. Open terminal: `` Ctrl+` `` (backtick)
-2. You're now in a bash shell on OSC
-3. Run any command as if you SSH'd in directly
-
-Example workflow:
-```bash
-# Load modules (use `module spider python` to find available versions)
-module load python/3.12
-
-# Check resources
-squeue -u $USER
-
-# Navigate your project
-cd ~/projects/my-research
-
-# Run Python script
-python train_model.py
-```
-
-### File Browser
-
-The VS Code file browser shows files on OSC:
-- Browse your home directory
-- Search files with `Ctrl+P`
-- Use the file browser to navigate
-- Right-click for file operations
-
-### Editing Files
-
-Edit files on OSC exactly like local files:
-- IntelliSense works
-- Linting works
-- Auto-complete works
-- Format on save works
-
-Everything runs on the remote server!
 
 ## Installing Extensions Remotely
 
@@ -231,13 +178,15 @@ This keeps your session alive even if VS Code disconnects.
 
     ```json
     {
-      "python.defaultInterpreterPath": "${HOME}/venvs/myproject/bin/python3",
+      "python.defaultInterpreterPath": "${workspaceFolder}/.venv/bin/python3",
       "python.terminal.activateEnvironment": true,
       "terminal.integrated.env.linux": {
-        "PATH": "${HOME}/venvs/myproject/bin:${env:PATH}"
+        "PATH": "${workspaceFolder}/.venv/bin:${env:PATH}"
       }
     }
     ```
+
+    If using legacy pip+venv with `~/venvs/`, replace `.venv` paths with `${HOME}/venvs/myproject`.
 
 ### SSH Config for Multiple Login Nodes
 

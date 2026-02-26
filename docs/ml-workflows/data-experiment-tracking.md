@@ -1,4 +1,4 @@
-<!-- last-reviewed: 2026-02-25 -->
+<!-- last-reviewed: 2026-02-26 -->
 # Data & Experiment Tracking
 
 Managing datasets, tracking experiments, and reproducing results are core challenges in ML research. This guide covers practical tools for structured data and experiment tracking on OSC — DVC for data versioning, SQLite for metadata, MLflow and Weights & Biases for experiment tracking, TensorBoard for training visualization, and Parquet for fast data loading.
@@ -210,7 +210,7 @@ Add this to your `~/.bashrc` or project activation script so it's always set.
 ```python
 import mlflow
 
-mlflow.set_experiment("dqn-fusion")
+mlflow.set_experiment("my-experiment")
 
 with mlflow.start_run(run_name="lr-sweep-001"):
     # Log hyperparameters
@@ -262,7 +262,7 @@ The MLflow UI lets you:
 !!! tip "MLflow with SLURM"
     In batch jobs, set the experiment name and run name in your SLURM script so results are automatically organized:
     ```bash
-    export MLFLOW_EXPERIMENT_NAME="dqn-fusion"
+    export MLFLOW_EXPERIMENT_NAME="my-experiment"
     export MLFLOW_RUN_NAME="job-${SLURM_JOB_ID}"
     python train.py
     ```
@@ -294,7 +294,7 @@ wandb login
 import wandb
 
 wandb.init(
-    project="dqn-fusion",
+    project="my-experiment",
     name="lr-sweep-001",
     config={
         "learning_rate": 1e-3,

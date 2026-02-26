@@ -5,7 +5,7 @@ tags:
   - CUDA
   - OSC
 ---
-<!-- last-reviewed: 2026-02-25 -->
+<!-- last-reviewed: 2026-02-26 -->
 # PyTorch & GPU Setup
 
 Everything you need to install PyTorch, request GPUs, and train efficiently on OSC.
@@ -93,7 +93,7 @@ uv add "torch>=2.8.0,<2.9" torchvision torchaudio
 pip install "torch>=2.8.0,<2.9" torchvision torchaudio
 ```
 
-### Step 5: Install Additional Packages
+### Step 3: Install Additional Packages
 
 For graph neural network libraries (PyTorch Geometric), see the [PyG Setup Guide](pyg-setup.md).
 
@@ -120,7 +120,7 @@ pip install transformers datasets tokenizers
 pip install tqdm pytorch-lightning
 ```
 
-### Step 6: Verify Installation
+### Step 4: Verify Installation
 
 Create `test_pytorch.py`:
 
@@ -700,22 +700,22 @@ RuntimeError: CUDA out of memory
 **Checks:**
 
 ```bash
-# 1. Verify GPU requested
+# 1. Verify you're on a GPU node (not a login node)
 squeue -u $USER
 
 # 2. Check node has GPU
 nvidia-smi
 
-# 3. Check CUDA module loaded
-module list | grep cuda
-
-# 4. Verify PyTorch installation
+# 3. Check PyTorch sees CUDA
 python -c "import torch; print(torch.cuda.is_available())"
 
-# 5. Reinstall PyTorch
+# 4. If still failing, reinstall PyTorch
 pip uninstall torch torchvision torchaudio
 pip install "torch>=2.8.0,<2.9" torchvision torchaudio
 ```
+
+!!! note "You do NOT need `module load cuda` for PyPI torch"
+    If you installed PyTorch from PyPI (via `pip install` or `uv add`), the wheels bundle their own CUDA libraries. `module load cuda` is only needed if you are compiling custom CUDA extensions (e.g. custom C++/CUDA kernels). If `torch.cuda.is_available()` returns False, the most common cause is running on a login node instead of a GPU compute node.
 
 ### Slow Training
 
@@ -768,5 +768,4 @@ python -c "import sys; print('\n'.join(sys.path))"
 
 ## Resources
 
-- [PyTorch Installation Guide](https://pytorch.org/get-started/locally/)
-- [PyTorch Performance Tuning Guide](https://pytorch.org/tutorials/recipes/recipes/tuning_guide.html)
+- [PyTorch Performance Tuning Guide](https://pytorch.org/tutorials/recipes/recipes/tuning_guide.html) — hard-to-find, detailed optimization recipes

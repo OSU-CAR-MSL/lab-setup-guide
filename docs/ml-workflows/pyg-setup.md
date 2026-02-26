@@ -5,12 +5,10 @@ tags:
   - CUDA
   - GPU
 ---
-<!-- last-reviewed: 2026-02-25 -->
+<!-- last-reviewed: 2026-02-26 -->
 # PyG (PyTorch Geometric) Setup
 
 [PyTorch Geometric (PyG)](https://pytorch-geometric.readthedocs.io/en/latest/#) is the leading library for deep learning on graphs and other irregular structures. It provides efficient implementations of graph neural network layers (GCN, GAT, GraphSAGE, GIN, and many more), standard benchmark datasets, mini-batch loaders for large graphs, and utilities for graph transforms and sampling. If your research involves graph neural networks — whether for citation networks, molecular property prediction, point clouds, or CAN bus intrusion detection — PyG is the go-to framework on top of PyTorch.
-
----
 
 ## Prerequisites
 
@@ -20,8 +18,6 @@ Before installing PyG, you need a working PyTorch installation with CUDA support
 - SSH connection configured (see [SSH Connection](../osc-basics/osc-ssh-connection.md))
 - Python 3.12 virtual environment with PyTorch + CUDA installed
 - Familiarity with SLURM job submission (see [Job Submission](../working-on-osc/osc-job-submission.md))
-
----
 
 ## Installation on OSC
 
@@ -112,8 +108,6 @@ uv sync
 !!! tip "Check the full wheel index"
     Browse [https://data.pyg.org/whl/](https://data.pyg.org/whl/) to find the correct URL for your specific PyTorch + CUDA combination. The PyG [installation guide](https://pytorch-geometric.readthedocs.io/en/latest/install/installation.html) also has an interactive matrix.
 
----
-
 ## Verification Script
 
 After installation, run this script on a GPU node to verify everything works:
@@ -189,8 +183,6 @@ print("=" * 55)
 
 You should see all versions printed, the Cora dataset loaded successfully, and data transferred to GPU without errors.
 
----
-
 ## Minimal GCN Example
 
 This example trains a 2-layer Graph Convolutional Network (GCN) on the Cora citation dataset — a standard benchmark for node classification. Cora contains 2,708 scientific papers (nodes) with 5,429 citation links (edges), each paper represented by a 1,433-dimensional bag-of-words feature vector and classified into one of 7 topics.
@@ -258,8 +250,6 @@ Epoch 200  Loss: 0.1923  Test Acc: 0.8130
 
 !!! tip "Beyond GCN"
     PyG provides dozens of GNN layers out of the box. To swap in a different architecture, replace `GCNConv` with `GATConv` (Graph Attention), `SAGEConv` (GraphSAGE), `GINConv` (Graph Isomorphism Network), or any other layer from `torch_geometric.nn`. The API is consistent — most layers take `(x, edge_index)` as input.
-
----
 
 ## OSC-Specific Notes
 
@@ -329,8 +319,6 @@ GNN message passing can be memory-intensive, especially on dense graphs. A few s
   ```
 - **Request sufficient memory** — For large datasets, request more RAM in your SLURM job: `#SBATCH --mem=64G`
 
----
-
 ## Batch Job Script
 
 Create `pyg_train.sh` for submitting a PyG training job:
@@ -385,8 +373,6 @@ sbatch pyg_train.sh
 
 For details on SLURM directives, job arrays, and monitoring jobs, see the [Job Submission Guide](../working-on-osc/osc-job-submission.md).
 
----
-
 ## Troubleshooting
 
 | Problem | Symptoms | Solution |
@@ -399,8 +385,6 @@ For details on SLURM directives, job arrays, and monitoring jobs, see the [Job S
 | **Dataset download fails** | Timeout or connection error when downloading benchmark datasets | Compute nodes may lack internet access. Download datasets on the login node first (`python -c "from torch_geometric.datasets import Planetoid; Planetoid(root='...', name='Cora')"`), then point your training script to the cached path. |
 | **`torch-sparse` build fails** | Compilation errors during `pip install` | You're building from source instead of using a pre-built wheel. Make sure the `-f` URL matches your exact PyTorch + CUDA versions. If no wheel exists, install build dependencies first: `pip install ninja cmake`. |
 | **`Segmentation fault` on import** | Python crashes immediately when importing PyG | Almost always a version mismatch. Do a clean reinstall: uninstall everything, purge modules (`module purge`), reload, and reinstall from scratch. |
-
----
 
 ## Next Steps
 

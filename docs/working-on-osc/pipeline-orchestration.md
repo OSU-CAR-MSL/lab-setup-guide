@@ -1,4 +1,4 @@
-<!-- last-reviewed: 2026-02-25 -->
+<!-- last-reviewed: 2026-02-26 -->
 # Pipeline Orchestration
 
 Automate multi-step computational pipelines on OSC with proper dependency tracking, resource allocation, and failure recovery using Ray.
@@ -112,7 +112,7 @@ def evaluate(model_path: str, data_path: str) -> dict:
 if __name__ == "__main__":
     ray.init()
 
-    datasets = ["road_attack", "road_benign", "survival"]
+    datasets = ["dataset_a", "dataset_b", "dataset_c"]
     configs = [
         {"run_name": ds, "lr": 1e-3, "hidden_dim": 128}
         for ds in datasets

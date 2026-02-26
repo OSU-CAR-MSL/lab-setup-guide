@@ -1,4 +1,4 @@
-<!-- last-reviewed: 2026-02-25 -->
+<!-- last-reviewed: 2026-02-26 -->
 # MATLAB & Simulink on OSC
 
 How to use MATLAB and Simulink on OSC for computation, simulation, and batch processing.
@@ -27,7 +27,7 @@ module spider matlab
 module load matlab
 
 # Load a specific version
-module load matlab/r2023b
+module load matlab/r2025b
 ```
 
 ### Verify Installation
@@ -464,16 +464,10 @@ Common toolboxes used in research:
 
 | Toolbox | Use Case |
 |---------|----------|
-| Parallel Computing | `parfor`, `gpuArray`, parallel pools |
-| Signal Processing | Filtering, FFT, spectral analysis |
-| Statistics and Machine Learning | Regression, classification, clustering |
-| Deep Learning | Neural network training and inference |
-| Control System | Transfer functions, state-space models |
 | Simulink | Dynamic system simulation |
+| Signal Processing | Filtering, FFT, spectral analysis |
+| Control System | Transfer functions, state-space models |
 | Automated Driving | Scenario design, sensor simulation |
-| Computer Vision | Image processing, object detection |
-| Optimization | Linear/nonlinear optimization |
-| Symbolic Math | Symbolic computation, equation solving |
 
 !!! note "License availability"
     Toolbox licenses are shared across all OSC users. If a license is unavailable, your job may fail or wait. Check license status with:
@@ -545,7 +539,4 @@ set(0, 'DefaultFigureVisible', 'off');
 ## Resources
 
 - [OSC MATLAB Documentation](https://www.osc.edu/resources/available_software/software_list/matlab)
-- [MATLAB Batch Mode Documentation](https://www.mathworks.com/help/matlab/ref/matlablinux.html)
-- [Simulink Command-Line Interface](https://www.mathworks.com/help/simulink/ug/using-the-sim-command.html)
-- [MATLAB Parallel Computing Toolbox](https://www.mathworks.com/products/parallel-computing.html)
 - [Troubleshooting Guide](../resources/troubleshooting.md)

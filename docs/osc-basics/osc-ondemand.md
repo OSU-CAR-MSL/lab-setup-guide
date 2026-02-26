@@ -4,7 +4,7 @@ tags:
   - Jupyter
   - OnDemand
 ---
-<!-- last-reviewed: 2026-02-19 -->
+<!-- last-reviewed: 2026-02-26 -->
 # OSC OnDemand Portal
 
 OSC OnDemand is a web-based portal that provides browser access to Ohio Supercomputer Center resources without requiring SSH, terminal commands, or local software installation. Through OnDemand you can launch interactive applications (Jupyter, RStudio, VS Code), manage files, monitor jobs, and open a web-based terminal -- all from a standard web browser at [ondemand.osc.edu](https://ondemand.osc.edu).
@@ -45,7 +45,7 @@ From the top navigation bar, click **Interactive Apps** and select **Jupyter**.
 |-------|---------------|---------|
 | **Project account** | Your lab's OSC project code | `PAS1234` |
 | **Cluster** | Which cluster to run on | Pitzer (recommended for GPU work) |
-| **Partition** | Node type / queue | `gpusmall`, `gpularge`, `serial`, `debug` |
+| **Partition** | Node type / queue | `gpu`, `serial`, `debug` |
 | **Number of cores** | CPU cores for your session | 4 |
 | **Memory (GB)** | RAM per node | 16 |
 | **Number of GPUs** | GPUs to request (partition must support GPUs) | 1 |
@@ -148,15 +148,6 @@ For setting up SSH-based access, see the [SSH Connection Guide](osc-ssh-connecti
 
 !!! warning "Browser sessions can time out -- save frequently"
     If your browser tab is inactive for too long, the connection to the Jupyter server may drop. Your compute job keeps running on the cluster, but you may lose unsaved notebook state. Save your work frequently with ++ctrl+s++ and consider enabling JupyterLab's autosave.
-
-!!! tip "Install `ipykernel` in every venv you want to use with Jupyter"
-    OnDemand's Jupyter app can only discover kernels that have `ipykernel` installed and registered. If your venv doesn't appear in the kernel list, run:
-
-    ```bash
-    source ~/envs/myenv/bin/activate
-    pip install ipykernel
-    python -m ipykernel install --user --name myenv --display-name "My Project"
-    ```
 
 !!! tip "Use the shell app for quick terminal access"
     If you just need a terminal without setting up SSH, click **Clusters** in the top navigation bar and select a cluster (e.g., **Pitzer Shell Access**). This opens a web-based terminal connected to a login node -- handy for checking job status, editing configs, or running quick commands.

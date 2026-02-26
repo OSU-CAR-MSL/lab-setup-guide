@@ -175,6 +175,7 @@ nav:
   - Contributing:
     - Contributing Guide: contributing/how-this-site-works.md
     - GitHub Pages Setup: contributing/github-pages-setup.md
+    - Issues, PRs & Code Review: contributing/github-issues-and-prs.md
     - GitHub Projects: contributing/github-projects.md
 
   - Assignments:
@@ -182,11 +183,14 @@ nav:
     - "Assignment 1: Personal Website": assignments/personal-website.md
     - "Assignment 2a: Exploratory Data Analysis": assignments/exploratory-data-analysis.md
     - "Assignment 2b: Concepts, Admin & AI Setup": assignments/concepts-admin-setup.md
+    - "Assignment 3a: Package Management Concepts": assignments/package-management-concepts.md
+    - "Assignment 3b: Neural Network from Scratch": assignments/neural-network-from-scratch.md
 
   - Resources:
     - Troubleshooting: resources/troubleshooting.md
     - Useful Links: resources/useful-links.md
-    - Tags: tags.md
+
+  - Tags: tags.md
 
 # Extra configuration
 extra:

@@ -3,7 +3,7 @@ tags:
   - OSC
   - uv
 ---
-<!-- last-reviewed: 2026-02-25 -->
+<!-- last-reviewed: 2026-02-26 -->
 # Environment Management
 
 Learn how to manage software environments on OSC using modules and virtual environments.
@@ -47,7 +47,7 @@ module spider cuda
 module load python/3.12
 
 # Load specific version
-module load cuda/12.x
+module load cuda/12.4
 
 # List loaded modules
 module list
@@ -73,17 +73,16 @@ module swap python/3.11 python/3.12
 module load python/3.12
 ```
 
-#### CUDA (for GPU work)
+#### CUDA (for custom extensions only)
 ```bash
-# Load the latest CUDA 12.x release
-module load cuda/12.x
+# Only needed if compiling custom CUDA extensions — PyPI torch bundles CUDA
+module load cuda/12.4
 ```
 
-!!! tip "CUDA version"
-    Examples use `cuda/12.x` as a placeholder. Run `module avail cuda` to see
-    available versions, then load the latest 12.x release (e.g. `module load cuda/12.4.0`).
-    When using **uv** with PyTorch from PyPI, you do NOT need to load a CUDA module —
-    PyTorch bundles its own CUDA libraries.
+!!! tip "Most PyTorch users do NOT need this"
+    PyTorch wheels on PyPI bundle their own NVIDIA libraries. You only need
+    `module load cuda` if you are compiling custom CUDA extensions (e.g. custom
+    C++/CUDA ops). Run `module avail cuda` to see available versions.
 
 #### Git
 ```bash
@@ -113,10 +112,10 @@ module list
 
 ```bash
 # Search for software
-module spider tensorflow
+module spider python
 
 # Get detailed info
-module spider tensorflow/2.10.0
+module spider python/3.12
 
 # Example output shows:
 # - Available versions
@@ -280,7 +279,7 @@ deactivate
 # Load all required modules
 module purge                    # Start clean
 module load python/3.12
-module load cuda/12.x
+module load cuda/12.4           # Only needed for custom CUDA extensions
 module load git
 
 # Activate environment
@@ -302,7 +301,7 @@ Create `~/scripts/load_ml_modules.sh`:
 
 module purge
 module load python/3.12
-module load cuda/12.x
+# module load cuda/12.4  # Only needed for custom CUDA extensions — PyPI torch bundles CUDA
 module load git
 
 echo "Modules loaded for ML work"
@@ -327,7 +326,7 @@ Create `~/scripts/activate_ml_env.sh`:
 # Load modules
 module purge
 module load python/3.12
-module load cuda/12.x
+# module load cuda/12.4  # Only needed for custom CUDA extensions — PyPI torch bundles CUDA
 
 # Activate virtual environment
 source ~/venvs/ml_project/bin/activate
@@ -444,16 +443,27 @@ uv sync
 \`\`\`
 ```
 
-### 3. Keep requirements.txt Updated
+### 3. Keep Dependencies Tracked
 
-```bash
-# Update requirements file
-pip freeze > requirements.txt
+=== "uv (Recommended)"
 
-# Commit to git
-git add requirements.txt
-git commit -m "Update dependencies"
-```
+    ```bash
+    # pyproject.toml is the preferred dependency specification with uv.
+    # uv.lock is auto-generated — commit both to git.
+    git add pyproject.toml uv.lock
+    git commit -m "Update dependencies"
+
+    # If you need a requirements.txt (e.g. for CI or collaborators without uv):
+    uv pip compile pyproject.toml -o requirements.txt
+    ```
+
+=== "pip+venv"
+
+    ```bash
+    pip freeze > requirements.txt
+    git add requirements.txt
+    git commit -m "Update dependencies"
+    ```
 
 ### 4. Use Separate Environments per Project
 
@@ -533,7 +543,7 @@ quota -s
 
 **Problem**: `torch.cuda.is_available()` returns False
 
-Verify the CUDA module is loaded (`module load cuda/12.x`) and that you're on a GPU node. For full diagnostic steps and PyTorch reinstall commands, see [PyTorch & GPU Setup — Troubleshooting](../ml-workflows/pytorch-setup.md#troubleshooting).
+Verify you're on a GPU node (`nvidia-smi`) and check `torch.cuda.is_available()`. If you installed PyTorch from PyPI, you do **not** need `module load cuda` -- PyPI wheels bundle CUDA. For full diagnostic steps and PyTorch reinstall commands, see [PyTorch & GPU Setup — Troubleshooting](../ml-workflows/pytorch-setup.md#troubleshooting).
 
 ### Conflicting Modules
 
@@ -546,7 +556,7 @@ module purge
 
 # Load modules in correct order
 module load python/3.12
-module load cuda/12.x
+module load cuda/12.4
 ```
 
 ??? note "Quick Reference"
@@ -554,7 +564,7 @@ module load cuda/12.x
     ```bash
     # Modules
     module load python/3.12          # Load Python
-    module load cuda/12.x            # Load CUDA (not needed for PyPI torch)
+    module load cuda/12.4            # Only for custom CUDA extensions (not needed for PyPI torch)
     module list                      # Show loaded
     module purge                     # Unload all
 

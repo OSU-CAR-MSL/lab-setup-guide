@@ -1,4 +1,4 @@
-<!-- last-reviewed: 2026-02-19 -->
+<!-- last-reviewed: 2026-02-26 -->
 # VS Code Setup Guide
 
 Visual Studio Code (VS Code) is a free, powerful, and extensible code editor that we use in the lab for development work. This guide will walk you through installing and configuring VS Code.
@@ -37,36 +37,6 @@ Visual Studio Code (VS Code) is a free, powerful, and extensible code editor tha
    - Open VS Code
    - Press ++cmd+shift+p++ to open the Command Palette
    - Type "shell command" and select "Shell Command: Install 'code' command in PATH"
-
-### Linux (Ubuntu/Debian)
-
-1. **Using APT Repository** (Recommended)
-   ```bash
-   # Update package index and install dependencies
-   sudo apt-get update
-   sudo apt-get install wget gpg apt-transport-https
-   
-   # Download and install Microsoft GPG key
-   wget -qO- https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > packages.microsoft.gpg
-   sudo install -D -o root -g root -m 644 packages.microsoft.gpg /etc/apt/keyrings/packages.microsoft.gpg
-   
-   # Add VS Code repository
-   sudo sh -c 'echo "deb [arch=amd64,arm64,armhf signed-by=/etc/apt/keyrings/packages.microsoft.gpg] https://packages.microsoft.com/repos/code stable main" > /etc/apt/sources.list.d/vscode.list'
-   
-   # Install VS Code
-   sudo apt-get update
-   sudo apt-get install code
-   ```
-
-2. **Using Snap** (Alternative)
-   ```bash
-   sudo snap install --classic code
-   ```
-
-3. **Launch VS Code**
-   ```bash
-   code
-   ```
 
 ## Initial Configuration
 

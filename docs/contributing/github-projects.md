@@ -1,4 +1,4 @@
-<!-- last-reviewed: 2026-02-25 -->
+<!-- last-reviewed: 2026-02-26 -->
 # Project Management with GitHub Projects
 
 |                    |                                                           |
@@ -223,6 +223,8 @@ Fixes #
 
 ## Issue Templates
 
+For hands-on guidance on writing and filing issues, see [Issues, PRs & Code Review](github-issues-and-prs.md). The templates below configure the repo so contributors get a structured form when creating issues.
+
 Create 2–3 templates per repo in `.github/ISSUE_TEMPLATE/`:
 
 === "Bug Report"
@@ -443,3 +445,9 @@ gh project item-list N --format json | \
 | Labels AND project fields track the same thing | Pick one. Use labels for type (`bug`, `docs`), fields for workflow (`Priority`, `Size`). |
 | Large issues stuck "In Progress" for weeks | Break into sub-issues — each completable in 1–3 days |
 | Cross-repo work has no linkage | Reference with `org/repo#N` — GitHub renders them as clickable links |
+
+## Related Guides
+
+- [Contributing Guide](how-this-site-works.md) — How this site works, adding new pages
+- [Issues, PRs & Code Review](github-issues-and-prs.md) — Filing issues, opening pull requests, and reviewing code
+- [GitHub Pages Setup](github-pages-setup.md) — Setting up MkDocs or Quarto documentation sites

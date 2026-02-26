@@ -33,6 +33,7 @@ For partition details, see the [Clusters Overview](../osc-basics/osc-clusters-ov
 | RAPIDS AI, GPU preprocessing | `ml-workflows/rapids-gpu-preprocessing.md` |
 | Experiment tracking | `ml-workflows/data-experiment-tracking.md` |
 | DuckDB analytics, Parquet datalake | `ml-workflows/duckdb-analytics.md` |
+| Issues, PRs, code review, forks | `contributing/github-issues-and-prs.md` |
 | GitHub Projects, project management | `contributing/github-projects.md` |
 
 ## Markdown Features Available

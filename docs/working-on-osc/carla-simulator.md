@@ -1,4 +1,4 @@
-<!-- last-reviewed: 2026-02-25 -->
+<!-- last-reviewed: 2026-02-26 -->
 # CARLA Simulator on OSC
 
 How to install, run, and develop with the CARLA autonomous driving simulator on OSC.
@@ -49,9 +49,6 @@ source ~/venvs/carla_project/bin/activate
 
 # Install the CARLA Python package
 pip install carla==0.9.15
-
-# Or install from the local .whl if included in the release
-# pip install $SCRATCH/carla/PythonAPI/carla/dist/carla-0.9.15-cp39-cp39-linux_x86_64.whl
 
 # Install other common dependencies
 pip install numpy opencv-python pygame matplotlib
@@ -466,7 +463,5 @@ $SCRATCH/carla/CarlaUE4.sh -RenderOffScreen -carla-port=2000 -opengl
 
 ## Resources
 
-- [CARLA Documentation](https://carla.readthedocs.io/)
-- [CARLA Python API Reference](https://carla.readthedocs.io/en/latest/python_api/)
-- [CARLA GitHub Repository](https://github.com/carla-simulator/carla)
+- [CARLA GitHub Repository](https://github.com/carla-simulator/carla) — releases, issue tracker
 - [Troubleshooting Guide](../resources/troubleshooting.md)

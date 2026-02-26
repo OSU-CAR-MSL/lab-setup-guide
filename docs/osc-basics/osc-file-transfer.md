@@ -1,4 +1,4 @@
-<!-- last-reviewed: 2026-02-19 -->
+<!-- last-reviewed: 2026-02-26 -->
 # File Transfer Guide
 
 Learn efficient methods to transfer files between your local machine and OSC.
@@ -180,90 +180,11 @@ rsync -avz --progress --partial source/ pitzer:~/destination/
     - `--partial`: Keep partial files if transfer interrupted
     - `--partial-dir`: Store partial files in hidden directory
 
-## Method 4: SFTP (Interactive)
+## Method 4: OSC OnDemand (Web Interface)
 
-SFTP provides an interactive file transfer session.
+OSC OnDemand includes a built-in file manager for uploading, downloading, and browsing files. See the [OnDemand Guide](osc-ondemand.md) for details.
 
-### Start SFTP Session
-
-```bash
-sftp pitzer
-```
-
-### SFTP Commands
-
-```bash
-# Navigate remote directory
-cd /path/to/directory
-pwd
-
-# Navigate local directory
-lcd /local/path
-lpwd
-
-# List files
-ls              # Remote files
-lls             # Local files
-
-# Upload file
-put local_file.txt
-
-# Upload directory
-put -r local_directory
-
-# Download file
-get remote_file.txt
-
-# Download directory
-get -r remote_directory
-
-# Exit
-quit
-```
-
-### Example SFTP Session
-
-```bash
-$ sftp pitzer
-sftp> cd projects/data
-sftp> lcd ~/Documents/research_data
-sftp> put experiment_results.csv
-Uploading experiment_results.csv to /home/username/projects/data/experiment_results.csv
-sftp> get model_weights.pth
-Fetching /home/username/projects/data/model_weights.pth to model_weights.pth
-sftp> quit
-```
-
-## Method 5: OSC OnDemand (Web Interface)
-
-OSC OnDemand provides a web-based file browser.
-
-### Access OnDemand
-
-1. Visit [https://ondemand.osc.edu](https://ondemand.osc.edu)
-2. Log in with your OSU credentials
-3. Click "Files" → "Home Directory" (or any other location)
-
-### Upload Files
-
-1. Navigate to destination directory
-2. Click "Upload" button
-3. Select files or drag-and-drop
-4. Wait for upload to complete
-
-### Download Files
-
-1. Navigate to the file
-2. Check the checkbox next to the file
-3. Click "Download"
-
-### Limitations
-
-- Good for small to medium files (< 100 MB)
-- Not ideal for very large datasets
-- Can be slow for many files
-
-## Method 6: Git (For Code)
+## Method 5: Git (For Code)
 
 For code and small files, use Git:
 
@@ -414,18 +335,7 @@ rsync -avz --progress archive.tar.gz pitzer:~/
 
 ### Connection Drops During Transfer
 
-Use `tmux` or `screen`:
-
-```bash
-# Start tmux session
-tmux new -s transfer
-
-# Run rsync
-rsync -avz --progress large_dataset/ pitzer:~/data/
-
-# Detach: Ctrl+b, then d
-# Reattach later: tmux attach -t transfer
-```
+Use `tmux` or `screen` to keep transfers running if your connection drops. For tmux setup and usage, see [Remote Development — Using tmux for Persistent Sessions](osc-remote-development.md#using-tmux-for-persistent-sessions).
 
 ### Disk Quota Exceeded
 

@@ -4,7 +4,7 @@ tags:
   - SSH
   - GPU
 ---
-<!-- last-reviewed: 2026-02-25 -->
+<!-- last-reviewed: 2026-02-26 -->
 # Troubleshooting Guide
 
 Common issues and solutions for working on OSC.
@@ -17,6 +17,8 @@ flowchart TD
     A --> D[GPU / CUDA]
     A --> E[Job Submission]
     A --> F[File System]
+    A --> I[Data Transfer]
+    A --> J[Python / PyTorch]
     A --> G[Performance]
     B --> B1["#connection-issues"]
     H --> H1["#vs-code-remote-ssh-issues"]
@@ -24,6 +26,8 @@ flowchart TD
     D --> D1["#gpu-issues"]
     E --> E1["#job-submission-issues"]
     F --> F1["#file-system-issues"]
+    I --> I1["#data-transfer-issues"]
+    J --> J1["#pythonpytorch-issues"]
     G --> G1["#performance-issues"]
     click B1 "#connection-issues"
     click H1 "#vs-code-remote-ssh-issues"
@@ -31,6 +35,8 @@ flowchart TD
     click D1 "#gpu-issues"
     click E1 "#job-submission-issues"
     click F1 "#file-system-issues"
+    click I1 "#data-transfer-issues"
+    click J1 "#pythonpytorch-issues"
     click G1 "#performance-issues"
 ```
 
@@ -251,19 +257,28 @@ Module 'xyz' not found
 
 **Solutions:**
 
-1. **Verify path**
+1. **Verify path exists**
    ```bash
+   # uv (recommended) — .venv/ in project root
+   ls .venv/bin/activate
+
+   # pip+venv — ~/venvs/ convention
    ls ~/venvs/myproject/bin/activate
    ```
 
 2. **Recreate if corrupted**
    ```bash
+   # uv (recommended)
+   rm -rf .venv
+   uv venv --python /apps/python/3.12/bin/python3
+
+   # pip+venv
    rm -rf ~/venvs/myproject
    module load python/3.12
    python -m venv ~/venvs/myproject
    ```
 
-3. **Check Python module loaded**
+3. **Check Python module loaded** (pip+venv only)
    ```bash
    module list | grep python
    module load python/3.12
@@ -302,7 +317,7 @@ Module 'xyz' not found
 
 **Problem:** `torch.cuda.is_available()` returns False
 
-Quick checks: verify you're on a GPU node (`nvidia-smi`), that the CUDA module is loaded (`module load cuda/12.x`), and that PyTorch was installed with CUDA support. For full diagnostic steps and reinstall commands, see [PyTorch & GPU Setup — Troubleshooting](../ml-workflows/pytorch-setup.md#troubleshooting).
+Quick checks: verify you're on a GPU node (`nvidia-smi`) and check `torch.cuda.is_available()`. If you installed PyTorch from PyPI, you do **not** need `module load cuda` -- PyPI wheels bundle CUDA. Only load a CUDA module if you're compiling custom CUDA extensions. For full diagnostic steps and reinstall commands, see [PyTorch & GPU Setup -- Troubleshooting](../ml-workflows/pytorch-setup.md#troubleshooting).
 
 ### CUDA Out of Memory
 
@@ -371,7 +386,8 @@ squeue -u $USER
 
    **Environment not activated:**
    ```bash
-   source ~/venvs/myproject/bin/activate
+   source .venv/bin/activate  # uv (recommended)
+   # or: source ~/venvs/myproject/bin/activate  # pip+venv
    ```
 
    **File not found:**

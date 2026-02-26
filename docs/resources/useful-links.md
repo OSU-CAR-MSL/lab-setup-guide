@@ -1,4 +1,4 @@
-<!-- last-reviewed: 2026-02-19 -->
+<!-- last-reviewed: 2026-02-26 -->
 # Useful Links
 
 OSC-specific portals, lab resources, and quick-reference cheat sheets.
@@ -7,7 +7,7 @@ OSC-specific portals, lab resources, and quick-reference cheat sheets.
 
 - [My OSC Portal](https://my.osc.edu/) - Account management, SSH keys, project allocations
 - [OSC OnDemand](https://ondemand.osc.edu/) - Web-based cluster access (Jupyter, terminal, file browser)
-- [OSC Client Portal](https://www.oscprod.service-now.com/) - Support tickets
+- [OSC Client Portal](https://www.osc.edu/supercomputing/portals/client_portal) - Support tickets
 
 ## OSC Support
 
@@ -24,9 +24,8 @@ OSC-specific portals, lab resources, and quick-reference cheat sheets.
 ## SLURM & HPC
 
 - [SLURM sbatch Documentation](https://slurm.schedmd.com/sbatch.html) - Complete reference for batch job options
-- [OSC SLURM Migration Guide](https://www.osc.edu/supercomputing/batch-processing-at-osc/slurm_migration) - OSC-specific SLURM details and examples
+- [OSC Batch Processing](https://www.osc.edu/supercomputing/batch-processing-at-osc) - OSC-specific SLURM details and examples
 
 ## Cheat Sheets
 
-- [Git Cheat Sheet (PDF)](https://education.github.com/git-cheat-sheet-education.pdf)
 - [SLURM Commands Cheat Sheet (PDF)](https://slurm.schedmd.com/pdfs/summary.pdf)

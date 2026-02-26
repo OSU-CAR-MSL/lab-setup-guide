@@ -1,4 +1,4 @@
-<!-- last-reviewed: 2026-02-25 -->
+<!-- last-reviewed: 2026-02-26 -->
 # ML Project Template
 
 A starting-point structure and checklist for running ML experiments on OSC.
@@ -64,42 +64,9 @@ Store large datasets and job outputs on scratch, not in your home directory:
 !!! warning "Scratch is purged after 90 days of inactivity"
     Copy final results and best checkpoints to your home or project directory. See [Clusters Overview](../osc-basics/osc-clusters-overview.md) for storage details.
 
-## .gitignore Template
+## .gitignore
 
-```gitignore
-# Python
-__pycache__/
-*.py[cod]
-*$py.class
-*.so
-.venv/
-venv/
-
-# Data and models
-data/raw/
-data/processed/
-*.pth
-*.ckpt
-checkpoints/
-*.h5
-*.hdf5
-
-# Logs and results
-logs/
-results/
-*.log
-
-# Notebooks
-.ipynb_checkpoints/
-
-# IDE
-.vscode/
-.idea/
-
-# OS
-.DS_Store
-Thumbs.db
-```
+Use the Python `.gitignore` template from [GitHub's gitignore repo](https://github.com/github/gitignore/blob/main/Python.gitignore). Add project-specific patterns for data, checkpoints, and logs as needed.
 
 ## Checklist
 

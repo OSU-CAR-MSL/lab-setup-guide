@@ -1,4 +1,4 @@
-<!-- last-reviewed: 2026-02-25 -->
+<!-- last-reviewed: 2026-02-26 -->
 # Assignment 2a: Exploratory Data Analysis
 
 |                    |                                                        |
@@ -297,7 +297,7 @@ Add this to the **first cell** of your notebook (as a Raw cell) or convert the n
 ---
 title: "Exploratory Data Analysis: Survival IDS Dataset"
 description: "EDA and baseline ML models on the HCRL Survival IDS dataset."
-date: "2026-02-19"
+date: "2026-01-15"  # Use the date you completed the assignment
 categories: [eda, python, machine-learning]
 ---
 ```

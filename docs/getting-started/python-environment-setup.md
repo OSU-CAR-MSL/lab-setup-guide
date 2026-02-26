@@ -1,4 +1,4 @@
-<!-- last-reviewed: 2026-02-22 -->
+<!-- last-reviewed: 2026-02-26 -->
 # Python Environment Setup
 
 This guide walks you through setting up Python development environments for lab work. The approach uses **two environments** tuned for different workloads:
@@ -13,27 +13,9 @@ This guide walks you through setting up Python development environments for lab 
 
 ---
 
-## Step 1: Move Code to WSL Native Filesystem
+## Step 1: Set Up WSL (Windows Only)
 
-If your projects currently live on the Windows filesystem (`/mnt/c/...`), moving them to WSL's native ext4 filesystem fixes slow I/O, permission issues, and path confusion. WSL2 accesses Windows files through a 9P protocol translation layer that is dramatically slower and mangles file permissions.
-
-```bash
-# Create projects directory in WSL home
-mkdir -p ~/projects
-
-# Clone fresh (recommended over copying to avoid permission artifacts)
-cd ~/projects
-git clone https://github.com/OSU-CAR-MSL/lab-setup-guide.git
-# Repeat for other repos
-```
-
-!!! tip "VS Code integration"
-    Open a WSL-native folder with `code ~/projects/lab-setup-guide`. VS Code detects WSL automatically and shows **WSL: Ubuntu** in the bottom-left corner. The integrated terminal is a proper WSL shell with no path translation issues.
-
-After migrating:
-
-- Your Windows `/mnt/c/` copies become backups; delete them once you're confident
-- Use `git push` / `git pull` to sync between machines (not file copying)
+If you're on Windows, install WSL2 first — see the [WSL Setup Guide](wsl-setup.md). That page covers installation, filesystem migration, and VS Code integration.
 
 ---
 
@@ -138,30 +120,7 @@ git config --global core.autocrlf input
 
 On OSC, you can use either `pip` + `venv` (traditional) or `uv` (faster). Both work, but `uv` requires using OSC's system Python explicitly.
 
-=== "uv (Recommended)"
-
-    ```bash
-    # Create venv with OSC's system Python (critical — don't skip --python)
-    uv venv --python /apps/python/3.12/bin/python3
-
-    # Activate
-    source .venv/bin/activate
-
-    # Install from pyproject.toml
-    uv sync
-    ```
-
-=== "pip + venv (Traditional)"
-
-    ```bash
-    module load python/3.12
-    python -m venv ~/venvs/myproject
-    source ~/venvs/myproject/bin/activate
-    pip install torch torchvision torch-geometric
-    ```
-
-!!! warning "uv on OSC: use system Python"
-    `uv`'s standalone Python downloads can **segfault** on OSC's RHEL 9. Always pass `--python /apps/python/3.12/bin/python3` when creating venvs. PyTorch from PyPI bundles NVIDIA libraries, so `module load cuda` is not needed. See [Environment Management](../working-on-osc/osc-environment-management.md) for details.
+For full details on modules, venvs, and uv on OSC, see [OSC Environment Management](../working-on-osc/osc-environment-management.md).
 
 ---
 

@@ -1,4 +1,4 @@
-<!-- last-reviewed: 2026-02-25 -->
+<!-- last-reviewed: 2026-02-26 -->
 # Notebook-to-Script Workflow
 
 How to iterate quickly in Jupyter notebooks and run large-scale experiments as Python scripts on OSC.
@@ -257,7 +257,7 @@ jupyter nbconvert --to script notebooks/prototype.ipynb
 #SBATCH --output=logs/train_%j.out
 
 module load python/3.12
-module load cuda/12.x
+# module load cuda/12.4  # Only needed for custom CUDA extensions — PyPI torch bundles CUDA
 source ~/venvs/myproject/bin/activate
 
 SCRATCH=/fs/scratch/PAS1234/$USER/my_project

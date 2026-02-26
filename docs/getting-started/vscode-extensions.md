@@ -1,4 +1,4 @@
-<!-- last-reviewed: 2026-02-19 -->
+<!-- last-reviewed: 2026-02-26 -->
 # VS Code Extensions
 
 Extensions enhance VS Code's functionality. This guide covers required extensions for lab work and recommended extensions for productivity.
@@ -15,9 +15,6 @@ Extensions enhance VS Code's functionality. This guide covers required extension
 code --install-extension <extension-id>
 ```
 
-### Method 3: Extensions View
-Press `Ctrl+Shift+P` / `Cmd+Shift+P`, type "Install Extensions", and search for the extension.
-
 ## Required Extensions
 
 These extensions are essential for lab work:
@@ -25,46 +22,32 @@ These extensions are essential for lab work:
 ### 1. Remote - SSH
 - **ID**: `ms-vscode-remote.remote-ssh`
 - **Purpose**: Connect to OSC and other remote servers
-- **Install**: 
-  ```bash
-  code --install-extension ms-vscode-remote.remote-ssh
-  ```
 - **Why Required**: Essential for working on OSC clusters
 - **Documentation**: [Remote - SSH Guide](../osc-basics/osc-remote-development.md)
 
 ### 2. Remote - SSH: Editing Configuration Files
 - **ID**: `ms-vscode-remote.remote-ssh-edit`
 - **Purpose**: Edit SSH configuration files easily
-- **Install**: 
-  ```bash
-  code --install-extension ms-vscode-remote.remote-ssh-edit
-  ```
 
 ### 3. Python
 - **ID**: `ms-python.python`
 - **Purpose**: Python language support, debugging, linting
-- **Install**: 
-  ```bash
-  code --install-extension ms-python.python
-  ```
 - **Why Required**: Most lab projects use Python
 
 ### 4. Pylance
 - **ID**: `ms-python.vscode-pylance`
 - **Purpose**: Fast, feature-rich Python language server
-- **Install**: 
-  ```bash
-  code --install-extension ms-python.vscode-pylance
-  ```
 - **Features**: Type checking, auto-imports, better IntelliSense
 
-### 5. Jupyter
+### 5. Remote - WSL
+- **ID**: `ms-vscode-remote.remote-wsl`
+- **Purpose**: Open any folder inside WSL as a VS Code workspace
+- **Why Required**: Windows users run all lab tools inside WSL; this extension bridges VS Code to the WSL filesystem
+- **Documentation**: [WSL Setup Guide](wsl-setup.md)
+
+### 6. Jupyter
 - **ID**: `ms-toolsai.jupyter`
 - **Purpose**: Run and edit Jupyter notebooks in VS Code
-- **Install**: 
-  ```bash
-  code --install-extension ms-toolsai.jupyter
-  ```
 - **Why Required**: Many ML workflows use Jupyter notebooks
 
 ## Highly Recommended Extensions
@@ -75,61 +58,33 @@ These extensions are essential for lab work:
 - **ID**: `eamodio.gitlens`
 - **Purpose**: Supercharge Git capabilities
 - **Features**: Blame annotations, commit history, repository insights
-- **Install**: 
-  ```bash
-  code --install-extension eamodio.gitlens
-  ```
 
 #### 2. Git Graph
 - **ID**: `mhutchie.git-graph`
 - **Purpose**: View Git repository graph
 - **Features**: Visual commit history, branch visualization
-- **Install**: 
-  ```bash
-  code --install-extension mhutchie.git-graph
-  ```
 
 #### 3. Path Intellisense
 - **ID**: `christian-kohler.path-intellisense`
 - **Purpose**: Auto-complete file paths
-- **Install**: 
-  ```bash
-  code --install-extension christian-kohler.path-intellisense
-  ```
 
 #### 4. Todo Tree
 - **ID**: `gruntfuggly.todo-tree`
 - **Purpose**: Highlight and organize TODO comments
-- **Install**: 
-  ```bash
-  code --install-extension gruntfuggly.todo-tree
-  ```
 
 ### Python Development
 
 #### 5. autoDocstring
 - **ID**: `njpwerner.autodocstring`
 - **Purpose**: Generate Python docstrings automatically
-- **Install**: 
-  ```bash
-  code --install-extension njpwerner.autodocstring
-  ```
 
 #### 6. Python Indent
 - **ID**: `kevinrose.vsc-python-indent`
 - **Purpose**: Correct Python indentation
-- **Install**: 
-  ```bash
-  code --install-extension kevinrose.vsc-python-indent
-  ```
 
 #### 7. Ruff
-- **ID**: `charliermarsh.ruff`
+- **ID**: `astral-sh.ruff`
 - **Purpose**: Fast Python linter and formatter (replaces Black, isort, Flake8, and more)
-- **Install**:
-  ```bash
-  code --install-extension charliermarsh.ruff
-  ```
 - **Note**: Ruff is a single tool that handles both linting and formatting. It replaces the now-deprecated `python.linting.*` and `python.formatting.*` settings.
 
 ### Machine Learning
@@ -137,18 +92,10 @@ These extensions are essential for lab work:
 #### 8. PyTorch Snippets
 - **ID**: `SBSnippets.pytorch-snippets`
 - **Purpose**: PyTorch code snippets
-- **Install**: 
-  ```bash
-  code --install-extension SBSnippets.pytorch-snippets
-  ```
 
 #### 9. TensorBoard
 - **ID**: `ms-toolsai.vscode-tensorboard`
 - **Purpose**: View TensorBoard logs in VS Code
-- **Install**: 
-  ```bash
-  code --install-extension ms-toolsai.vscode-tensorboard
-  ```
 
 ### Productivity
 
@@ -156,26 +103,14 @@ These extensions are essential for lab work:
 - **ID**: `yzhang.markdown-all-in-one`
 - **Purpose**: Enhanced Markdown editing
 - **Features**: Shortcuts, table of contents, preview
-- **Install**: 
-  ```bash
-  code --install-extension yzhang.markdown-all-in-one
-  ```
 
 #### 11. Better Comments
 - **ID**: `aaron-bond.better-comments`
 - **Purpose**: Color-code comments (TODO, FIXME, etc.)
-- **Install**: 
-  ```bash
-  code --install-extension aaron-bond.better-comments
-  ```
 
 #### 12. Error Lens
 - **ID**: `usernamehw.errorlens`
 - **Purpose**: Highlight errors inline
-- **Install**: 
-  ```bash
-  code --install-extension usernamehw.errorlens
-  ```
 
 #### 13. Bracket Pair Colorization (Built-in)
 - VS Code has built-in bracket pair colorization — no extension needed
@@ -192,7 +127,7 @@ Add to your `settings.json`:
   "python.languageServer": "Pylance",
   "python.analysis.typeCheckingMode": "basic",
   "[python]": {
-    "editor.defaultFormatter": "charliermarsh.ruff",
+    "editor.defaultFormatter": "astral-sh.ruff",
     "editor.formatOnSave": true,
     "editor.codeActionsOnSave": {
       "source.fixAll": "explicit",
@@ -236,7 +171,7 @@ code --install-extension eamodio.gitlens
 code --install-extension mhutchie.git-graph
 code --install-extension christian-kohler.path-intellisense
 code --install-extension njpwerner.autodocstring
-code --install-extension charliermarsh.ruff
+code --install-extension astral-sh.ruff
 code --install-extension yzhang.markdown-all-in-one
 code --install-extension usernamehw.errorlens
 ```

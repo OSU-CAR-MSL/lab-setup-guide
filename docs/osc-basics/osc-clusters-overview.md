@@ -1,4 +1,4 @@
-<!-- last-reviewed: 2026-02-25 -->
+<!-- last-reviewed: 2026-02-26 -->
 # OSC Clusters Overview
 
 Understand OSC's high-performance computing clusters, available resources, and how to choose the right configuration for your workloads.
@@ -199,46 +199,10 @@ Typical per-user limits (these may vary by project):
 
 ## Choosing the Right Resources
 
-### For ML/DL Training (GPU)
-
-```bash
-#SBATCH --partition=gpu
-#SBATCH --gpus-per-node=a100:1    # A100 for best performance
-#SBATCH --cpus-per-task=8          # CPU cores for data loading
-#SBATCH --mem=64G                  # Enough RAM for data pipeline
-#SBATCH --time=24:00:00            # Adjust based on training time
-```
+For complete SBATCH job script templates (GPU training, CPU processing, debug, multi-GPU), see the [Job Submission Guide](../working-on-osc/osc-job-submission.md).
 
 !!! tip "Match CPU cores to GPU"
     Request 4–8 CPU cores per GPU to keep the data pipeline fast enough to feed the GPU.
-
-### For Data Processing (CPU)
-
-```bash
-#SBATCH --partition=serial
-#SBATCH --cpus-per-task=16         # Many cores for parallel processing
-#SBATCH --mem=64G                  # Adjust based on dataset size
-#SBATCH --time=04:00:00
-```
-
-### For Quick Testing (Debug)
-
-```bash
-#SBATCH --partition=debug
-#SBATCH --gpus-per-node=1          # Optional: test GPU code
-#SBATCH --cpus-per-task=4
-#SBATCH --time=00:30:00            # Max 1 hour
-```
-
-### For Multi-GPU Training
-
-```bash
-#SBATCH --partition=gpu
-#SBATCH --gpus-per-node=4          # 4 GPUs on one node
-#SBATCH --cpus-per-task=32         # 8 cores per GPU
-#SBATCH --mem=192G
-#SBATCH --time=48:00:00
-```
 
 ### Resource Request Guidelines
 
@@ -278,7 +242,7 @@ If `nvidia-smi` shows no GPUs, make sure you requested GPU resources:
 And load the CUDA module in your script:
 
 ```bash
-module load cuda/12.x
+module load cuda/12.4
 ```
 
 ### Jobs Pending with "Resources" Reason

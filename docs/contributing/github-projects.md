@@ -223,6 +223,8 @@ Fixes #
 
 ## Issue Templates
 
+For hands-on guidance on writing and filing issues, see [Issues, PRs & Code Review](github-issues-and-prs.md). The templates below configure the repo so contributors get a structured form when creating issues.
+
 Create 2–3 templates per repo in `.github/ISSUE_TEMPLATE/`:
 
 === "Bug Report"

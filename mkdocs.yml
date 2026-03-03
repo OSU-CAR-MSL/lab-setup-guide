@@ -43,8 +43,10 @@ theme:
     - navigation.instant.prefetch
     - navigation.tracking     # URL updates with anchor
     - navigation.tabs         # Top-level sections as tabs
+    - navigation.tabs.sticky  # Tabs stay visible on scroll
     - navigation.sections     # Render sections as groups in sidebar
     - navigation.expand       # Expand all collapsible sections
+    - navigation.pruning      # Reduce rendered sidebar for performance
     - navigation.indexes      # Section index pages
     - navigation.top          # Back-to-top button
     - search.suggest          # Search suggestions
@@ -55,7 +57,6 @@ theme:
     - content.action.edit     # Edit this page link
     - content.action.view     # View source alongside edit
     - content.tooltips        # Improved tooltips
-    - toc.follow              # Sidebar follows scroll
     - navigation.footer       # Prev/next page links at bottom
     - navigation.path         # Breadcrumb trail above page title
   

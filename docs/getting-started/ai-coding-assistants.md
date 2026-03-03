@@ -409,6 +409,7 @@ source ~/.bashrc
 
 ## Next Steps
 
+- [Agent Workflows](agent-workflows.md) — Advanced usage: MCP servers, custom skills, hooks, knowledge management
 - Set up [VS Code](vscode-setup.md) if you haven't already
 - Install recommended [VS Code Extensions](vscode-extensions.md)
 - Connect to OSC for [Remote Development](../osc-basics/osc-remote-development.md)

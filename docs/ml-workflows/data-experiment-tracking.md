@@ -498,6 +498,8 @@ my-ml-project/
 
 ## Next Steps
 
+- [Hugging Face Spaces](huggingface-spaces.md) — Deploy Parquet datalake dashboards to HF Spaces with GitHub Actions
+- [DuckDB Analytics Layer](duckdb-analytics.md) — SQL queries over your Parquet datalake
 - [ML Workflow Guide](ml-workflow.md) — Best practices for ML projects on OSC
 - [PyTorch Setup](pytorch-setup.md) — Installing and configuring PyTorch
 - [Job Submission](../working-on-osc/osc-job-submission.md) — Running training jobs on SLURM

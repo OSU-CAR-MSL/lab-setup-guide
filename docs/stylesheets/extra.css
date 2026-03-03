@@ -1,5 +1,14 @@
 /* OSU CAR Mobility Systems Lab - Custom Branding */
 
+/* Widen content grid from 61rem → 80rem */
+.md-grid { max-width: 80rem; }
+
+/* Hide right TOC sidebar — left sidebar already shows full nav */
+.md-sidebar--secondary { display: none; }
+
+/* Content fills freed space */
+.md-content { max-width: none; }
+
 /* Light mode colors */
 [data-md-color-scheme="default"] {
   --md-primary-fg-color: #bb0000;        /* OSU Scarlet */

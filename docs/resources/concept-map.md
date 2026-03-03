@@ -28,7 +28,7 @@ The concept map below shows the key prerequisite relationships between pages.
 ## Docs Concept Map
 
 ```mermaid
-flowchart LR
+flowchart TB
   subgraph GS["Getting Started"]
     wsl["WSL2 Setup"]
     vscode["VS Code Setup"]
@@ -73,30 +73,7 @@ flowchart LR
   remote --> envmgmt
   jobs --> pytorch
   pytorch --> mlwf
-
-  %% Click directives — link nodes to pages
-  click wsl "../getting-started/wsl-setup/"
-  click vscode "../getting-started/vscode-setup/"
-  click pyenv "../getting-started/python-environment-setup/"
-  click ai "../getting-started/ai-coding-assistants/"
-  click agent "../getting-started/agent-workflows/"
-  click account "../osc-basics/osc-account-setup/"
-  click ssh "../osc-basics/osc-ssh-connection/"
-  click remote "../osc-basics/osc-remote-development/"
-  click envmgmt "../working-on-osc/osc-environment-management/"
-  click jobs "../working-on-osc/osc-job-submission/"
-  click pipeline "../working-on-osc/pipeline-orchestration/"
-  click pytorch "../ml-workflows/pytorch-setup/"
-  click pyg "../ml-workflows/pyg-setup/"
-  click rapids "../ml-workflows/rapids-gpu-preprocessing/"
-  click mlwf "../ml-workflows/ml-workflow/"
-  click tracking "../ml-workflows/data-experiment-tracking/"
-  click duckdb "../ml-workflows/duckdb-analytics/"
-  click hf "../ml-workflows/huggingface-spaces/"
 ```
-
-!!! tip "Interactive"
-    Click any node to navigate directly to that page.
 
 ## Hub Pages
 
@@ -136,7 +113,7 @@ The knowledge graph is stored as newline-delimited JSON (NDJSON). Each line is e
 The diagram below is auto-generated from `~/.claude/knowledge-graph.json` using `scripts/generate-kg-mermaid.py`. It shows the 13 entities and their relationships from our lab's Claude Code memory server.
 
 ```mermaid
-graph LR
+graph TB
     Database_Architecture["Database Architecture"]:::architecture_decision
     Context_Management_Rules["Context Management Rules"]:::convention
     Modular_Context_Architecture["Modular Context Architecture"]:::architecture_decision
@@ -191,7 +168,6 @@ When you add a new page to the docs:
 
 1. Consider whether it should appear in the concept map above (skip minor/niche pages)
 2. If it's a key learning page, add a node in the appropriate `subgraph` and connect it with prerequisite edges
-3. Add a `click` directive linking the node to the page URL
-4. Run `mkdocs build --strict` to verify no broken links
+3. Run `mkdocs build --strict` to verify no broken links
 
 For the full guide to editing this site, see [How This Site Works](../contributing/how-this-site-works.md).

@@ -3,11 +3,22 @@
 /* Widen content grid from 61rem → 80rem */
 .md-grid { max-width: 80rem; }
 
-/* Hide right TOC sidebar — left sidebar already shows full nav */
-.md-sidebar--secondary { display: none; }
+/* Hide right TOC sidebar — !important needed to override Material's
+   @media (min-width: 60em) .md-sidebar--secondary:not([hidden]) { display: block } */
+.md-sidebar--secondary { display: none !important; }
 
 /* Content fills freed space */
 .md-content { max-width: none; }
+
+/* Mermaid diagrams — allow horizontal scroll instead of squishing wide flowcharts */
+.mermaid {
+  overflow-x: auto;
+  overflow-y: hidden;
+  max-width: 100%;
+}
+.mermaid svg {
+  min-width: 800px;
+}
 
 /* Light mode colors */
 [data-md-color-scheme="default"] {

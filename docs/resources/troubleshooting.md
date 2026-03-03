@@ -11,34 +11,18 @@ Common issues and solutions for working on OSC.
 
 ```mermaid
 flowchart TD
-    A{What's the problem?} --> B[Connection]
-    A --> H[VS Code Remote]
-    A --> C[Module & Environment]
-    A --> D[GPU / CUDA]
-    A --> E[Job Submission]
-    A --> F[File System]
-    A --> I[Data Transfer]
-    A --> J[Python / PyTorch]
-    A --> G[Performance]
-    B --> B1["#connection-issues"]
-    H --> H1["#vs-code-remote-ssh-issues"]
-    C --> C1["#module-and-environment-issues"]
-    D --> D1["#gpu-issues"]
-    E --> E1["#job-submission-issues"]
-    F --> F1["#file-system-issues"]
-    I --> I1["#data-transfer-issues"]
-    J --> J1["#pythonpytorch-issues"]
-    G --> G1["#performance-issues"]
-    click B1 "#connection-issues"
-    click H1 "#vs-code-remote-ssh-issues"
-    click C1 "#module-and-environment-issues"
-    click D1 "#gpu-issues"
-    click E1 "#job-submission-issues"
-    click F1 "#file-system-issues"
-    click I1 "#data-transfer-issues"
-    click J1 "#pythonpytorch-issues"
-    click G1 "#performance-issues"
+    A{What's the problem?} --> B["Connection"]
+    A --> H["VS Code Remote"]
+    A --> C["Module & Environment"]
+    A --> D["GPU / CUDA"]
+    A --> E["Job Submission"]
+    A --> F["File System"]
+    A --> I["Data Transfer"]
+    A --> J["Python / PyTorch"]
+    A --> G["Performance"]
 ```
+
+Jump to: [Connection](#connection-issues) | [VS Code Remote](#vs-code-remote-ssh-issues) | [Modules & Env](#module-and-environment-issues) | [GPU](#gpu-issues) | [Jobs](#job-submission-issues) | [Files](#file-system-issues) | [Data Transfer](#data-transfer-issues) | [Python/PyTorch](#pythonpytorch-issues) | [Performance](#performance-issues)
 
 ## Connection Issues
 

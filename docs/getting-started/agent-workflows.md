@@ -140,7 +140,7 @@ MCP servers are configured in `~/.claude.json` (user-scope) or `.claude.json` (p
     },
     "memory": {
       "command": "npx",
-      "args": ["-y", "@anthropic/memory-mcp-server",
+      "args": ["-y", "@modelcontextprotocol/server-memory",
                "--memory-path", "/path/to/knowledge-graph.json"]
     }
   }
@@ -163,7 +163,7 @@ You: "Show me the Ray Tune API for ASHAScheduler"
 Claude: [queries Context7] → returns up-to-date API docs with examples
 ```
 
-**Persistent knowledge graph** — The [memory MCP server](https://github.com/anthropics/memory-mcp-server) stores entities and relations across sessions:
+**Persistent knowledge graph** — The [memory MCP server](https://github.com/modelcontextprotocol/servers/tree/main/src/memory) stores entities and relations across sessions:
 
 ```
 You: "Remember that dataset hcrl_sa has 44K graphs and takes ~2 hours to preprocess"
@@ -434,7 +434,7 @@ This file is loaded into context at the start of every session, giving Claude ba
 
 ### Memory MCP Server (Knowledge Graph)
 
-For structured, cross-project memory, the [memory MCP server](https://github.com/anthropics/memory-mcp-server) maintains a knowledge graph of entities and relations:
+For structured, cross-project memory, the [memory MCP server](https://github.com/modelcontextprotocol/servers/tree/main/src/memory) maintains a knowledge graph of entities and relations:
 
 ```
 Entity: "hcrl_sa dataset"

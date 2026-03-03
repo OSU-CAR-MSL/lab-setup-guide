@@ -22,6 +22,7 @@ No tests or linters. `--strict` in CI catches broken links and config errors.
 lab-setup-guide/
 ├── mkdocs.yml                  # Nav, theme, extensions, plugins
 ├── requirements-docs.txt       # Python deps (CI cache key)
+├── overrides/main.html         # Announcement bar override
 ├── overrides/404.html          # Custom 404 page
 ├── docs/                       # 31 Markdown pages
 │   ├── index.md, tags.md
@@ -32,7 +33,7 @@ lab-setup-guide/
 │   ├── ml-workflows/           # 7 pages
 │   ├── contributing/           # 4 pages
 │   ├── assignments/            # 6 pages
-│   └── resources/              # 2 pages
+│   └── resources/              # 3 pages
 ├── scripts/                    # check-freshness.py, check-duplication.py, mcp_lab_docs.py
 └── .github/workflows/          # deploy-docs.yml, link-check.yml
 ```

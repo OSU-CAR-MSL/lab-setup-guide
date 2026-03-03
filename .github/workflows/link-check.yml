@@ -33,6 +33,8 @@ jobs:
             --exclude 'linux\.die\.net'
             --exclude 'mathworks\.com'
             --exclude 'oscprod\.service-now\.com'
+            --exclude 'quarto\.org'
+            --exclude 'slurm\.schedmd\.com'
             --no-progress
             'docs/**/*.md'
           fail: true

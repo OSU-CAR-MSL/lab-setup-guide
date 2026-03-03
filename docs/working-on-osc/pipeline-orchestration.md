@@ -64,6 +64,30 @@ def run_stage(script: str, args: list[str] | None = None) -> None:
         raise RuntimeError(f"Stage {script} failed with code {result.returncode}")
 ```
 
+### Why Not In-Process?
+
+CUDA contexts allocate 300-500 MB of GPU memory per model that **cannot be reclaimed** without killing the process. In a 4-stage pipeline (preprocessing → training → evaluation → export), running in-process accumulates ~1.5 GB of dead GPU memory. The subprocess overhead (~3-5 seconds per stage) is negligible compared to typical stage runtimes (minutes to hours).
+
+### Checkpoint Passing via Filesystem
+
+Stages communicate through filesystem paths (Parquet files, model checkpoints), not shared memory or Ray object store:
+
+```python
+# Stage 1 writes a checkpoint
+checkpoint_path = f"experimentruns/{dataset}/vgae_large_autoencoder/best_model.pt"
+torch.save(model.state_dict(), checkpoint_path)
+
+# Stage 2 reads it
+model.load_state_dict(torch.load(checkpoint_path))
+```
+
+**Why filesystem over object store:**
+
+- **Debuggable** — you can inspect checkpoints with standard tools
+- **Restartable** — failed stages can be re-run without replaying earlier stages
+- **Survives crashes** — Ray object store is ephemeral; filesystem persists
+- **Subprocess-compatible** — subprocesses can't access Ray's object store directly
+
 ## Pipeline DAG Example
 
 A training pipeline using `ray.remote` tasks with dependency chaining and fan-out per dataset:

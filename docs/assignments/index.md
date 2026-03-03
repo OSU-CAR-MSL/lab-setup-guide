@@ -34,6 +34,13 @@ Welcome to the lab assignments section. These hands-on assignments are designed 
 
 ---
 
+## Extras
+
+- **[Student Site Showcase](site-showcase.md)** — Example personal sites built by lab members for inspiration
+- **[Typst CV Guide](typst-cv-guide.md)** — Optional: upgrade your CV to a professionally typeset PDF
+
+---
+
 ## Building Your Portfolio
 
 Every assignment includes a blog post deliverable. These aren't throwaway homework — they're the start of a professional portfolio. Future employers, grad school committees, and lab collaborators will look at your public work.

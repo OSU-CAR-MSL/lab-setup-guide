@@ -41,6 +41,7 @@ For partition details, see the [Clusters Overview](../osc-basics/osc-clusters-ov
 | GitHub Projects, project management | `contributing/github-projects.md` |
 | Docs concept map, knowledge graph | `resources/concept-map.md` |
 | Presentation slides index | `resources/presentations.md` |
+| Lab templates index | `resources/templates.md` |
 
 ## Markdown Features Available
 

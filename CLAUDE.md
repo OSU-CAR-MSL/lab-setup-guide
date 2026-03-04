@@ -24,7 +24,7 @@ lab-setup-guide/
 ├── requirements-docs.txt       # Python deps (CI cache key)
 ├── overrides/main.html         # Announcement bar override
 ├── overrides/404.html          # Custom 404 page
-├── docs/                       # 32 Markdown pages
+├── docs/                       # 33 Markdown pages
 │   ├── index.md, tags.md
 │   ├── includes/abbreviations.md
 │   ├── getting-started/        # 5 pages
@@ -33,7 +33,7 @@ lab-setup-guide/
 │   ├── ml-workflows/           # 7 pages
 │   ├── contributing/           # 4 pages
 │   ├── assignments/            # 6 pages
-│   └── resources/              # 4 pages (incl. presentations index)
+│   └── resources/              # 5 pages (incl. templates, presentations index)
 ├── presentations/              # Quarto RevealJS slide decks (outside docs/)
 │   └── osc-overview/           # OSC & HPC onboarding slides
 ├── scripts/                    # check-freshness.py, check-duplication.py, mcp_lab_docs.py

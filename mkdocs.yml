@@ -192,6 +192,7 @@ nav:
     - Typst CV Guide: assignments/typst-cv-guide.md
 
   - Resources:
+    - Templates: resources/templates.md
     - Troubleshooting: resources/troubleshooting.md
     - Presentations: resources/presentations.md
     - Useful Links: resources/useful-links.md

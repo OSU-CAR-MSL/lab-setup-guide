@@ -120,7 +120,7 @@ git config --global user.email "your.email@osu.edu"
 
 ### 1.1 Use the Template
 
-1. Go to: **[github.com/OSU-CAR-MSL/quarto-academic-site-template](https://github.com/OSU-CAR-MSL/quarto-academic-site-template)**
+1. Go to: **[github.com/OSU-CAR-MSL/quarto-lab-templates](https://github.com/OSU-CAR-MSL/quarto-lab-templates)** (the website template is in the `website/` directory)
 2. Click the green **"Use this template"** button → **"Create a new repository"**
 3. Repository name: **`YOURUSERNAME.github.io`** (your actual GitHub username, case-sensitive)
 4. Set to **Public** → click **"Create repository"**

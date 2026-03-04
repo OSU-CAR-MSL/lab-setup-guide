@@ -30,10 +30,11 @@ An introduction to the Ohio Supercomputer Center for new lab members. Covers thr
 
 ## Adding a New Presentation
 
-1. Create a directory under `presentations/` (e.g., `presentations/my-topic/`)
-2. Add `_quarto.yml`, `index.qmd`, `custom.scss`, and an `images/` folder
-3. Add `presentations/my-topic/_output/` to `.gitignore`
-4. Add an entry to this page
+1. Copy the [presentation starter template](https://github.com/OSU-CAR-MSL/quarto-lab-templates/tree/main/presentation) as your starting point
+2. Create a directory under `presentations/` (e.g., `presentations/my-topic/`)
+3. Add `_quarto.yml`, `index.qmd`, `custom.scss`, and an `images/` folder
+4. Add `presentations/my-topic/_output/` to `.gitignore`
+5. Add an entry to this page
 
 Presentations live outside `docs/` so MkDocs ignores them. Only this index page is part of the docs site.
 

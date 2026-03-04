@@ -330,3 +330,4 @@ Place this step before `quarto render`. The pre-render hook handles compilation 
 
 - [Assignment 1: Personal Website](personal-website.md) — The base Quarto site assignment
 - [Student Site Showcase](site-showcase.md) — Examples of completed sites with Typst CVs
+- [Standalone resume template](https://github.com/OSU-CAR-MSL/quarto-lab-templates/tree/main/resume) — If you just want a Typst CV without a Quarto website, use the `resume/` template

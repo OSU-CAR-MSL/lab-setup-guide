@@ -212,6 +212,22 @@ python preprocess_data.py
 
 When done: `exit` to release the node.
 
+## Login Node vs. Compute Node
+
+Your home directory (`~/`) is the **same NFS mount** everywhere — same files, same paths.
+
+| Task | Where | Why |
+|------|-------|-----|
+| Edit code, git, browse files | Login node | Lightweight, no wait |
+| AI tools (Claude Code, Copilot) | Login node | Network-bound, not CPU |
+| Submit jobs (`sbatch`) | Login node | Just a SLURM request |
+| Run tests (`pytest`) | Compute node | CPU-intensive |
+| Preprocessing scripts | Compute node | May run for minutes |
+| `quarto render`, builds | Compute node | Can be CPU-heavy |
+| Anything with a GPU | Compute node | GPUs only there |
+
+A 1-core, 2-hour session costs just **2 core-hours**. But don't leave it idle!
+
 ## VS Code Remote-SSH
 
 :::: {.columns}

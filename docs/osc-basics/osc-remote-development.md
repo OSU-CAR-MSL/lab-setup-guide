@@ -3,7 +3,7 @@ tags:
   - OSC
   - SSH
 ---
-<!-- last-reviewed: 2026-02-26 -->
+<!-- last-reviewed: 2026-03-04 -->
 # Remote Development on OSC
 
 Visual Studio Code's Remote-SSH extension allows you to develop on OSC as if you were working locally. This guide shows you how to set it up and use it effectively.
@@ -119,24 +119,36 @@ Set breakpoints and debug remotely:
 
 ### 1. Use Login Nodes Appropriately
 
-**Login nodes** (where Remote-SSH connects) are for:
-- Editing code
-- Light testing
-- Job submission
+**Login nodes** (where Remote-SSH connects) are shared among all users. They are fine for:
 
-**DO NOT** run intensive computations on login nodes.
+- Editing code, browsing files, git operations
+- Submitting jobs (`sbatch`, `sinteractive`)
+- AI coding tools (Claude Code, Copilot) — these are network-bound, not CPU-bound
+- Quick `pip install` or `uv add`
+
+**DO NOT** run intensive computations on login nodes: long-running scripts, large builds, `pytest` on big test suites, or anything GPU-related.
 
 ### 2. Use Compute Nodes for Heavy Work
 
-For intensive tasks:
+Use `sinteractive` to get your own compute node from the VS Code terminal:
 
 ```bash
-# Request interactive session
-srun -p debug -c 4 --time=01:00:00 --pty bash
+# CPU-only (for builds, tests, preprocessing)
+sinteractive -A PAS1234 -c 4 -t 02:00:00
 
-# Or use batch jobs
+# With GPU (for training, debugging GPU code)
+sinteractive -A PAS1234 -c 4 -g 1 -t 01:00:00
+```
+
+Your home directory is the same NFS mount on both login and compute nodes — same files, same paths. No need to copy anything. When done, type `exit` to release the node.
+
+For longer unattended runs, use batch jobs:
+
+```bash
 sbatch job_script.sh
 ```
+
+For full details, see the [Interactive Sessions](../working-on-osc/osc-job-submission.md#interactive-sessions) section of the Job Submission Guide.
 
 ### 3. Save Regularly
 

@@ -4,7 +4,7 @@ tags:
   - OSC
   - GPU
 ---
-<!-- last-reviewed: 2026-02-26 -->
+<!-- last-reviewed: 2026-03-04 -->
 # Job Submission Guide
 
 Learn how to submit and manage jobs on OSC using the SLURM job scheduler.
@@ -18,11 +18,11 @@ OSC uses SLURM (Simple Linux Utility for Resource Management) to schedule and ma
 ### Interactive Job (Testing)
 
 ```bash
-# Request interactive session for testing
-srun -p debug -c 4 --time=30:00 --pty bash
+# Simplest way to get a compute node
+sinteractive -A PAS1234 -c 4 -t 01:00:00
 
 # With GPU
-srun -p gpu --gpus-per-node=1 --time=30:00 --pty bash
+sinteractive -A PAS1234 -c 4 -g 1 -t 01:00:00
 ```
 
 ### Batch Job (Production)
@@ -92,6 +92,69 @@ flowchart LR
     B --> H[Cancelled\nCA]
     C --> H
 ```
+
+## Interactive Sessions
+
+Interactive sessions give you a shell on a compute node — your own dedicated resources with no contention from other users. Use them for anything heavier than editing code or submitting jobs.
+
+### `sinteractive` (Recommended)
+
+The simplest way to get a compute node:
+
+```bash
+# Basic: 1 core, debug partition, default time
+sinteractive -A PAS1234
+
+# Specify resources
+sinteractive -A PAS1234 -c 4 -t 02:00:00
+
+# With GPU
+sinteractive -A PAS1234 -c 4 -g 1 -t 01:00:00
+
+# On a specific cluster
+sinteractive -A PAS1234 -c 4 -t 02:00:00 -p cpu
+```
+
+!!! note "Replace `PAS1234`"
+    Use your actual OSC project code. See [Account Setup](../osc-basics/osc-account-setup.md#check-your-projects).
+
+You'll see output like:
+
+```
+salloc: Pending job allocation 14269
+salloc: job 14269 has been allocated resources
+salloc: Granted job allocation 14269
+[user@p0591 ~]$
+```
+
+Your prompt changes to show the compute node hostname (e.g., `p0591`). When done, type `exit` to release the node.
+
+### `srun` (Alternative)
+
+```bash
+# CPU-only
+srun -p debug -c 4 --time=30:00 --account=PAS1234 --pty bash
+
+# With GPU
+srun -p gpu --gpus-per-node=1 --time=01:00:00 --account=PAS1234 --pty bash
+```
+
+### Login Node vs. Compute Node
+
+Your home directory (`~/`) is the **same NFS mount** from both login and compute nodes — same files, same paths, same permissions. You don't need to copy anything.
+
+| Task | Where to Run | Why |
+|------|-------------|-----|
+| Edit code, browse files, git | Login node | Lightweight, no allocation needed |
+| Submit jobs (`sbatch`) | Login node | Just sends a request to SLURM |
+| AI coding tools (Claude Code, etc.) | Login node | Bottleneck is network API latency, not local CPU |
+| Run tests (`pytest`) | Compute node | Can use significant CPU/memory |
+| Preprocessing scripts | Compute node | CPU-intensive, may run for minutes |
+| `quarto render`, `mkdocs build` | Compute node | Builds can be CPU-heavy |
+| Anything with a GPU | Compute node | GPUs only available on compute nodes |
+
+!!! tip "Cost of interactive sessions"
+    A 1-core interactive session for 2 hours costs **2 core-hours** — roughly the same as a single core running for 2 hours in a batch job. A 4-core session for 2 hours costs 8 core-hours. For perspective, a typical 4-hour GPU training run on 4 cores costs 16 core-hours. Interactive sessions are cheap, but don't leave them idle — `exit` when you're done.
 
 ## Creating Job Scripts
 

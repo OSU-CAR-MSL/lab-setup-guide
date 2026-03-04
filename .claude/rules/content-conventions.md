@@ -40,6 +40,7 @@ For partition details, see the [Clusters Overview](../osc-basics/osc-clusters-ov
 | Issues, PRs, code review, forks | `contributing/github-issues-and-prs.md` |
 | GitHub Projects, project management | `contributing/github-projects.md` |
 | Docs concept map, knowledge graph | `resources/concept-map.md` |
+| Presentation slides index | `resources/presentations.md` |
 
 ## Markdown Features Available
 

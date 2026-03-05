@@ -3,6 +3,9 @@
 
 Welcome to the OSU CAR Mobility Systems Lab documentation! This guide helps lab members set up their development environment and work effectively on the Ohio Supercomputer Center (OSC).
 
+!!! info "Lab Compute Dashboard"
+    Track our OSC spending, job health, and per-user breakdowns on the [live dashboard](https://huggingface.co/spaces/buckeyeguy/osc-usage-dashboard). Updated daily.
+
 ---
 
 ## :rocket: Quick Start
@@ -116,6 +119,7 @@ Each tool in our stack addresses a specific challenge in the ML research workflo
 
 | Resource | Link |
 |----------|------|
+| Lab Compute Dashboard | [osc-usage-dashboard](https://huggingface.co/spaces/buckeyeguy/osc-usage-dashboard) |
 | OSC Documentation | [osc.edu/resources](https://www.osc.edu/resources) |
 | OSC OnDemand Portal | [ondemand.osc.edu](https://ondemand.osc.edu) |
 | OSC Status Page | [osc.edu/status](https://www.osc.edu/resources/system-status) |

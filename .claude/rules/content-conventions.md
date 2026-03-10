@@ -9,7 +9,7 @@
 For partition details, see the [Clusters Overview](../osc-basics/osc-clusters-overview.md).
 ```
 
-**Content freshness.** Every `.md` page must have `<!-- last-reviewed: YYYY-MM-DD -->` as its first line. Update when you meaningfully review or edit. CI flags pages older than 12 months.
+**Content freshness.** Every `.md` page must have `<!-- last-reviewed: YYYY-MM-DD -->` within its first 10 lines (after any YAML frontmatter). Update when you meaningfully review or edit. CI flags pages older than 12 months.
 
 **No link dumps.** Only OSC-specific portals, lab resources, and hard-to-find references. Skip generic links (Python docs, ML courses, framework homepages).
 
@@ -50,7 +50,7 @@ Admonitions (`!!! note/tip/warning/danger`), tabbed content (`=== "Tab"`), fence
 ## Adding a New Page
 
 1. Create `.md` in appropriate `docs/` subfolder
-2. Add `<!-- last-reviewed: YYYY-MM-DD -->` first line
+2. Add `<!-- last-reviewed: YYYY-MM-DD -->` within the first 10 lines (after any YAML frontmatter)
 3. Add to `nav:` in `mkdocs.yml`
 4. Check canonical locations — cross-link, don't duplicate
 5. Verify: `mkdocs build --strict && python scripts/check-freshness.py && python scripts/check-duplication.py`

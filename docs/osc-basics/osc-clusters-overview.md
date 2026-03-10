@@ -1,4 +1,4 @@
-<!-- last-reviewed: 2026-02-26 -->
+<!-- last-reviewed: 2026-03-09 -->
 # OSC Clusters Overview
 
 Understand OSC's high-performance computing clusters, available resources, and how to choose the right configuration for your workloads.
@@ -78,6 +78,9 @@ Owens is OSC's older cluster, well-suited for CPU-intensive workloads and smalle
 | **Multi-GPU Nodes** | Up to 4 GPUs | 1 GPU |
 | **Best For** | GPU training, large jobs | CPU work, smaller GPU jobs |
 | **Queue Wait Times** | Can be longer (popular) | Often shorter |
+
+!!! info "Newer clusters"
+    OSC has announced additional clusters (Ascend, Cardinal). As they become available for general use, this guide will be updated. Check [OSC's systems page](https://www.osc.edu/resources/technical_support/supercomputers) for the latest.
 
 !!! note "Both clusters share the same filesystem"
     Your home directory, project space, and scratch space are accessible from both Pitzer and Owens. You do not need to copy files between clusters.

@@ -5,7 +5,7 @@ tags:
   - CUDA
   - GPU
 ---
-<!-- last-reviewed: 2026-02-26 -->
+<!-- last-reviewed: 2026-03-09 -->
 # PyG (PyTorch Geometric) Setup
 
 [PyTorch Geometric (PyG)](https://pytorch-geometric.readthedocs.io/en/latest/#) is the leading library for deep learning on graphs and other irregular structures. It provides efficient implementations of graph neural network layers (GCN, GAT, GraphSAGE, GIN, and many more), standard benchmark datasets, mini-batch loaders for large graphs, and utilities for graph transforms and sampling. If your research involves graph neural networks — whether for citation networks, molecular property prediction, point clouds, or CAN bus intrusion detection — PyG is the go-to framework on top of PyTorch.
@@ -53,7 +53,7 @@ Install the compiled extension packages from PyG's wheel index. The URL must mat
     ```
 
 !!! tip "Check the wheel index for your version"
-    Browse [https://data.pyg.org/whl/](https://data.pyg.org/whl/) to find the correct URL for your specific PyTorch + CUDA combination. The URL must match your installed versions exactly.
+    The URLs above are pinned to PyTorch 2.8.0 + CUDA 12.6. When PyTorch updates, browse [https://data.pyg.org/whl/](https://data.pyg.org/whl/) to find the correct URL for your version. The URL must match your installed versions exactly. Always verify with Step 2 first.
 
 ### Step 4: Install PyTorch Geometric
 

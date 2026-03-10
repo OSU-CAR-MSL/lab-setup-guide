@@ -1,4 +1,4 @@
-<!-- last-reviewed: 2026-03-04 -->
+<!-- last-reviewed: 2026-03-09 -->
 
 # Presentations
 
@@ -8,7 +8,7 @@ Slide decks for lab onboarding and training sessions, built with [Quarto RevealJ
 
 ### OSC & HPC Overview
 
-An introduction to the Ohio Supercomputer Center for new lab members. Covers three clusters (Pitzer, Ascend, Cardinal), three levels of access (OnDemand, terminal, batch jobs), storage tiers, SLURM job submission, and Python environment setup.
+An introduction to the Ohio Supercomputer Center for new lab members. Covers OSC clusters, three levels of access (OnDemand, terminal, batch jobs), storage tiers, SLURM job submission, and Python environment setup.
 
 - **Audience:** New MSL lab members
 - **Slides:** ~30

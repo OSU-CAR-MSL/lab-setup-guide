@@ -9,6 +9,7 @@ Run with:
 
 from __future__ import annotations
 
+import posixpath
 import re
 import sys
 from pathlib import Path
@@ -198,8 +199,6 @@ def _parse_cross_links(pages: dict[str, str]) -> dict[str, set[str]]:
             if not href.endswith(".md"):
                 continue
             # Resolve relative paths and normalize (e.g. ml-workflows/../osc/ → osc/)
-            import posixpath
-
             resolved = posixpath.normpath(posixpath.join(page_dir, href))
             targets.add(resolved)
         links[page_path] = targets
@@ -598,7 +597,6 @@ async def get_summary(page_path: str) -> str:
                 break
 
         prefix = "  " if chunk.parent_heading else ""
-        level_marker = "###" if chunk.parent_heading else "##"
         parts.append(f"{prefix}- **{chunk.heading}** ({chunk.word_count}w): {first_sentence}")
 
     return "\n".join(parts)

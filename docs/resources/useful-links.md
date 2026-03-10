@@ -1,4 +1,4 @@
-<!-- last-reviewed: 2026-02-26 -->
+<!-- last-reviewed: 2026-03-09 -->
 # Useful Links
 
 OSC-specific portals, lab resources, and quick-reference cheat sheets.
@@ -20,6 +20,11 @@ OSC-specific portals, lab resources, and quick-reference cheat sheets.
 
 - [Lab GitHub Organization](https://github.com/OSU-CAR-MSL)
 - [Quarto Academic Site Template](https://github.com/OSU-CAR-MSL/quarto-academic-site-template) - Ready-to-use template for personal academic websites
+
+## Interactive Access
+
+- [OSC OnDemand Interactive Apps](https://ondemand.osc.edu/) — Jupyter, RStudio, VS Code, virtual desktop (see [OnDemand guide](../osc-basics/osc-ondemand.md))
+- [OSC Compute Dashboard](https://ood.osc.edu/pun/sys/activejobs) — View your running and completed jobs
 
 ## SLURM & HPC
 

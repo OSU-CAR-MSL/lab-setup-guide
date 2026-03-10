@@ -24,7 +24,7 @@ OSC-specific portals, lab resources, and quick-reference cheat sheets.
 ## Interactive Access
 
 - [OSC OnDemand Interactive Apps](https://ondemand.osc.edu/) — Jupyter, RStudio, VS Code, virtual desktop (see [OnDemand guide](../osc-basics/osc-ondemand.md))
-- [OSC Compute Dashboard](https://ood.osc.edu/pun/sys/activejobs) — View your running and completed jobs
+- [Active Jobs Dashboard](https://ondemand.osc.edu/pun/sys/activejobs) — View your running and completed jobs
 
 ## SLURM & HPC
 

@@ -462,7 +462,7 @@ signal.signal(signal.SIGUSR1, handle_timeout)
 
 #### Data Staging for I/O-Heavy Jobs
 
-OSC has [three storage tiers](https://www.osc.edu/resources/getting_started/howto/howto_use_scratch_space) with different performance characteristics. Staging data to faster storage before training reduces I/O bottleneck:
+OSC has [three storage tiers](https://www.osc.edu/supercomputing/storage-environment-at-osc/available-file-systems) with different performance characteristics. Staging data to faster storage before training reduces I/O bottleneck:
 
 ```
 Home (NFS, permanent)       → Slow random reads, limited quota

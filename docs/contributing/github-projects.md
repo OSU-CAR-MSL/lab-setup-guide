@@ -448,6 +448,7 @@ gh project item-list N --format json | \
 
 ## Related Guides
 
+- [SSH & Authentication](../github/ssh-and-authentication.md) — `gh` CLI setup and GitHub authentication
 - [Contributing Guide](how-this-site-works.md) — How this site works, adding new pages
 - [Issues, PRs & Code Review](github-issues-and-prs.md) — Filing issues, opening pull requests, and reviewing code
 - [GitHub Pages Setup](github-pages-setup.md) — Setting up MkDocs or Quarto documentation sites

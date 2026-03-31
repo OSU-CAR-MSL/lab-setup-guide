@@ -316,6 +316,7 @@ concurrency:
 
 ## Next Steps
 
+- [GitHub Actions & CI/CD](../github/github-actions-ci-cd.md) — Testing, linting, and automation beyond deployment
 - [Contributing Guide](how-this-site-works.md) — Architecture and how to add pages to the CAR-MSL documentation site
 - [MkDocs Material docs](https://squidfunk.github.io/mkdocs-material/) — Full reference for the MkDocs Material theme
 - [Quarto docs](https://quarto.org/docs/websites/) — Quarto website documentation

@@ -181,6 +181,13 @@ nav:
     - DuckDB Analytics Layer: ml-workflows/duckdb-analytics.md
     - Hugging Face Spaces: ml-workflows/huggingface-spaces.md
 
+  - GitHub:
+    - Git Fundamentals: github/git-fundamentals.md
+    - Repository Setup: github/repository-setup.md
+    - SSH & Authentication: github/ssh-and-authentication.md
+    - GitHub Actions & CI/CD: github/github-actions-ci-cd.md
+    - Git Troubleshooting: github/git-troubleshooting.md
+
   - Contributing:
     - Contributing Guide: contributing/how-this-site-works.md
     - GitHub Pages Setup: contributing/github-pages-setup.md

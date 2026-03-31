@@ -36,7 +36,7 @@ New to the lab? Follow these steps to get up and running:
 
     Edit, debug, and develop directly on OSC nodes from your local machine.
 
--   :fontawesome-brands-git-alt:{ .lg .middle } **Git & GitHub**
+-   :fontawesome-brands-git-alt:{ .lg .middle } **[Git & GitHub](github/git-fundamentals.md)**
 
     ---
 

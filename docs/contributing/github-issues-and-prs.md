@@ -4,7 +4,7 @@
 |                    |                                                           |
 | ------------------ | --------------------------------------------------------- |
 | **Audience**       | All lab members                                           |
-| **Prerequisites**  | GitHub account, `gh` CLI installed, basic Git (clone, commit, push) |
+| **Prerequisites**  | GitHub account, `gh` CLI installed, basic Git ([clone, commit, push](../github/git-fundamentals.md)) |
 
 ---
 
@@ -430,6 +430,8 @@ gh pr create --title "..." --body "..." --web
 
 ## Related Guides
 
+- [Git Fundamentals](../github/git-fundamentals.md) — Core Git commands and mental model
+- [Git Troubleshooting](../github/git-troubleshooting.md) — Merge conflicts, undoing changes, recovery
 - [Contributing Guide](how-this-site-works.md) — How this site works, adding new pages
 - [Project Management](github-projects.md) — GitHub Projects boards, workflows, and automation
 - [GitHub Pages Setup](github-pages-setup.md) — Setting up MkDocs or Quarto documentation sites

@@ -37,6 +37,11 @@ For partition details, see the [Clusters Overview](../osc-basics/osc-clusters-ov
 | Agent workflows, MCP, skills, hooks | `getting-started/agent-workflows.md` |
 | Student site showcase | `assignments/site-showcase.md` |
 | Typst CV guide | `assignments/typst-cv-guide.md` |
+| Git fundamentals, core commands | `github/git-fundamentals.md` |
+| Repository setup, branch protection | `github/repository-setup.md` |
+| SSH keys for GitHub, gh CLI auth, PATs | `github/ssh-and-authentication.md` |
+| GitHub Actions, CI/CD workflows | `github/github-actions-ci-cd.md` |
+| Git troubleshooting, merge conflicts, recovery | `github/git-troubleshooting.md` |
 | Issues, PRs, code review, forks | `contributing/github-issues-and-prs.md` |
 | GitHub Projects, project management | `contributing/github-projects.md` |
 | Docs concept map, knowledge graph | `resources/concept-map.md` |

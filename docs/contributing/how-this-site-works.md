@@ -206,6 +206,7 @@ Before pushing a new page:
 
 ## Related Guides
 
+- [Git Fundamentals](../github/git-fundamentals.md) — Core Git commands and mental model
 - [Issues, PRs & Code Review](github-issues-and-prs.md) — Filing issues, opening pull requests, and reviewing code
 - [Project Management](github-projects.md) — GitHub Projects boards, workflows, and automation
 - [GitHub Pages Setup](github-pages-setup.md) — Setting up MkDocs or Quarto documentation sites

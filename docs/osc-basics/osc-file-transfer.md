@@ -15,17 +15,27 @@ Learn efficient methods to transfer files between your local machine and OSC.
 | Git | Code and scripts only | Fast | ⭐⭐⭐⭐ |
 
 ```mermaid
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#e8f4fd', 'primaryTextColor': '#1a1a1a', 'lineColor': '#555'}}}%%
 flowchart TD
-    A{What are you\ntransferring?} --> B[Code / scripts]
-    A --> C[Small files\n< 1 MB]
-    A --> D[Medium files\n1–100 MB]
-    A --> E[Large files / dirs\n> 100 MB]
-    B --> F[Git push/pull]
-    C --> G[VS Code\ndrag & drop]
-    D --> H{Single file or\ndirectory?}
-    H -->|Single file| I[SCP]
-    H -->|Directory| J[Rsync]
-    E --> K[Rsync\n--partial --progress]
+    A@{ shape: diam, label: "What are you\ntransferring?" }:::decision --> B["fa:fa-code Code / scripts"]:::process
+    A --> C["fa:fa-file Small files\n< 1 MB"]:::process
+    A --> D["fa:fa-file-zipper Medium files\n1–100 MB"]:::process
+    A --> E["fa:fa-hard-drive Large files / dirs\n> 100 MB"]:::process
+    B --> F@{ shape: stadium, label: "fa:fa-code-branch Git push/pull" }
+    F:::success
+    C --> G@{ shape: stadium, label: "fa:fa-desktop VS Code\ndrag & drop" }
+    G:::success
+    D --> H@{ shape: diam, label: "Single file or\ndirectory?" }
+    H:::decision -->|Single file| I@{ shape: stadium, label: "fa:fa-arrow-right SCP" }
+    I:::success
+    H -->|Directory| J@{ shape: stadium, label: "fa:fa-arrows-rotate Rsync" }
+    J:::success
+    E --> K@{ shape: stadium, label: "fa:fa-arrows-rotate Rsync\n--partial --progress" }
+    K:::success
+
+    classDef process fill:#e8f4fd,stroke:#3b82f6
+    classDef decision fill:#fef3c7,stroke:#d97706
+    classDef success fill:#d1fae5,stroke:#059669
 ```
 
 ## Method 1: VS Code (Easiest)

@@ -35,24 +35,25 @@ Before diving into OSC's clusters, familiarize yourself with these key HPC terms
 When you SSH into OSC, you land on a **login node** — a shared gateway for editing files and submitting jobs. Compute-intensive work runs on **compute nodes** allocated by the SLURM scheduler. All nodes share the same filesystems (home, scratch, project).
 
 ```mermaid
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#e8f4fd', 'primaryTextColor': '#1a1a1a', 'lineColor': '#555'}}}%%
 flowchart LR
     subgraph Your Machine
-        A[SSH Client]
+        A["fa:fa-laptop SSH Client"]:::external
     end
     subgraph OSC Login Nodes
-        B[pitzer-login01]
-        C[pitzer-login02]
+        B["fa:fa-server pitzer-login01"]:::process
+        C["fa:fa-server pitzer-login02"]:::process
     end
     subgraph SLURM Scheduler
-        D[sbatch / sinteractive]
+        D["fa:fa-cogs sbatch / sinteractive"]:::infra
     end
     subgraph Compute Nodes
-        E[CPU Nodes\n557 nodes\n40-48 cores each]
-        F[GPU Nodes\n78 nodes\n2-4 V100s each]
-        G[Large Memory\n16 nodes\nup to 3 TB RAM]
+        E["fa:fa-server CPU Nodes\n557 nodes\n40-48 cores each"]:::process
+        F["fa:fa-microchip GPU Nodes\n78 nodes\n2-4 V100s each"]:::process
+        G["fa:fa-memory Large Memory\n16 nodes\nup to 3 TB RAM"]:::process
     end
     subgraph Shared Filesystems
-        H["/users — Home\n/fs/scratch — Scratch\n/fs/ess — Project"]
+        H["fa:fa-hard-drive /users — Home\n/fs/scratch — Scratch\n/fs/ess — Project"]:::data
     end
 
     A --> B & C
@@ -60,6 +61,11 @@ flowchart LR
     D --> E & F & G
     E & F & G --- H
     B & C --- H
+
+    classDef process fill:#e8f4fd,stroke:#3b82f6
+    classDef external fill:#ede9fe,stroke:#7c3aed
+    classDef infra fill:#f3e8ff,stroke:#9333ea
+    classDef data fill:#d1fae5,stroke:#059669
 ```
 
 !!! warning "Do not run compute on login nodes"
@@ -134,20 +140,32 @@ Each partition groups nodes with the same resource profile and time limits. The 
 ### Choosing the Right Partition
 
 ```mermaid
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#e8f4fd', 'primaryTextColor': '#1a1a1a', 'lineColor': '#555'}}}%%
 flowchart TD
-    A[What type of job?] --> B{Need a GPU?}
-    B -->|Yes| C{Quick test < 1 hr?}
-    B -->|No| D{Multi-node?}
-    C -->|Yes| E["gpudebug / gpudebug-exp"]
-    C -->|No| F{Need > 16 GB VRAM?}
-    F -->|Yes| G["gpu-exp (32 GB)\nor gpu-quad (4× 32 GB)"]
-    F -->|No| H["gpu (16 GB)"]
-    D -->|Yes| I["cpu + srun\n(multi-node MPI)"]
-    D -->|No| J{Need > 192 GB RAM?}
-    J -->|Yes| K["largemem (768 GB)\nor hugemem (3 TB)"]
-    J -->|No| L{Run > 7 days?}
-    L -->|Yes| M[longcpu]
-    L -->|No| N["cpu / cpu-exp"]
+    A["What type of job?"]:::process --> B@{ shape: diam, label: "Need a GPU?" }
+    B:::decision -->|Yes| C@{ shape: diam, label: "Quick test < 1 hr?" }
+    C:::decision -->|Yes| E@{ shape: stadium, label: "fa:fa-microchip gpudebug / gpudebug-exp" }
+    E:::success
+    C -->|No| F@{ shape: diam, label: "Need > 16 GB VRAM?" }
+    F:::decision -->|Yes| G@{ shape: stadium, label: "fa:fa-microchip gpu-exp (32 GB)\nor gpu-quad (4× 32 GB)" }
+    G:::success
+    F -->|No| H@{ shape: stadium, label: "fa:fa-microchip gpu (16 GB)" }
+    H:::success
+    B -->|No| D@{ shape: diam, label: "Multi-node?" }
+    D:::decision -->|Yes| I@{ shape: stadium, label: "fa:fa-server cpu + srun\n(multi-node MPI)" }
+    I:::success
+    D -->|No| J@{ shape: diam, label: "Need > 192 GB RAM?" }
+    J:::decision -->|Yes| K@{ shape: stadium, label: "fa:fa-memory largemem (768 GB)\nor hugemem (3 TB)" }
+    K:::success
+    J -->|No| L@{ shape: diam, label: "Run > 7 days?" }
+    L:::decision -->|Yes| M@{ shape: stadium, label: "fa:fa-server longcpu" }
+    M:::success
+    L -->|No| N@{ shape: stadium, label: "fa:fa-server cpu / cpu-exp" }
+    N:::success
+
+    classDef process fill:#e8f4fd,stroke:#3b82f6
+    classDef decision fill:#fef3c7,stroke:#d97706
+    classDef success fill:#d1fae5,stroke:#059669
 ```
 
 !!! tip "Start with `gpudebug` for testing"
@@ -158,19 +176,23 @@ flowchart TD
 OSC provides four storage tiers, all visible from every login and compute node. Each serves a different purpose.
 
 ```mermaid
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#e8f4fd', 'primaryTextColor': '#1a1a1a', 'lineColor': '#555'}}}%%
 flowchart LR
     subgraph Backed Up
-        HOME["🏠 Home\n/users/PAS.../user\n500 GB · NFS\nCode, configs"]
-        PROJECT["📁 Project\n/fs/ess/PAS...\n1-5 TB · GPFS\nShared datasets"]
+        HOME["fa:fa-house Home\n/users/PAS.../user\n500 GB · NFS\nCode, configs"]:::backed
+        PROJECT["fa:fa-folder-open Project\n/fs/ess/PAS...\n1-5 TB · GPFS\nShared datasets"]:::backed
     end
     subgraph Not Backed Up
-        SCRATCH["⚡ Scratch\n/fs/scratch/PAS...\n100 TB · GPFS\nActive job data"]
-        TMPDIR["💨 $TMPDIR\nLocal disk\nJob-only · Fastest\nStaging I/O-heavy data"]
+        SCRATCH["fa:fa-bolt Scratch\n/fs/scratch/PAS...\n100 TB · GPFS\nActive job data"]:::notbacked
+        TMPDIR["fa:fa-gauge-high $TMPDIR\nLocal disk\nJob-only · Fastest\nStaging I/O-heavy data"]:::notbacked
     end
 
     HOME -->|"rsync large files"| SCRATCH
     SCRATCH -->|"cp at job start"| TMPDIR
     PROJECT -->|"rsync shared data"| SCRATCH
+
+    classDef backed fill:#d1fae5,stroke:#059669
+    classDef notbacked fill:#fef3c7,stroke:#d97706
 ```
 
 ### Storage Details

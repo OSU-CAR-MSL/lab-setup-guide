@@ -15,11 +15,17 @@ OSC uses two main systems for environment management:
 2. **Virtual Environments**: Isolated Python environments with custom packages
 
 ```mermaid
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#e8f4fd', 'primaryTextColor': '#1a1a1a', 'lineColor': '#555'}}}%%
 flowchart TD
-    A{Need custom\nPython packages?} -->|No| B[Modules only]
-    A -->|Yes| C["uv venv (Recommended)"]
-    C --> D[uv add / pip install]
-    C -.->|Need RAPIDS\nGPU preprocessing?| E["See RAPIDS page\n(conda-only)"]
+    A@{ shape: diam, label: "Need custom\nPython packages?" }:::decision -->|No| B["fa:fa-cubes Modules only"]:::process
+    A -->|Yes| C["fa:fa-box uv venv (Recommended)"]:::data
+    C --> D["fa:fa-download uv add / pip install"]:::process
+    C -.->|Need RAPIDS\nGPU preprocessing?| E["fa:fa-bolt See RAPIDS page\n(conda-only)"]:::external
+
+    classDef process fill:#e8f4fd,stroke:#3b82f6
+    classDef decision fill:#fef3c7,stroke:#d97706
+    classDef data fill:#d1fae5,stroke:#059669
+    classDef external fill:#ede9fe,stroke:#7c3aed
 ```
 
 ## Module System

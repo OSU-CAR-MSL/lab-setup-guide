@@ -83,15 +83,26 @@ seff <job_id>
 - **CA** (Cancelled): Job was cancelled
 
 ```mermaid
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#e8f4fd', 'primaryTextColor': '#1a1a1a', 'lineColor': '#555'}}}%%
 flowchart LR
-    A[sbatch] --> B(Pending\nPD)
-    B --> C(Running\nR)
-    C --> D(Completing\nCG)
-    D --> E[Completed\nCD]
-    C --> F[Failed\nF]
-    C --> G[Timeout]
-    B --> H[Cancelled\nCA]
+    A@{ shape: bolt, label: "fa:fa-paper-plane sbatch" }:::trigger --> B@{ shape: hex, label: "fa:fa-clock Pending\nPD" }
+    B:::decision --> C["fa:fa-play Running\nR"]:::process
+    C --> D["fa:fa-spinner Completing\nCG"]:::process
+    D --> E@{ shape: stadium, label: "fa:fa-check Completed\nCD" }
+    E:::success
+    C --> F@{ shape: stadium, label: "fa:fa-xmark Failed\nF" }
+    F:::error
+    C --> G@{ shape: stadium, label: "fa:fa-xmark Timeout" }
+    G:::error
+    B --> H@{ shape: stadium, label: "fa:fa-xmark Cancelled\nCA" }
+    H:::error
     C --> H
+
+    classDef trigger fill:#fef3c7,stroke:#d97706
+    classDef decision fill:#fef3c7,stroke:#d97706
+    classDef process fill:#e8f4fd,stroke:#3b82f6
+    classDef success fill:#d1fae5,stroke:#059669
+    classDef error fill:#fee2e2,stroke:#ef4444
 ```
 
 ## Interactive Sessions

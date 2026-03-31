@@ -14,10 +14,15 @@ A common research workflow looks like this:
 This page walks through each stage with concrete examples.
 
 ```mermaid
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#e8f4fd', 'primaryTextColor': '#1a1a1a', 'lineColor': '#555'}}}%%
 graph LR
-    A[Jupyter Notebook<br/>Prototype & Debug] --> B[Python Script<br/>Parameterize & Clean]
-    B --> C[SLURM Batch Job<br/>Run at Scale]
-    C --> D[Notebook<br/>Analyze Results]
+    A@{ shape: doc, label: "fa:fa-flask Jupyter Notebook<br/>Prototype & Debug" }:::process --> B@{ shape: doc, label: "fa:fa-code Python Script<br/>Parameterize & Clean" }:::data
+    B --> C["fa:fa-server SLURM Batch Job<br/>Run at Scale"]:::external
+    C --> D@{ shape: doc, label: "fa:fa-chart-line Notebook<br/>Analyze Results" }:::process
+
+    classDef process fill:#e8f4fd,stroke:#3b82f6,color:#1a1a1a,stroke-width:2px
+    classDef data fill:#d1fae5,stroke:#059669,color:#1a1a1a,stroke-width:2px
+    classDef external fill:#ede9fe,stroke:#7c3aed,color:#1a1a1a,stroke-width:2px
 ```
 
 ## Stage 1: Prototype in a Notebook
@@ -344,11 +349,16 @@ plt.show()
 ## Summary: The Full Cycle
 
 ```mermaid
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#e8f4fd', 'primaryTextColor': '#1a1a1a', 'lineColor': '#555'}}}%%
 graph TD
-    A[1. Prototype in Notebook] -->|Small data, quick iterations| B[2. Convert to .py Script]
-    B -->|Add argparse, clean up| C[3. Submit SLURM Jobs]
-    C -->|Full data, sweeps| D[4. Analyze in Notebook]
+    A@{ shape: doc, label: "fa:fa-flask 1. Prototype in Notebook" }:::process -->|Small data, quick iterations| B@{ shape: doc, label: "fa:fa-code 2. Convert to .py Script" }:::data
+    B -->|Add argparse, clean up| C["fa:fa-server 3. Submit SLURM Jobs"]:::external
+    C -->|Full data, sweeps| D@{ shape: doc, label: "fa:fa-chart-line 4. Analyze in Notebook" }:::process
     D -->|New ideas| A
+
+    classDef process fill:#e8f4fd,stroke:#3b82f6,color:#1a1a1a,stroke-width:2px
+    classDef data fill:#d1fae5,stroke:#059669,color:#1a1a1a,stroke-width:2px
+    classDef external fill:#ede9fe,stroke:#7c3aed,color:#1a1a1a,stroke-width:2px
 ```
 
 | Stage | Tool | Data Size | Resources |

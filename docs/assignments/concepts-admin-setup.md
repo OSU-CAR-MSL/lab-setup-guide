@@ -173,14 +173,20 @@ Write 2--3 sentences for each in your blog post:
 A machine learning project follows a series of stages from raw data to deployed model. Understanding this pipeline helps you see how each tool and skill fits together.
 
 ```mermaid
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#e8f4fd', 'primaryTextColor': '#1a1a1a', 'lineColor': '#555'}}}%%
 graph LR
-    A[Raw Data] --> B[Preprocessing]
-    B --> C[Feature Engineering]
-    C --> D[Model Training]
-    D --> E[Evaluation]
-    E --> F[Experiment Tracking]
+    A@{ shape: cyl, label: "fa:fa-database Raw Data" }:::data --> B{{"fa:fa-filter Preprocessing"}}:::process
+    B --> C{{"fa:fa-wrench Feature Engineering"}}:::process
+    C --> D["fa:fa-brain Model Training"]:::process
+    D --> E["fa:fa-chart-line Evaluation"]:::process
+    E --> F["fa:fa-clipboard-list Experiment Tracking"]:::external
     F -->|iterate| C
-    E --> G[Deployment]
+    E --> G(["fa:fa-rocket Deployment"]):::success
+
+    classDef process fill:#e8f4fd,stroke:#3b82f6,color:#1a1a1a,stroke-width:2px
+    classDef data fill:#d1fae5,stroke:#059669,color:#1a1a1a,stroke-width:2px
+    classDef external fill:#ede9fe,stroke:#7c3aed,color:#1a1a1a,stroke-width:2px
+    classDef success fill:#d1fae5,stroke:#059669,color:#1a1a1a,stroke-width:2px
 ```
 
 **Stage descriptions:**

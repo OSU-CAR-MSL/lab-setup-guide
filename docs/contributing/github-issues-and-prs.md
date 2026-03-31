@@ -172,11 +172,16 @@ A pull request proposes changes from your branch to the main branch. It's both a
 ### The Branch Workflow
 
 ```mermaid
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#e8f4fd', 'primaryTextColor': '#1a1a1a', 'lineColor': '#555'}}}%%
 graph LR
-    A[main branch] -->|"git checkout -b fix/..."| B[feature branch]
-    B -->|commit changes| C[push to GitHub]
-    C -->|gh pr create| D[pull request]
-    D -->|review + approve| E[merge to main]
+    A["fa:fa-code-branch main branch"]:::success -->|"git checkout -b fix/..."| B["fa:fa-code-branch feature branch"]:::process
+    B -->|commit changes| C["fa:fa-cloud-arrow-up push to GitHub"]:::external
+    C -->|gh pr create| D["fa:fa-code-pull-request pull request"]:::external
+    D -->|review + approve| E(["fa:fa-check merge to main"]):::success
+
+    classDef process fill:#e8f4fd,stroke:#3b82f6,color:#1a1a1a,stroke-width:2px
+    classDef success fill:#d1fae5,stroke:#059669,color:#1a1a1a,stroke-width:2px
+    classDef external fill:#ede9fe,stroke:#7c3aed,color:#1a1a1a,stroke-width:2px
 ```
 
 ### Step by Step

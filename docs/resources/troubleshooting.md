@@ -10,16 +10,20 @@ tags:
 Common issues and solutions for working on OSC.
 
 ```mermaid
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#e8f4fd', 'primaryTextColor': '#1a1a1a', 'lineColor': '#555'}}}%%
 flowchart TD
-    A{What's the problem?} --> B["Connection"]
-    A --> H["VS Code Remote"]
-    A --> C["Module & Environment"]
-    A --> D["GPU / CUDA"]
-    A --> E["Job Submission"]
-    A --> F["File System"]
-    A --> I["Data Transfer"]
-    A --> J["Python / PyTorch"]
-    A --> G["Performance"]
+    A@{ shape: diam, label: "What's the problem?" }:::decision --> B["fa:fa-plug Connection"]:::process
+    A --> H["fa:fa-desktop VS Code Remote"]:::process
+    A --> C["fa:fa-cubes Module & Environment"]:::process
+    A --> D["fa:fa-microchip GPU / CUDA"]:::process
+    A --> E["fa:fa-server Job Submission"]:::process
+    A --> F["fa:fa-hard-drive File System"]:::process
+    A --> I["fa:fa-arrows-rotate Data Transfer"]:::process
+    A --> J["fa:fa-fire Python / PyTorch"]:::process
+    A --> G["fa:fa-gauge-high Performance"]:::process
+
+    classDef process fill:#e8f4fd,stroke:#3b82f6
+    classDef decision fill:#fef3c7,stroke:#d97706
 ```
 
 Jump to: [Connection](#connection-issues) | [VS Code Remote](#vs-code-remote-ssh-issues) | [Modules & Env](#module-and-environment-issues) | [GPU](#gpu-issues) | [Jobs](#job-submission-issues) | [Files](#file-system-issues) | [Data Transfer](#data-transfer-issues) | [Python/PyTorch](#pythonpytorch-issues) | [Performance](#performance-issues)

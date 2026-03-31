@@ -64,31 +64,41 @@ When you install a package, it brings its own dependencies — and those depende
 Here's what happens when you install `requests`:
 
 ```mermaid
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#e8f4fd', 'primaryTextColor': '#1a1a1a', 'lineColor': '#555'}}}%%
 graph TD
-    A[requests] --> B[charset-normalizer]
-    A --> C[idna]
-    A --> D[urllib3]
-    A --> E[certifi]
+    A["fa:fa-box requests"]:::process --> B["charset-normalizer"]:::data
+    A --> C["idna"]:::data
+    A --> D["urllib3"]:::data
+    A --> E["certifi"]:::data
+
+    classDef process fill:#e8f4fd,stroke:#3b82f6,color:#1a1a1a,stroke-width:2px
+    classDef data fill:#d1fae5,stroke:#059669,color:#1a1a1a,stroke-width:2px
 ```
 
 Four dependencies — manageable. Now look at what happens with a large ML framework like PyTorch:
 
 ```mermaid
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#e8f4fd', 'primaryTextColor': '#1a1a1a', 'lineColor': '#555'}}}%%
 graph TD
-    A[torch] --> B[filelock]
-    A --> C[typing-extensions]
-    A --> D[sympy]
-    A --> E[networkx]
-    A --> F[jinja2]
-    A --> G[fsspec]
-    A --> H[nvidia-cuda-runtime-cu12]
-    A --> I[nvidia-cudnn-cu12]
-    A --> J[nvidia-cublas-cu12]
-    A --> K[nvidia-nccl-cu12]
-    A --> L[triton]
-    D --> M[mpmath]
-    F --> N[MarkupSafe]
+    A["fa:fa-fire torch"]:::process --> B["filelock"]:::data
+    A --> C["typing-extensions"]:::data
+    A --> D["sympy"]:::data
+    A --> E["networkx"]:::data
+    A --> F["jinja2"]:::data
+    A --> G["fsspec"]:::data
+    A --> H["fa:fa-microchip nvidia-cuda-runtime-cu12"]:::external
+    A --> I["fa:fa-microchip nvidia-cudnn-cu12"]:::external
+    A --> J["fa:fa-microchip nvidia-cublas-cu12"]:::external
+    A --> K["fa:fa-microchip nvidia-nccl-cu12"]:::external
+    A --> L["triton"]:::data
+    D --> M["mpmath"]:::subdata
+    F --> N["MarkupSafe"]:::subdata
     I --> J
+
+    classDef process fill:#e8f4fd,stroke:#3b82f6,color:#1a1a1a,stroke-width:2px
+    classDef data fill:#d1fae5,stroke:#059669,color:#1a1a1a,stroke-width:2px
+    classDef external fill:#ede9fe,stroke:#7c3aed,color:#1a1a1a,stroke-width:2px
+    classDef subdata fill:#ecfdf5,stroke:#059669,color:#1a1a1a,stroke-width:2px
 ```
 
 One `pip install torch` pulls in **14+ packages** including GPU libraries, a symbolic math engine, and a template language. Every one of those packages has its own version requirements, and they all have to be compatible with each other.
@@ -107,22 +117,27 @@ Imagine Project A needs `numpy==1.26.4` and Project B needs `numpy==2.0.0`. If b
 A **virtual environment** (venv) is an isolated Python installation. Each venv has its own `site-packages/` directory, so packages installed in one venv don't affect another.
 
 ```mermaid
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#e8f4fd', 'primaryTextColor': '#1a1a1a', 'lineColor': '#555'}}}%%
 graph LR
     subgraph "System Python"
-        SYS[python3.12]
+        SYS["fa:fa-computer python3.12"]:::system
     end
     subgraph "Project A venv"
-        A_PY[python3.12]
-        A_NP["numpy 1.26.4"]
-        A_PD["pandas 2.1.5"]
+        A_PY["python3.12"]:::processA
+        A_NP["numpy 1.26.4"]:::processA
+        A_PD["pandas 2.1.5"]:::processA
     end
     subgraph "Project B venv"
-        B_PY[python3.12]
-        B_NP["numpy 2.0.0"]
-        B_SK["scikit-learn 1.5.0"]
+        B_PY["python3.12"]:::processB
+        B_NP["numpy 2.0.0"]:::processB
+        B_SK["scikit-learn 1.5.0"]:::processB
     end
     SYS -.->|"venv created from"| A_PY
     SYS -.->|"venv created from"| B_PY
+
+    classDef system fill:#f3f4f6,stroke:#6b7280,color:#1a1a1a,stroke-width:2px
+    classDef processA fill:#e8f4fd,stroke:#3b82f6,color:#1a1a1a,stroke-width:2px
+    classDef processB fill:#d1fae5,stroke:#059669,color:#1a1a1a,stroke-width:2px
 ```
 
 Each project gets exactly the versions it needs. No conflicts.
@@ -238,9 +253,14 @@ The hand-curated approach is easier to maintain — you only list what you direc
 A **lock file** pins every dependency (direct and transitive) to exact versions, generated from your hand-curated requirements:
 
 ```mermaid
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#e8f4fd', 'primaryTextColor': '#1a1a1a', 'lineColor': '#555'}}}%%
 graph LR
-    A["requirements.txt<br/>(what you want)"] -->|"uv pip compile"| B["requirements.lock<br/>(exact versions)"]
-    B -->|"uv pip install -r"| C["Reproducible<br/>environment"]
+    A@{ shape: doc, label: "fa:fa-file-lines requirements.txt<br/>(what you want)" }:::decision -->|"uv pip compile"| B@{ shape: doc, label: "fa:fa-lock requirements.lock<br/>(exact versions)" }:::data
+    B -->|"uv pip install -r"| C(["fa:fa-check Reproducible<br/>environment"]):::success
+
+    classDef decision fill:#fef3c7,stroke:#d97706,color:#1a1a1a,stroke-width:2px
+    classDef data fill:#d1fae5,stroke:#059669,color:#1a1a1a,stroke-width:2px
+    classDef success fill:#d1fae5,stroke:#059669,color:#1a1a1a,stroke-width:2px
 ```
 
 ```bash

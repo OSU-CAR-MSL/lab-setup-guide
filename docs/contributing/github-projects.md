@@ -337,16 +337,23 @@ Keep a small, consistent label set across all repos (8–12 total):
 ## The Full Issue Lifecycle
 
 ```mermaid
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#e8f4fd', 'primaryTextColor': '#1a1a1a', 'lineColor': '#555'}}}%%
 graph TD
-    A[Issue created<br>from template] --> B[Auto-added<br>to project]
-    B --> C[Status: Backlog]
-    C -->|Planning| D[Assign + set priority<br>+ set iteration]
-    D --> E[Status: In Progress]
-    E --> F[PR opened with<br>'Fixes #N']
-    F --> G[Status: In Review]
-    G --> H[PR merged]
-    H --> I[Issue auto-closed<br>Status: Done]
-    I -->|14 days| J[Auto-archived]
+    A["fa:fa-circle-plus Issue created<br>from template"]:::process --> B["fa:fa-folder-plus Auto-added<br>to project"]:::process
+    B --> C["fa:fa-inbox Status: Backlog"]:::process
+    C -->|Planning| D{{"fa:fa-list-check Assign + set priority<br>+ set iteration"}}:::decision
+    D --> E["fa:fa-spinner Status: In Progress"]:::process
+    E --> F["fa:fa-code-pull-request PR opened with<br>'Fixes #N'"]:::external
+    F --> G["fa:fa-magnifying-glass Status: In Review"]:::external
+    G --> H["fa:fa-code-merge PR merged"]:::success
+    H --> I(["fa:fa-check Issue auto-closed<br>Status: Done"]):::success
+    I -->|14 days| J(["fa:fa-box-archive Auto-archived"]):::archived
+
+    classDef process fill:#e8f4fd,stroke:#3b82f6,color:#1a1a1a,stroke-width:2px
+    classDef decision fill:#fef3c7,stroke:#d97706,color:#1a1a1a,stroke-width:2px
+    classDef external fill:#ede9fe,stroke:#7c3aed,color:#1a1a1a,stroke-width:2px
+    classDef success fill:#d1fae5,stroke:#059669,color:#1a1a1a,stroke-width:2px
+    classDef archived fill:#f3f4f6,stroke:#6b7280,color:#1a1a1a,stroke-width:2px
 ```
 
 ---

@@ -29,52 +29,53 @@ The concept map below shows the key prerequisite relationships between pages.
 ## Docs Concept Map
 
 ```mermaid
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#e8f4fd', 'primaryTextColor': '#1a1a1a', 'lineColor': '#555'}}}%%
 flowchart TB
-  subgraph GS["Getting Started"]
-    wsl["WSL2 Setup"]
-    vscode["VS Code Setup"]
-    pyenv["Python Env Setup"]
-    ai["AI Coding Assistants"]
-    agent["Agent Workflows"]
+  subgraph GS["fa:fa-rocket Getting Started"]
+    wsl["fa:fa-linux WSL2 Setup"]:::gs
+    vscode["fa:fa-code VS Code Setup"]:::gs
+    pyenv["fa:fa-box Python Env Setup"]:::gs
+    ai["fa:fa-robot AI Coding Assistants"]:::gs
+    agent["fa:fa-wand-magic-sparkles Agent Workflows"]:::gs
     wsl --> vscode --> pyenv
     vscode --> ai --> agent
   end
 
-  subgraph OB["OSC Basics"]
-    account["Account Setup"]
-    ssh["SSH Connection"]
-    remote["Remote Development"]
+  subgraph OB["fa:fa-server OSC Basics"]
+    account["fa:fa-user-plus Account Setup"]:::osc
+    ssh["fa:fa-key SSH Connection"]:::osc
+    remote["fa:fa-desktop Remote Development"]:::osc
     account --> ssh --> remote
   end
 
-  subgraph WO["Working on OSC"]
-    envmgmt["Environment Mgmt"]
-    jobs["Job Submission"]
-    pipeline["Pipeline Orchestration"]
+  subgraph WO["fa:fa-terminal Working on OSC"]
+    envmgmt["fa:fa-cubes Environment Mgmt"]:::osc
+    jobs["fa:fa-list-check Job Submission"]:::osc
+    pipeline["fa:fa-arrows-rotate Pipeline Orchestration"]:::osc
     envmgmt --> jobs
     jobs --> pipeline
   end
 
-  subgraph ML["ML Workflows"]
-    pytorch["PyTorch & GPU Setup"]
-    pyg["PyG Setup"]
-    rapids["RAPIDS GPU"]
-    mlwf["ML Project Template"]
-    tracking["Data & Experiment Tracking"]
-    duckdb["DuckDB Analytics"]
-    hf["Hugging Face Spaces"]
+  subgraph ML["fa:fa-brain ML Workflows"]
+    pytorch["fa:fa-fire PyTorch & GPU Setup"]:::ml
+    pyg["fa:fa-diagram-project PyG Setup"]:::ml
+    rapids["fa:fa-bolt RAPIDS GPU"]:::ml
+    mlwf["fa:fa-folder-open ML Project Template"]:::ml
+    tracking["fa:fa-chart-line Data & Experiment Tracking"]:::ml
+    duckdb["fa:fa-database DuckDB Analytics"]:::ml
+    hf["fa:fa-cloud Hugging Face Spaces"]:::ml
     pytorch --> pyg
     pytorch --> rapids
     mlwf --> tracking --> duckdb
     tracking --> hf
   end
 
-  subgraph GH["GitHub"]
-    gitfund["Git Fundamentals"]
-    reposetup["Repository Setup"]
-    sshauth["SSH & Authentication"]
-    actions["GitHub Actions & CI/CD"]
-    gittrouble["Git Troubleshooting"]
+  subgraph GH["fa:fa-code-branch GitHub"]
+    gitfund["fa:fa-code-branch Git Fundamentals"]:::gh
+    reposetup["fa:fa-folder-plus Repository Setup"]:::gh
+    sshauth["fa:fa-key SSH & Authentication"]:::gh
+    actions["fa:fa-gears GitHub Actions & CI/CD"]:::gh
+    gittrouble["fa:fa-wrench Git Troubleshooting"]:::gh
     gitfund --> reposetup
     gitfund --> gittrouble
     sshauth --> reposetup
@@ -89,6 +90,11 @@ flowchart TB
   sshauth --> ssh
   gitfund --> jobs
   actions --> hf
+
+  classDef gs fill:#e8f4fd,stroke:#3b82f6,color:#1a1a1a,stroke-width:2px
+  classDef osc fill:#fef3c7,stroke:#d97706,color:#1a1a1a,stroke-width:2px
+  classDef ml fill:#ede9fe,stroke:#7c3aed,color:#1a1a1a,stroke-width:2px
+  classDef gh fill:#d1fae5,stroke:#059669,color:#1a1a1a,stroke-width:2px
 ```
 
 ## Hub Pages

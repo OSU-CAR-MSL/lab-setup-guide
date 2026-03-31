@@ -9,14 +9,20 @@ A starting-point structure and checklist for running ML experiments on OSC.
 ## Workflow Overview
 
 ```mermaid
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#e8f4fd', 'primaryTextColor': '#1a1a1a', 'lineColor': '#555'}}}%%
 flowchart LR
-    A[Setup\nEnv & Project] --> B[Data Prep\nDownload & Process]
-    B --> C[Develop\nModel & Training Code]
-    C --> D[Submit Jobs\nSLURM Batch]
-    D --> E[Track\nMetrics & Artifacts]
-    E --> F{Converged?}
-    F -->|No| C
-    F -->|Yes| G[Results\nAnalysis & Report]
+    A["fa:fa-wrench Setup\nEnv & Project"]:::process --> B@{ shape: hex, label: "fa:fa-database Data Prep\nDownload & Process" }
+    B:::process --> C@{ shape: doc, label: "fa:fa-code Develop\nModel & Training Code" }
+    C:::process --> D["fa:fa-server Submit Jobs\nSLURM Batch"]:::process
+    D --> E["fa:fa-chart-line Track\nMetrics & Artifacts"]:::process
+    E --> F@{ shape: diam, label: "Converged?" }
+    F:::decision -->|No| C
+    F -->|Yes| G@{ shape: stadium, label: "fa:fa-flag-checkered Results\nAnalysis & Report" }
+    G:::success
+
+    classDef process fill:#e8f4fd,stroke:#3b82f6
+    classDef decision fill:#fef3c7,stroke:#d97706
+    classDef success fill:#d1fae5,stroke:#059669
 ```
 
 ## Recommended Directory Layout

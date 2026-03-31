@@ -63,13 +63,17 @@ Create a new notebook at `notebooks/nn_from_scratch.ipynb`. All code in this ass
 Machine learning models differ in their **inductive biases** — the assumptions they make about the data. A decision tree splits the feature space along axis-aligned boundaries. A neural network learns smooth, curved boundaries that can fit complex patterns.
 
 ```mermaid
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#e8f4fd', 'primaryTextColor': '#1a1a1a', 'lineColor': '#555'}}}%%
 graph LR
     subgraph "Decision Tree"
-        DT["Axis-aligned splits<br/>├── x₁ < 0.5?<br/>│   ├── x₂ < 0.3? → A<br/>│   └── else → B<br/>└── else → B"]
+        DT["Axis-aligned splits<br/>├── x₁ < 0.5?<br/>│   ├── x₂ < 0.3? → A<br/>│   └── else → B<br/>└── else → B"]:::decision
     end
     subgraph "Neural Network"
-        NN["Smooth curved boundary<br/>learns any shape<br/>that separates the classes"]
+        NN["Smooth curved boundary<br/>learns any shape<br/>that separates the classes"]:::process
     end
+
+    classDef decision fill:#fef3c7,stroke:#d97706,color:#1a1a1a,stroke-width:2px
+    classDef process fill:#e8f4fd,stroke:#3b82f6,color:#1a1a1a,stroke-width:2px
 ```
 
 To see this difference concretely, let's create a baseline using a dataset that decision trees struggle with.
@@ -136,11 +140,16 @@ Notice the blocky, staircase-like boundary. By the end of this assignment, your 
 A single neuron computes a **weighted sum** of its inputs, adds a **bias**, and passes the result through an **activation function**:
 
 ```mermaid
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#e8f4fd', 'primaryTextColor': '#1a1a1a', 'lineColor': '#555'}}}%%
 graph LR
-    x1["x₁"] -->|"w₁"| N["Σ + b"]
-    x2["x₂"] -->|"w₂"| N
-    x3["x₃"] -->|"w₃"| N
-    N -->|"σ(z)"| OUT["output"]
+    x1(("x₁")):::input -->|"w₁"| N{{"Σ + b"}}:::compute
+    x2(("x₂")):::input -->|"w₂"| N
+    x3(("x₃")):::input -->|"w₃"| N
+    N -->|"σ(z)"| OUT(["output"]):::success
+
+    classDef input fill:#e8f4fd,stroke:#3b82f6,color:#1a1a1a,stroke-width:2px
+    classDef compute fill:#fef3c7,stroke:#d97706,color:#1a1a1a,stroke-width:2px
+    classDef success fill:#d1fae5,stroke:#059669,color:#1a1a1a,stroke-width:2px
 ```
 
 $$z = w_1 x_1 + w_2 x_2 + w_3 x_3 + b$$

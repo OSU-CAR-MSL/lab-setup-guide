@@ -135,13 +135,18 @@ If you work on multiple machines (desktop and laptop), keep them in sync:
 5. `.venv/` is gitignored — each machine builds its own
 
 ```mermaid
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#e8f4fd', 'primaryTextColor': '#1a1a1a', 'lineColor': '#555'}}}%%
 graph LR
-    A[Desktop WSL] -->|git push| B[GitHub]
-    B -->|git pull| C[Laptop WSL]
+    A["fa:fa-desktop Desktop WSL"]:::process -->|git push| B(("fa:fa-cloud GitHub")):::external
+    B -->|git pull| C["fa:fa-laptop Laptop WSL"]:::process
     C -->|git push| B
     B -->|git pull| A
-    A -.->|uv sync| D[.venv/]
-    C -.->|uv sync| E[.venv/]
+    A -.->|uv sync| D@{ shape: cyl, label: "fa:fa-box .venv/" }:::data
+    C -.->|uv sync| E@{ shape: cyl, label: "fa:fa-box .venv/" }:::data
+
+    classDef process fill:#e8f4fd,stroke:#3b82f6,color:#1a1a1a,stroke-width:2px
+    classDef external fill:#ede9fe,stroke:#7c3aed,color:#1a1a1a,stroke-width:2px
+    classDef data fill:#d1fae5,stroke:#059669,color:#1a1a1a,stroke-width:2px
 ```
 
 ---

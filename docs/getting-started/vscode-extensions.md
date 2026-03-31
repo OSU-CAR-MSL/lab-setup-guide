@@ -146,8 +146,7 @@ Add to your `settings.json`:
 ```json
 {
   "remote.SSH.remotePlatform": {
-    "pitzer.osc.edu": "linux",
-    "owens.osc.edu": "linux"
+    "pitzer.osc.edu": "linux"
   },
   "remote.SSH.showLoginTerminal": true,
   "remote.SSH.useLocalServer": false

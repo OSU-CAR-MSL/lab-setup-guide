@@ -60,7 +60,7 @@ If your lab doesn't have an OSC project:
 
 1. In the my.osc.edu portal, navigate to "Allocations"
 2. Verify you have access to computing resources
-3. Note which clusters you can access (Pitzer, Owens, etc.)
+3. Note which clusters you can access (Pitzer, Ascend, Cardinal)
 
 For cluster specs, GPU types, and partition details, see the [Clusters Overview](osc-clusters-overview.md).
 

@@ -234,7 +234,7 @@ Claude Code merges instructions from all `CLAUDE.md` files in the path hierarchy
 
 ## Project Overview
 Point cloud segmentation for autonomous driving using PointNet++.
-Training runs on OSC Pitzer cluster with A100 GPUs.
+Training runs on OSC Pitzer cluster with V100 GPUs.
 
 ## Commands
 ```bash

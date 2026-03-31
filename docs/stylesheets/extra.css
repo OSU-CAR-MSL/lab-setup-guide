@@ -3,11 +3,16 @@
 /* Widen content grid from 61rem → 80rem */
 .md-grid { max-width: 80rem; }
 
-/* Hide right TOC sidebar — !important needed to override Material's
-   @media (min-width: 60em) .md-sidebar--secondary:not([hidden]) { display: block } */
-.md-sidebar--secondary { display: none !important; }
+/* Page status icon for "updated" (no built-in icon, so reuse the pencil) */
+.md-status--updated::after {
+  mask-image: var(--md-status--recently-updated);
+  -webkit-mask-image: var(--md-status--recently-updated);
+}
+:root {
+  --md-status--recently-updated: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21,10.12H14.22L16.96,7.38L14.59,5L8,11.59L14.59,18.17L16.96,15.79L14.22,13.05H21V10.12M4,2A2,2 0 0,0 2,4V20A2,2 0 0,0 4,22H13V20H4V4H13V2H4Z"/></svg>');
+}
 
-/* Content fills freed space */
+/* When TOC is hidden via frontmatter, let content fill the freed space */
 .md-content { max-width: none; }
 
 /* Mermaid diagrams — allow horizontal scroll instead of squishing wide flowcharts */

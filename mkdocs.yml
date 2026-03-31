@@ -45,7 +45,6 @@ theme:
     - navigation.tabs         # Top-level sections as tabs
     - navigation.tabs.sticky  # Tabs stay visible on scroll
     - navigation.sections     # Render sections as groups in sidebar
-    - navigation.expand       # Expand all collapsible sections
     - navigation.pruning      # Reduce rendered sidebar for performance
     - navigation.indexes      # Section index pages
     - navigation.top          # Back-to-top button
@@ -72,6 +71,10 @@ theme:
 # Custom CSS for OSU branding
 extra_css:
   - stylesheets/extra.css
+
+# Custom JavaScript
+extra_javascript:
+  - javascripts/feedback.js
 
 # Extensions for enhanced markdown
 markdown_extensions:
@@ -131,7 +134,10 @@ plugins:
       separator: '[\s\-,:!=\[\]()"/]+|(?!\b)(?=[A-Z][a-z])|\.(?!\d)|&[lg]t;'
   - minify:
       minify_html: true
-  - social                    # Auto-generate Open Graph preview cards
+  - social:                    # Auto-generate Open Graph preview cards
+      cards_layout_options:
+        background_color: "#bb0000"    # OSU Scarlet
+        color: "#ffffff"               # White text
   - glightbox                 # Click-to-zoom on images
   - git-revision-date-localized:
       enable_creation_date: true
@@ -212,7 +218,24 @@ extra:
   # version:
   #   provider: mike
   
-  # Analytics (optional - add your GA4 ID if desired)
-  # analytics:
-  #   provider: google
-  #   property: G-XXXXXXXXXX
+  status:
+    new: Recently added
+    updated: Recently updated
+
+  analytics:
+    provider: custom
+    feedback:
+      title: Was this page helpful?
+      ratings:
+        - icon: material/thumb-up-outline
+          name: This page was helpful
+          data: 1
+          note: >-
+            Thanks for your feedback!
+        - icon: material/thumb-down-outline
+          name: This page could be improved
+          data: 0
+          note: >-
+            Thanks for your feedback! You can
+            <a href="https://github.com/OSU-CAR-MSL/lab-setup-guide/issues/new?title=[Feedback]+{title}&body=Page:+{url}%0A%0AWhat+could+be+improved?"
+            target="_blank" rel="noopener">open an issue</a> to tell us more.

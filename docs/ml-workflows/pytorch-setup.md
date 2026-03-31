@@ -1,11 +1,12 @@
 ---
+status: updated
 tags:
   - PyTorch
   - GPU
   - CUDA
   - OSC
 ---
-<!-- last-reviewed: 2026-02-26 -->
+<!-- last-reviewed: 2026-03-30 -->
 # PyTorch & GPU Setup
 
 Everything you need to install PyTorch, request GPUs, and train efficiently on OSC.
@@ -177,37 +178,34 @@ exit
 
 ### Available GPU Types
 
-#### Pitzer Cluster
+#### Pitzer (Current)
 
-| GPU Model | Memory | CUDA Cores | Best For | Quantity |
-|-----------|--------|------------|----------|----------|
-| NVIDIA V100 | 32 GB | 5120 | Training large models | Limited |
-| NVIDIA A100 | 40 GB | 6912 | Latest ML workloads | Limited |
+| GPU Model | Memory | Partition | Nodes | Best For |
+|-----------|--------|-----------|-------|----------|
+| NVIDIA V100 | 16 GB | `gpu` | 32 | General training |
+| NVIDIA V100 | 32 GB | `gpu-exp` | 42 | Larger models, bigger batches |
+| NVIDIA V100 (×4, NVLink) | 32 GB | `gpu-quad` | 4 | Multi-GPU training |
 
-#### Owens Cluster (Older)
+#### Ascend / Cardinal (Newer — may require separate allocation)
 
-| GPU Model | Memory | CUDA Cores | Best For | Quantity |
-|-----------|--------|------------|----------|----------|
-| NVIDIA P100 | 16 GB | 3584 | General GPU work | Many |
+| GPU Model | Memory | Best For |
+|-----------|--------|----------|
+| NVIDIA A100 | 40 / 80 GB | Transformers, large-model training |
+| NVIDIA H100 | 94 GB | Latest generation, highest throughput |
 
-#### Which GPU to Use?
-
-- **A100**: Latest architectures (Transformers, large models)
-- **V100**: Most ML workloads, good balance
-- **P100**: Older but widely available, good for testing
+See the [Clusters Overview](../osc-basics/osc-clusters-overview.md) for full specs and access details.
 
 ### Interactive GPU Session
 
 ```bash
-# Request any available GPU
+# Request any available GPU on Pitzer
 srun -p gpu --gpus-per-node=1 --time=01:00:00 --pty bash
 
-# Request specific GPU type
-srun -p gpu --gpus-per-node=v100:1 --time=01:00:00 --pty bash
-srun -p gpu --gpus-per-node=a100:1 --time=01:00:00 --pty bash
+# Request V100 32 GB specifically
+srun -p gpu-exp --gpus-per-node=1 --time=01:00:00 --pty bash
 
-# Request multiple GPUs
-srun -p gpu --gpus-per-node=2 --time=01:00:00 --pty bash
+# Request multiple GPUs (quad nodes)
+srun -p gpu-quad --gpus-per-node=2 --time=01:00:00 --pty bash
 
 # With more CPUs and memory
 srun -p gpu --gpus-per-node=1 --cpus-per-task=8 --mem=64G --time=02:00:00 --pty bash
@@ -333,6 +331,47 @@ for epoch in range(num_epochs):
         scaler.update()
 ```
 
+!!! danger "Mixed Precision Gotchas"
+    FP16 has a much smaller dynamic range than FP32 (max ±65504). Two common traps (see [PyTorch AMP docs](https://pytorch.org/docs/stable/amp.html)):
+
+    1. **Intermediate overflow** — Operations that accumulate large values (reductions, layer norms, custom statistics) can overflow FP16, producing `inf` or `NaN`. PyTorch's autocast keeps some ops in FP32 automatically, but custom operations may need explicit `.float()` casts.
+
+    2. **Loss scaling failures** — If `GradScaler` repeatedly skips optimizer steps (logged as "Found inf/nan in gradients"), your loss magnitude may exceed FP16 range. The default `init_scale` is `2**16` ([GradScaler docs](https://pytorch.org/docs/stable/amp.html#torch.cuda.amp.GradScaler)); lowering it (e.g., `2**10`) can help stabilize early training.
+
+### CUDA Memory Allocator
+
+For models with variable-size inputs (GNNs, NLP with dynamic padding), set the [CUDA memory allocator](https://pytorch.org/docs/stable/notes/cuda.html#memory-management) to reduce fragmentation:
+
+```bash
+export PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True
+```
+
+See the [Job Submission Guide](../working-on-osc/osc-job-submission.md#cuda-memory-configuration) for a full explanation of allocator settings.
+
+### Multiprocessing with CUDA
+
+PyTorch with CUDA requires `spawn` (not `fork`) for multiprocessing when child processes use the GPU. Forking after CUDA initialization corrupts GPU state — see [PyTorch multiprocessing notes](https://pytorch.org/docs/stable/notes/multiprocessing.html#cuda-in-multiprocessing).
+
+```python
+# At the top of your main script
+import torch.multiprocessing as mp
+mp.set_start_method("spawn", force=True)
+```
+
+If you use PyTorch Lightning, set it in the Trainer:
+
+```yaml
+# In your config YAML
+trainer:
+  strategy:
+    class_path: pytorch_lightning.strategies.DDPStrategy
+    init_args:
+      start_method: spawn
+```
+
+!!! warning "DataLoader workers are different"
+    `DataLoader(num_workers=N)` uses `fork` by default. This is generally safe because worker processes typically don't initialize CUDA themselves — they load data on CPU. The `spawn` requirement applies when you explicitly create processes that use GPUs (e.g., distributed training, Ray actors with GPU resources).
+
 ### Gradient Accumulation
 
 Simulate larger batch sizes without more GPU memory:
@@ -359,7 +398,7 @@ for i, (data, target) in enumerate(train_loader):
 
 ### torch.compile() (PyTorch 2.0+)
 
-`torch.compile()` JIT-compiles your model for faster execution. On OSC's A100 GPUs, it can provide significant speedups with minimal code changes.
+`torch.compile()` JIT-compiles your model for faster execution with minimal code changes.
 
 ```python
 import torch
@@ -382,8 +421,8 @@ model = torch.compile(model, mode="max-autotune")
     pip install --upgrade "torch>=2.8.0,<2.9" torchvision torchaudio
     ```
 
-!!! tip "A100 GPUs benefit the most"
-    `torch.compile()` with `mode="max-autotune"` takes advantage of A100-specific features like TF32 tensor cores. Request A100s on Pitzer for best results: `--gpus-per-node=a100:1`.
+!!! tip "V100 and newer GPUs benefit most"
+    `torch.compile()` with `mode="max-autotune"` leverages GPU-specific optimizations. V100s on Pitzer support this; A100s on Ascend (if you have access) benefit even more from TF32 tensor cores.
 
 ??? tip "Gradient Checkpointing"
 

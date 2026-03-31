@@ -1,11 +1,12 @@
 ---
+status: updated
 tags:
   - PyTorch
   - GNN
   - CUDA
   - GPU
 ---
-<!-- last-reviewed: 2026-03-09 -->
+<!-- last-reviewed: 2026-03-30 -->
 # PyG (PyTorch Geometric) Setup
 
 [PyTorch Geometric (PyG)](https://pytorch-geometric.readthedocs.io/en/latest/#) is the leading library for deep learning on graphs and other irregular structures. It provides efficient implementations of graph neural network layers (GCN, GAT, GraphSAGE, GIN, and many more), standard benchmark datasets, mini-batch loaders for large graphs, and utilities for graph transforms and sampling. If your research involves graph neural networks — whether for citation networks, molecular property prediction, point clouds, or CAN bus intrusion detection — PyG is the go-to framework on top of PyTorch.
@@ -273,7 +274,7 @@ dataset = Planetoid(root=data_root, name="Cora")
 ```
 
 !!! warning "Scratch purge policy"
-    OSC scratch files are purged after **90 days of inactivity**. If your datasets take a long time to download or preprocess, keep a backup elsewhere or use a DVC remote. See [Data & Experiment Tracking](data-experiment-tracking.md) for details on DVC.
+    OSC scratch files are purged after **60 days of inactivity** ([OSC scratch policy](https://www.osc.edu/supercomputing/storage-environment-at-osc/available-file-systems)). If your datasets take a long time to download or preprocess, keep a backup elsewhere or use a DVC remote. See [Data & Experiment Tracking](data-experiment-tracking.md) for details on DVC.
 
 ### DataLoader Configuration
 
@@ -318,6 +319,48 @@ GNN message passing can be memory-intensive, especially on dense graphs. A few s
   # PyG will use sparse tensors when data has SparseTensor edge representation
   ```
 - **Request sufficient memory** — For large datasets, request more RAM in your SLURM job: `#SBATCH --mem=64G`
+
+### PyG-Specific Gotchas
+
+!!! danger "`Data.to()` is in-place — always clone first"
+    Unlike standard PyTorch tensors, PyG's `Data.to(device)` modifies the object **in place** and returns the same reference. If you hold a reference to the original data (e.g., in a dataset or cache), it's now on GPU too — corrupting your data pipeline.
+
+    ```python
+    # ❌ WRONG — mutates the original dataset entry
+    data = dataset[0]
+    data = data.to(device)  # dataset[0] is now on GPU too!
+
+    # ✅ CORRECT — clone before moving
+    data = dataset[0].clone().to(device)
+    ```
+
+    This is a common source of silent bugs in PyG code. It can cause memory leaks (dataset entries gradually migrate to GPU), incorrect batching, and irreproducible results.
+
+!!! warning "Save and restore `model.training` state"
+    When switching between [`model.train()` and `model.eval()`](https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module.eval) for validation, always restore the original state. Forgetting to call `model.train()` after `model.eval()` disables dropout and switches batch normalization to use running statistics for the rest of training.
+
+    ```python
+    # ✅ Safe evaluation pattern
+    was_training = model.training
+    model.eval()
+    with torch.no_grad():
+        val_out = model(data.x, data.edge_index)
+    if was_training:
+        model.train()
+    ```
+
+**Dynamic batching for variable-size graphs** — If your graphs vary in size (e.g., molecular datasets, traffic networks), fixed `batch_size` can cause OOM on batches with unusually large graphs. Use PyG's dynamic batching:
+
+```python
+from torch_geometric.loader import DataLoader
+from torch_geometric.data import DynamicBatchSampler
+
+# Limit by total number of nodes per batch, not graph count
+sampler = DynamicBatchSampler(dataset, max_num=2048)  # max 2048 nodes per batch
+loader = DataLoader(dataset, batch_sampler=sampler)
+```
+
+This caps the total node count per batch instead of the graph count, preventing memory spikes from outlier-large graphs.
 
 ## Batch Job Script
 
@@ -379,7 +422,7 @@ For details on SLURM directives, job arrays, and monitoring jobs, see the [Job S
 |---------|----------|----------|
 | **Version mismatch** | `undefined symbol` or `ImportError` when importing `torch_scatter` / `torch_sparse` | Uninstall all PyG packages (`pip uninstall torch-scatter torch-sparse torch-cluster torch-spline-conv torch-geometric`), verify your PyTorch + CUDA versions, and reinstall with the correct wheel URL. |
 | **`ModuleNotFoundError: No module named 'torch_geometric'`** | Import fails | Confirm your venv is activated (`which python` should point to your venv). Reinstall with `pip install torch-geometric`. |
-| **CUDA out of memory** | `RuntimeError: CUDA out of memory` during training | Reduce batch size, use `NeighborLoader` for large graphs, enable mixed precision, or request a GPU with more memory (A100 has 40 GB vs V100's 32 GB). |
+| **CUDA out of memory** | `RuntimeError: CUDA out of memory` during training | Reduce batch size, use `NeighborLoader` for large graphs, enable mixed precision, or request a V100 32 GB on `gpu-exp` instead of a 16 GB on `gpu`. |
 | **CUDA not available** | `torch.cuda.is_available()` returns `False` | Ensure you requested a GPU partition (`--partition=gpu --gpus-per-node=1`) and installed PyTorch with CUDA support (PyPI wheels bundle CUDA automatically). See [PyTorch & GPU Setup](pytorch-setup.md#cuda-not-available). |
 | **Slow data loading** | GPU utilization low, training bottlenecked on CPU | Increase `num_workers` in `DataLoader` (match `--cpus-per-task`), enable `pin_memory=True`, cache preprocessed data to scratch as `.pt` files. |
 | **Dataset download fails** | Timeout or connection error when downloading benchmark datasets | Compute nodes may lack internet access. Download datasets on the login node first (`python -c "from torch_geometric.datasets import Planetoid; Planetoid(root='...', name='Cora')"`), then point your training script to the cached path. |

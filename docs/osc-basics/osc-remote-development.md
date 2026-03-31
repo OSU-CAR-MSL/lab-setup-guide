@@ -24,7 +24,7 @@ Make sure the [Remote-SSH extension is installed](../getting-started/vscode-exte
 
 1. Press `Ctrl+Shift+P` (or `Cmd+Shift+P` on macOS)
 2. Type "Remote-SSH: Connect to Host"
-3. Select `pitzer` (or `owens`) from your SSH config
+3. Select `pitzer` from your SSH config
 4. A new VS Code window opens connected to OSC
 
 ### Method 2: Remote Explorer

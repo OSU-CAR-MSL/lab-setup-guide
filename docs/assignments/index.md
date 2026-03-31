@@ -1,3 +1,7 @@
+---
+hide:
+  - toc
+---
 <!-- last-reviewed: 2026-02-26 -->
 # Assignments
 

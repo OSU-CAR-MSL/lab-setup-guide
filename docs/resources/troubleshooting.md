@@ -43,20 +43,14 @@ ssh: connect to host pitzer.osc.edu port 22: Connection refused
 
 2. **Verify hostname**
    ```bash
-   # Correct hostnames:
+   # Correct hostname:
    pitzer.osc.edu
-   owens.osc.edu
-   
+
    # Not: pitzer.org or pitzer.com
    ```
 
 3. **Check system status**
    - Visit: https://www.osc.edu/resources/system-status
-
-4. **Try alternative cluster**
-   ```bash
-   ssh username@owens.osc.edu  # If pitzer is down
-   ```
 
 ### SSH Key Authentication Failed
 

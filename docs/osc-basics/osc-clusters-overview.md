@@ -1,4 +1,7 @@
-<!-- last-reviewed: 2026-03-09 -->
+---
+status: updated
+---
+<!-- last-reviewed: 2026-03-30 -->
 # OSC Clusters Overview
 
 Understand OSC's high-performance computing clusters, available resources, and how to choose the right configuration for your workloads.
@@ -13,7 +16,7 @@ Before diving into OSC's clusters, familiarize yourself with these key HPC terms
 | **Node** | A single computer within a cluster, containing CPUs, memory, and sometimes GPUs |
 | **Login Node** | A shared entry point for connecting to the cluster — used for file editing, job submission, and light tasks only |
 | **Compute Node** | A node dedicated to running jobs — accessed through the job scheduler, not directly |
-| **Core / CPU** | A single processing unit; modern nodes have many cores (e.g., 40–96 per node) |
+| **Core / CPU** | A single processing unit; modern nodes have many cores (e.g., 40–48 per node on Pitzer) |
 | **GPU** | A graphics processing unit used for accelerated computing, especially deep learning |
 | **Partition** | A logical grouping of nodes with specific resource limits and policies (also called a queue) |
 | **Allocation** | A grant of compute time (measured in core-hours) assigned to a project account |
@@ -27,90 +30,106 @@ Before diving into OSC's clusters, familiarize yourself with these key HPC terms
 | **Walltime** | The maximum clock time a job is allowed to run |
 | **Core-Hours** | The billing unit for compute time: cores × hours (e.g., 4 cores × 2 hours = 8 core-hours) |
 
+## Cluster Architecture
+
+When you SSH into OSC, you land on a **login node** — a shared gateway for editing files and submitting jobs. Compute-intensive work runs on **compute nodes** allocated by the SLURM scheduler. All nodes share the same filesystems (home, scratch, project).
+
+```mermaid
+flowchart LR
+    subgraph Your Machine
+        A[SSH Client]
+    end
+    subgraph OSC Login Nodes
+        B[pitzer-login01]
+        C[pitzer-login02]
+    end
+    subgraph SLURM Scheduler
+        D[sbatch / sinteractive]
+    end
+    subgraph Compute Nodes
+        E[CPU Nodes\n557 nodes\n40-48 cores each]
+        F[GPU Nodes\n78 nodes\n2-4 V100s each]
+        G[Large Memory\n16 nodes\nup to 3 TB RAM]
+    end
+    subgraph Shared Filesystems
+        H["/users — Home\n/fs/scratch — Scratch\n/fs/ess — Project"]
+    end
+
+    A --> B & C
+    B & C --> D
+    D --> E & F & G
+    E & F & G --- H
+    B & C --- H
+```
+
+!!! warning "Do not run compute on login nodes"
+    Login nodes are shared by all users. Running training, preprocessing, or heavy builds on them slows everyone down and may get your processes killed. Use `sinteractive` or `sbatch` for anything beyond editing and job submission.
+
 ## OSC Clusters
 
-OSC operates two primary clusters available to researchers. Both use the SLURM job scheduler and share the same filesystem.
+OSC currently operates three clusters. All use the SLURM job scheduler and share the same filesystems.
 
-### Pitzer
+### Pitzer (Primary)
 
-Pitzer is OSC's newer and more powerful cluster, ideal for GPU-accelerated and large-scale workloads.
+Pitzer is the lab's primary cluster. All specs below are verified against live `sinfo` output (March 2026).
 
-| Specification | Details |
-|---------------|---------|
-| **Launched** | 2018 (expanded 2020) |
-| **Total Nodes** | ~800 |
-| **CPU Type** | Intel Xeon 6148 (Skylake) and 8268 (Cascade Lake) |
-| **Cores per Node** | 40 (Skylake) or 48 (Cascade Lake) |
-| **RAM per Node** | 192 GB standard, 768 GB on large-memory nodes |
-| **GPU Nodes** | NVIDIA V100 (32 GB) and A100 (40 GB / 80 GB) |
-| **GPUs per GPU Node** | Up to 4 V100s or up to 4 A100s |
-| **Interconnect** | Intel Omni-Path / HDR InfiniBand |
-| **Operating System** | RHEL 9 |
+| Node Type | Nodes | CPUs | RAM | GPUs | Partition |
+|-----------|-------|------|-----|------|-----------|
+| Standard (2018 Skylake) | 217 | 40 | 192 GB | — | `cpu` |
+| Standard (2020 Cascade Lake) | 340 | 48 | 192 GB | — | `cpu-exp` |
+| Dual GPU (2018 Skylake) | 32 | 40 | 384 GB | 2× V100 16 GB | `gpu` |
+| Dual GPU (2020 Cascade Lake) | 42 | 48 | 384 GB | 2× V100 32 GB | `gpu-exp` |
+| Quad GPU (2020 Cascade Lake) | 4 | 48 | 768 GB | 4× V100 32 GB + NVLink | `gpu-quad` |
+| Large Memory (2018) | 4 | 80 | 3 TB | — | `hugemem` |
+| Large Memory (2020) | 12 | 48 | 768 GB | — | `largemem` |
 
-!!! tip "Recommended for ML workloads"
-    Pitzer's A100 GPUs provide the best performance for deep learning training. Request them with `--gpus-per-node=a100:1`.
+**Total:** 651 nodes, ~29,000 cores. **Interconnect:** Mellanox EDR InfiniBand (100 Gbps). **OS:** RHEL 9.
 
-### Owens
+Source: [OSC Pitzer Documentation](https://www.osc.edu/resources/technical_support/supercomputers/pitzer)
 
-Owens is OSC's older cluster, well-suited for CPU-intensive workloads and smaller GPU jobs.
+!!! tip "Which GPU partition?"
+    - **`gpu`** (32 nodes) — V100 16 GB, 40 CPUs. Fine for most training.
+    - **`gpu-exp`** (42 nodes) — V100 32 GB, 48 CPUs. Use when you need more GPU memory (larger models, bigger batches).
+    - **`gpu-quad`** (4 nodes) — 4× V100 32 GB with NVLink, 768 GB RAM. For multi-GPU or very large models.
 
-| Specification | Details |
-|---------------|---------|
-| **Launched** | 2016 |
-| **Total Nodes** | ~800 |
-| **CPU Type** | Intel Xeon E5-2680 v4 (Broadwell) |
-| **Cores per Node** | 28 |
-| **RAM per Node** | 128 GB standard, 384 GB or 768 GB on large-memory nodes |
-| **GPU Nodes** | NVIDIA P100 (16 GB) |
-| **GPUs per GPU Node** | 1 P100 |
-| **Interconnect** | Intel Omni-Path |
-| **Operating System** | RHEL 9 |
+### Ascend & Cardinal (Newer Clusters)
 
-### Cluster Comparison
+OSC has deployed two newer clusters with more powerful GPUs. Both are now in production and accepting jobs.
 
-| Feature | Pitzer | Owens |
-|---------|--------|-------|
-| **Generation** | Newer (2018+) | Older (2016) |
-| **Cores per Node** | 40–48 | 28 |
-| **RAM per Node** | 192 GB+ | 128 GB+ |
-| **GPU Options** | V100, A100 | P100 |
-| **GPU Memory** | 32–80 GB | 16 GB |
-| **Multi-GPU Nodes** | Up to 4 GPUs | 1 GPU |
-| **Best For** | GPU training, large jobs | CPU work, smaller GPU jobs |
-| **Queue Wait Times** | Can be longer (popular) | Often shorter |
+| Cluster | GPU | GPU Memory | Notes |
+|---------|-----|-----------|-------|
+| **Ascend** | NVIDIA A100 | 40 GB / 80 GB | Best for large-model training, transformer workloads |
+| **Cardinal** | NVIDIA H100 | 94 GB | Latest generation, highest throughput |
 
-!!! info "Newer clusters"
-    OSC has announced additional clusters (Ascend, Cardinal). As they become available for general use, this guide will be updated. Check [OSC's systems page](https://www.osc.edu/resources/technical_support/supercomputers) for the latest.
+Access may require a separate allocation request. Check [OSC's systems page](https://www.osc.edu/resources/technical_support/supercomputers) for current availability and how to request access.
 
-!!! note "Both clusters share the same filesystem"
-    Your home directory, project space, and scratch space are accessible from both Pitzer and Owens. You do not need to copy files between clusters.
+!!! info "Owens is decommissioned"
+    Owens was fully shut down in February 2025. If you see references to Owens in older scripts or documentation, replace `owens.osc.edu` with `pitzer.osc.edu`. All Owens data was migrated to the shared filesystem.
 
 ## Partitions and Queues
 
-Each cluster has multiple partitions with different resource limits and policies.
+Each partition groups nodes with the same resource profile and time limits. The table below is from live `sinfo` output (March 2026):
 
 ### Pitzer Partitions
 
-| Partition | Max Walltime | Max Nodes | GPU Access | Use Case |
-|-----------|-------------|-----------|------------|----------|
-| `serial` | 168:00:00 (7 days) | 1 | No | Single-node CPU jobs |
-| `parallel` | 168:00:00 (7 days) | 20+ | No | Multi-node MPI jobs |
-| `gpu` | 48:00:00 (2 days) | Variable | Yes (V100, A100) | GPU-accelerated workloads |
-| `debug` | 01:00:00 (1 hour) | 2 | Yes | Quick testing and debugging |
-| `longserial` | 336:00:00 (14 days) | 1 | No | Long-running single-node jobs |
-| `largemem` | 168:00:00 (7 days) | 1 | No | Jobs requiring 384+ GB RAM |
-| `hugemem` | 168:00:00 (7 days) | 1 | No | Jobs requiring 768+ GB RAM |
+| Partition | Max Walltime | Nodes | GPUs | Use Case |
+|-----------|-------------|-------|------|----------|
+| `cpu` | 7 days | 217 | — | Single-node CPU jobs (Skylake, 40 cores) |
+| `cpu-exp` | 7 days | 340 | — | Single-node CPU jobs (Cascade Lake, 48 cores) |
+| `longcpu` | 14 days | 217 | — | Long-running CPU jobs |
+| `gpu` | 7 days | 32 | 2× V100 16 GB | GPU training |
+| `gpu-exp` | 7 days | 42 | 2× V100 32 GB | GPU training (more memory) |
+| `gpu-quad` | 7 days | 4 | 4× V100 32 GB | Multi-GPU training |
+| `gpudebug` | 1 hour | 32 | V100 | Quick GPU testing (high priority) |
+| `gpudebug-exp` | 1 hour | 42 | V100-32G | Quick GPU testing |
+| `debug-cpu` | 1 hour | 217 | — | Quick CPU testing (high priority) |
+| `largemem` | 7 days | 12 | — | Jobs needing 768 GB RAM |
+| `hugemem` | 7 days | 4 | — | Jobs needing up to 3 TB RAM |
+| `gpubackfill` | 4 hours | 32 | V100 | Free GPU time in scheduling gaps |
+| `gpubackfill-exp` | 4 hours | 42 | V100-32G | Free GPU time in scheduling gaps |
 
-### Owens Partitions
-
-| Partition | Max Walltime | Max Nodes | GPU Access | Use Case |
-|-----------|-------------|-----------|------------|----------|
-| `serial` | 168:00:00 (7 days) | 1 | No | Single-node CPU jobs |
-| `parallel` | 168:00:00 (7 days) | 20+ | No | Multi-node MPI jobs |
-| `gpu` | 168:00:00 (7 days) | Variable | Yes (P100) | GPU-accelerated workloads |
-| `debug` | 01:00:00 (1 hour) | 2 | Yes | Quick testing and debugging |
-| `longserial` | 336:00:00 (14 days) | 1 | No | Long-running single-node jobs |
-| `hugemem` | 168:00:00 (7 days) | 1 | No | Jobs requiring 768+ GB RAM |
+!!! tip "Backfill partitions are free"
+    `gpubackfill` and `gpubackfill-exp` don't charge your allocation. The tradeoff is a 4-hour walltime limit. Great for short experiments and hyperparameter exploration.
 
 ### Choosing the Right Partition
 
@@ -119,61 +138,79 @@ flowchart TD
     A[What type of job?] --> B{Need a GPU?}
     B -->|Yes| C{Quick test < 1 hr?}
     B -->|No| D{Multi-node?}
-    C -->|Yes| E[debug partition]
-    C -->|No| F[gpu partition]
-    D -->|Yes| G[parallel partition]
-    D -->|No| H{Need > 192 GB RAM?}
-    H -->|Yes| I[largemem or hugemem]
-    H -->|No| J{Run > 7 days?}
-    J -->|Yes| K[longserial partition]
-    J -->|No| L[serial partition]
+    C -->|Yes| E["gpudebug / gpudebug-exp"]
+    C -->|No| F{Need > 16 GB VRAM?}
+    F -->|Yes| G["gpu-exp (32 GB)\nor gpu-quad (4× 32 GB)"]
+    F -->|No| H["gpu (16 GB)"]
+    D -->|Yes| I["cpu + srun\n(multi-node MPI)"]
+    D -->|No| J{Need > 192 GB RAM?}
+    J -->|Yes| K["largemem (768 GB)\nor hugemem (3 TB)"]
+    J -->|No| L{Run > 7 days?}
+    L -->|Yes| M[longcpu]
+    L -->|No| N["cpu / cpu-exp"]
 ```
 
-!!! tip "Start with `debug` for testing"
-    Always test your job scripts on the `debug` partition first. Debug jobs start quickly and help you catch errors before committing to long runs.
+!!! tip "Start with `gpudebug` for testing"
+    Always test your job scripts on a debug partition first. Debug jobs start quickly (often within seconds) and help you catch errors before committing to long runs.
 
-## Resource Limits and Quotas
+## Storage Tiers
 
-### Compute Allocations
+OSC provides four storage tiers, all visible from every login and compute node. Each serves a different purpose.
 
-Every project has an allocation of core-hours. Check your balance with:
+```mermaid
+flowchart LR
+    subgraph Backed Up
+        HOME["🏠 Home\n/users/PAS.../user\n500 GB · NFS\nCode, configs"]
+        PROJECT["📁 Project\n/fs/ess/PAS...\n1-5 TB · GPFS\nShared datasets"]
+    end
+    subgraph Not Backed Up
+        SCRATCH["⚡ Scratch\n/fs/scratch/PAS...\n100 TB · GPFS\nActive job data"]
+        TMPDIR["💨 $TMPDIR\nLocal disk\nJob-only · Fastest\nStaging I/O-heavy data"]
+    end
 
-```bash
-# Check your project's remaining core-hours
-sbalance
-
-# Or for a specific account
-sbalance -a PAS1234
+    HOME -->|"rsync large files"| SCRATCH
+    SCRATCH -->|"cp at job start"| TMPDIR
+    PROJECT -->|"rsync shared data"| SCRATCH
 ```
 
-!!! warning "Monitor your allocation"
-    When your allocation runs out, jobs will no longer be scheduled. Check `sbalance` regularly and request additional time through your PI if needed.
+### Storage Details
 
-### Storage Quotas
+| Tier | Path | Filesystem | Quota | Purge | Backed Up | Performance |
+|------|------|-----------|-------|-------|-----------|-------------|
+| **Home** | `/users/<project>/<user>` | NetApp NFS | 500 GB, 1M files | None (archived after 18 months inactive) | Yes (daily, 2 tape copies) | ~40 GB/s read/write |
+| **Project** | `/fs/ess/<project>` | GPFS | 1–5 TB (varies by allocation) | None | Yes (daily, 2 tape copies) | ~60 GB/s read, ~50 GB/s write |
+| **Scratch** | `/fs/scratch/<project>` | GPFS | 100 TB, 25M files | **60 days** inactivity, purged Wednesdays | No | ~170 GB/s read, ~70 GB/s write |
+| **$TMPDIR** | Local compute node disk | Local | Varies by node | Deleted when job ends | No | Fastest (local I/O) |
 
-OSC provides three types of storage, each with different purposes and limits:
+Source: [OSC Storage Environment](https://www.osc.edu/supercomputing/storage-environment-at-osc/available-file-systems)
 
-| Storage | Path | Quota | Purge Policy | Backed Up | Use For |
-|---------|------|-------|-------------|-----------|---------|
-| **Home** | `~/` or `/users/<username>` | 500 GB | None | Yes | Code, configs, small datasets |
-| **Scratch** | `/fs/scratch/<project>` | 100 TB (project) | Files deleted after **90 days** of inactivity | No | Active job data, temporary files |
-| **Project** | `/fs/ess/<project>` | Varies by allocation | None | Yes | Shared datasets, results, models |
+!!! danger "Scratch purge: 60 days, not recoverable"
+    Files on scratch that have not been accessed for **60 days** are automatically deleted every Wednesday. This is not recoverable — scratch is not backed up. Copy final results and trained models to home or project space.
+
+    **Do not** use scripts to artificially touch files and reset access times — this violates OSC policy and can result in account suspension.
+
+### Which Storage for What
+
+| Data Type | Store On | Why |
+|-----------|----------|-----|
+| Source code, configs, small scripts | **Home** | Backed up, persistent, git-managed |
+| Shared datasets (lab-wide) | **Project** (`/fs/ess/`) | Backed up, shared across users |
+| Training data, checkpoints, logs | **Scratch** | High throughput, large quota |
+| I/O-heavy training data during a job | **$TMPDIR** | Fastest reads, avoids NFS/GPFS contention |
+| Final results, trained models to keep | **Home** or **Project** | Backed up, won't be purged |
 
 Check your current usage:
 
 ```bash
-# Check home directory quota
+# Home quota
 quota -s
 
-# Check project storage usage
+# Project storage usage
 du -sh /fs/ess/PAS1234
 
-# Check scratch usage
+# Scratch usage
 du -sh /fs/scratch/PAS1234
 ```
-
-!!! danger "Scratch is purged automatically"
-    Files on scratch that have not been accessed for 90 days are automatically deleted. **Never store important results only on scratch.** Copy final results to your home or project directory.
 
 ### Shared Project Directories
 
@@ -189,32 +226,34 @@ Use project space for datasets and environments that the whole lab needs:
 
 Keep a README in the project root documenting what each directory contains. For creating shared conda or venv environments, see [Environment Management](../working-on-osc/osc-environment-management.md).
 
-### Job Limits per User
+## Compute Allocations
 
-Typical per-user limits (these may vary by project):
+Every project has an allocation of core-hours. Check your balance with:
 
-| Limit | Value |
-|-------|-------|
-| Max running jobs | ~256 |
-| Max queued jobs | ~1000 |
-| Max GPUs per user | Varies by partition |
-| Max cores per job | Depends on partition and allocation |
+```bash
+# Check your project's remaining core-hours
+sbalance
 
-## Choosing the Right Resources
+# Or for a specific account
+sbalance -a PAS1234
+```
+
+!!! warning "Monitor your allocation"
+    When your allocation runs out, jobs will no longer be scheduled. Check `sbalance` regularly and request additional time through your PI if needed.
+
+### Resource Request Guidelines
 
 For complete SBATCH job script templates (GPU training, CPU processing, debug, multi-GPU), see the [Job Submission Guide](../working-on-osc/osc-job-submission.md).
 
 !!! tip "Match CPU cores to GPU"
-    Request 4–8 CPU cores per GPU to keep the data pipeline fast enough to feed the GPU.
-
-### Resource Request Guidelines
+    Request 4–8 CPU cores per GPU to keep the data pipeline fast enough to feed the GPU. See the [PyTorch Performance Tuning Guide](https://pytorch.org/tutorials/recipes/recipes/tuning_guide.html) for data loading optimization.
 
 | Workload | Partition | GPUs | CPUs | Memory | Typical Walltime |
 |----------|-----------|------|------|--------|-----------------|
-| Small test | `debug` | 0–1 | 2–4 | 8–16 GB | 15–30 min |
-| CPU preprocessing | `serial` | 0 | 8–16 | 32–64 GB | 1–4 hours |
-| Single GPU training | `gpu` | 1 | 4–8 | 32–64 GB | 4–24 hours |
-| Multi-GPU training | `gpu` | 2–4 | 16–32 | 128–192 GB | 12–48 hours |
+| Quick test | `gpudebug` | 0–1 | 2–4 | 8–16 GB | 15–30 min |
+| CPU preprocessing | `cpu` | 0 | 8–16 | 32–64 GB | 1–4 hours |
+| Single GPU training | `gpu` or `gpu-exp` | 1 | 4–8 | 32–64 GB | 4–24 hours |
+| Multi-GPU training | `gpu-quad` | 2–4 | 16–32 | 128–192 GB | 12–48 hours |
 | Large-memory job | `largemem` | 0 | 8–48 | 384–768 GB | 2–24 hours |
 | Hyperparameter sweep | `gpu` (array) | 1 per task | 4–8 | 32 GB | 2–8 hours per task |
 
@@ -229,7 +268,7 @@ sbatch: error: Batch job submission failed: Invalid account or account/partition
 Your project account may not have access to the partition you requested. Check:
 
 ```bash
-# List your accounts
+# List your accounts and partitions
 sacctmgr show associations user=$USER format=Account,Partition
 ```
 
@@ -242,19 +281,16 @@ If `nvidia-smi` shows no GPUs, make sure you requested GPU resources:
 #SBATCH --gpus-per-node=1
 ```
 
-And load the CUDA module in your script:
-
-```bash
-module load cuda/12.4
-```
+!!! note "You do NOT need `module load cuda` for PyPI torch"
+    If you installed PyTorch from PyPI (via `pip install` or `uv add`), the wheels bundle their own CUDA libraries. Only load a CUDA module if you are compiling custom CUDA extensions. See [PyTorch & GPU Setup](../ml-workflows/pytorch-setup.md).
 
 ### Jobs Pending with "Resources" Reason
 
 Your job is requesting more resources than are currently available. Try:
 
 - Reducing the number of GPUs or nodes
-- Shortening the walltime (shorter jobs fit into gaps more easily)
-- Using a different partition (e.g., Owens instead of Pitzer)
+- Shortening the walltime (shorter jobs fit into backfill gaps more easily due to [SLURM backfill scheduling](https://slurm.schedmd.com/sched_config.html))
+- Using `gpubackfill` or `gpubackfill-exp` for short experiments (4-hour max, doesn't charge allocation)
 
 ## Next Steps
 
@@ -265,6 +301,6 @@ Your job is requesting more resources than are currently available. Try:
 ## Resources
 
 - [OSC Pitzer Documentation](https://www.osc.edu/resources/technical_support/supercomputers/pitzer)
-- [OSC Owens Documentation](https://www.osc.edu/resources/technical_support/supercomputers/owens)
-- [OSC Storage Overview](https://www.osc.edu/supercomputing/storage-environment-at-osc/available-file-systems)
+- [OSC Storage Environment](https://www.osc.edu/supercomputing/storage-environment-at-osc/available-file-systems)
+- [OSC Systems Overview](https://www.osc.edu/resources/technical_support/supercomputers) (Pitzer, Ascend, Cardinal)
 - [SLURM Documentation](https://slurm.schedmd.com/documentation.html)

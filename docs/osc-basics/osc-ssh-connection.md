@@ -21,11 +21,7 @@ Replace `username` with your OSU name.# (e.g., `buckeye.1`).
 ### Available Clusters
 
 ```bash
-# Pitzer (recommended for GPU work)
 ssh username@pitzer.osc.edu
-
-# Owens (older cluster)
-ssh username@owens.osc.edu
 ```
 
 ## Configuring SSH for Convenience
@@ -55,13 +51,6 @@ Host pitzer
     User your.osuusername
     ServerAliveInterval 60
     ServerAliveCountMax 3
-
-# OSC Owens
-Host owens
-    HostName owens.osc.edu
-    User your.osuusername
-    ServerAliveInterval 60
-    ServerAliveCountMax 3
 ```
 
 Replace `your.osuusername` with your actual OSU username (e.g., `buckeye.1`).
@@ -69,8 +58,6 @@ Replace `your.osuusername` with your actual OSU username (e.g., `buckeye.1`).
 Now you can connect simply with:
 ```bash
 ssh pitzer
-# or
-ssh owens
 ```
 
 ### Advanced Configuration with SSH Keys
@@ -80,15 +67,6 @@ For password-less login (after [setting up SSH keys](#ssh-keys-setup)):
 ```ssh-config
 Host pitzer
     HostName pitzer.osc.edu
-    User your.osuusername
-    IdentityFile ~/.ssh/id_ed25519
-    ServerAliveInterval 60
-    ServerAliveCountMax 3
-    Compression yes
-    ForwardAgent no
-
-Host owens
-    HostName owens.osc.edu
     User your.osuusername
     IdentityFile ~/.ssh/id_ed25519
     ServerAliveInterval 60
@@ -242,7 +220,7 @@ ssh: connect to host pitzer.osc.edu port 22: Operation timed out
 **Solutions**:
 - Check if you're on OSU network or VPN
 - Verify OSC system status: [https://www.osc.edu/resources/system-status](https://www.osc.edu/resources/system-status)
-- Try alternative cluster (Owens if Pitzer fails)
+- Try again in a few minutes (login nodes rotate)
 
 ### Permission Denied (publickey)
 

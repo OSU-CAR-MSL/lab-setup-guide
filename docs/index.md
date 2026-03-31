@@ -1,4 +1,8 @@
-<!-- last-reviewed: 2026-02-26 -->
+---
+hide:
+  - toc
+---
+<!-- last-reviewed: 2026-03-30 -->
 # CAR Mobility Systems Lab Setup Guide
 
 Welcome to the OSU CAR Mobility Systems Lab documentation! This guide helps lab members set up their development environment and work effectively on the Ohio Supercomputer Center (OSC).
@@ -22,19 +26,47 @@ New to the lab? Follow these steps to get up and running:
 
 ---
 
-## :wrench: Why These Tools?
+## :wrench: Our Tool Stack
 
-Each tool in our stack addresses a specific challenge in the ML research workflow — from writing code locally to running large-scale experiments on OSC's supercomputers.
+<div class="grid cards" markdown>
 
-| | VS Code | Git / GitHub | SSH | SLURM | uv / modules | Ray | PyTorch | Copilot / Claude |
-|:--|:--|:--|:--|:--|:--|:--|:--|:--|
-| **Edit & debug code** | Primary IDE and debugger | | | | | | | AI-powered suggestions |
-| **Collaborate on code** | | Version control & pull requests | | | Shared environment specs | | | |
-| **Access HPC clusters** | Remote-SSH extension | | Secure cluster login | | | | | |
-| **Manage Python envs** | | | | | Reproducible environments | | | |
-| **Run compute jobs** | | | | Schedule CPUs & GPUs | | | | |
-| **Automate pipelines** | | | | Execute each step | | Python-native GPU pipeline orchestration | | |
-| **Train ML models** | Monitor & debug | | | GPU allocation | Install ML stack | Orchestrate experiments | Neural network framework | Help write & fix code |
+-   :material-microsoft-visual-studio-code:{ .lg .middle } **VS Code + Remote-SSH**
+
+    ---
+
+    Edit, debug, and develop directly on OSC nodes from your local machine.
+
+-   :fontawesome-brands-git-alt:{ .lg .middle } **Git & GitHub**
+
+    ---
+
+    Version control, pull requests, and CI/CD for reproducible research.
+
+-   :material-console:{ .lg .middle } **SLURM**
+
+    ---
+
+    Schedule CPU and GPU jobs on OSC's Pitzer cluster.
+
+-   :material-language-python:{ .lg .middle } **uv + Modules**
+
+    ---
+
+    Fast, reproducible Python environments on HPC.
+
+-   :material-fire:{ .lg .middle } **PyTorch & PyG**
+
+    ---
+
+    Neural network training with GPU acceleration and graph neural networks.
+
+-   :material-robot:{ .lg .middle } **Claude & Copilot**
+
+    ---
+
+    AI-assisted coding, debugging, and pipeline automation.
+
+</div>
 
 ---
 
@@ -104,23 +136,43 @@ Each tool in our stack addresses a specific challenge in the ML research workflo
 
 ## :bulb: Tips
 
+<div class="grid" markdown>
+
 !!! tip "Use the search"
-    Press ++s++ or ++slash++ to search the documentation. The search indexes all pages and code blocks.
+    Press ++s++ or ++slash++ to search. Indexes all pages and code blocks.
 
 !!! tip "Dark mode"
-    Click the :material-brightness-7: icon in the header to toggle dark mode.
+    Click the :material-brightness-7: icon in the header to toggle.
 
 !!! tip "Edit on GitHub"
-    Found an error? Click the :material-pencil: icon on any page to suggest an edit.
+    Found an error? Click :material-pencil: on any page to suggest a fix.
+
+</div>
 
 ---
 
 ## :link: Quick Links
 
-| Resource | Link |
-|----------|------|
-| Lab Compute Dashboard | [osc-usage-dashboard](https://huggingface.co/spaces/buckeyeguy/osc-usage-dashboard) |
-| OSC Documentation | [osc.edu/resources](https://www.osc.edu/resources) |
-| OSC OnDemand Portal | [ondemand.osc.edu](https://ondemand.osc.edu) |
-| OSC Status Page | [osc.edu/status](https://www.osc.edu/resources/system-status) |
-| Lab GitHub | [github.com/OSU-CAR-MSL](https://github.com/OSU-CAR-MSL) |
+<div class="grid cards" markdown>
+
+-   :material-chart-bar:{ .lg .middle } **[Lab Compute Dashboard](https://huggingface.co/spaces/buckeyeguy/osc-usage-dashboard)**
+
+    OSC spending, job health, and per-user breakdowns.
+
+-   :material-book-open-variant:{ .lg .middle } **[OSC Documentation](https://www.osc.edu/resources)**
+
+    Official OSC guides, FAQs, and support.
+
+-   :material-application:{ .lg .middle } **[OSC OnDemand](https://ondemand.osc.edu)**
+
+    Web portal for file browsing, jobs, and desktops.
+
+-   :material-traffic-light:{ .lg .middle } **[OSC Status](https://www.osc.edu/resources/system-status)**
+
+    Cluster status, maintenance windows, and outages.
+
+-   :fontawesome-brands-github:{ .lg .middle } **[Lab GitHub](https://github.com/OSU-CAR-MSL)**
+
+    All lab repositories and project code.
+
+</div>

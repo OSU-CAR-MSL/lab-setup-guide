@@ -1,10 +1,11 @@
 ---
+status: updated
 tags:
   - SLURM
   - OSC
   - GPU
 ---
-<!-- last-reviewed: 2026-03-04 -->
+<!-- last-reviewed: 2026-03-30 -->
 # Job Submission Guide
 
 Learn how to submit and manage jobs on OSC using the SLURM job scheduler.
@@ -197,26 +198,63 @@ python train.py
 
 #### SBATCH Directive Reference
 
-| Directive | Required | Description | Example |
-|-----------|----------|-------------|---------|
-| `--job-name` | No | Name shown in `squeue` | `--job-name=train_v2` |
-| `--account` | **Yes** | Project allocation to charge | `--account=PAS1234` |
-| `--nodes` | No | Number of nodes (default: 1) | `--nodes=1` |
-| `--ntasks-per-node` | No | Tasks per node (default: 1) | `--ntasks-per-node=1` |
-| `--cpus-per-task` | No | CPU cores per task | `--cpus-per-task=4` |
-| `--gpus-per-node` | No | GPUs per node | `--gpus-per-node=1` |
-| `--mem` | No | Total memory per node | `--mem=32G` |
-| `--mem-per-cpu` | No | Memory per CPU core | `--mem-per-cpu=4G` |
-| `--time` | **Yes** | Maximum walltime | `--time=04:00:00` |
-| `--partition` | No | Partition/queue | `--partition=gpu` |
-| `--output` | No | Stdout file (`%j` = job ID) | `--output=logs/job_%j.out` |
-| `--error` | No | Stderr file | `--error=logs/job_%j.err` |
-| `--mail-type` | No | Email notification triggers | `--mail-type=END,FAIL` |
-| `--mail-user` | No | Email address | `--mail-user=user@osu.edu` |
-| `--array` | No | Job array specification | `--array=1-10` |
-| `--dependency` | No | Job dependency | `--dependency=afterok:12345` |
-| `--exclusive` | No | Exclusive node access | `--exclusive` |
-| `--constraint` | No | Node feature constraint | `--constraint=a100` |
+Every `#SBATCH` line declares one resource or behavior. They are grouped below by function.
+
+##### Identity & Accounting
+
+| Directive | Description |
+|-----------|-------------|
+| `--job-name=NAME` | Label shown in `squeue` output. Keep it short and descriptive (e.g., `train_exp03`). Default: script filename. |
+| `--account=PAS1234` | **Required.** The OSC project allocation to charge. Find yours at [my.osc.edu](https://my.osc.edu) → Projects. |
+
+##### Compute Resources
+
+| Directive | Description |
+|-----------|-------------|
+| `--nodes=N` | Number of physical nodes. Use `1` for single-node jobs (the common case). Multi-node only needed for distributed training or Ray clusters. Default: `1`. |
+| `--ntasks-per-node=N` | Independent processes per node. For most Python ML jobs, leave at `1` — parallelism comes from `--cpus-per-task` and `--gpus-per-node` instead. Use `>1` only with `srun`/MPI or `torchrun`. Default: `1`. |
+| `--cpus-per-task=N` | CPU cores allocated to each task. Controls how many DataLoader workers, preprocessing threads, or parallel operations your job can run. Set `num_workers` in your DataLoader up to this value. |
+| `--gpus-per-node=N` | GPUs allocated per node. Accepts a count (`1`, `2`) or a type:count (`v100:1`, `v100-32g:1`). Only valid on GPU partitions. |
+| `--mem=SIZE` | Total RAM per node (e.g., `32G`, `64G`). **Mutually exclusive** with `--mem-per-cpu`. Pitzer standard nodes have 192 GB; GPU nodes share this across up to 4 GPUs. |
+| `--mem-per-cpu=SIZE` | RAM per CPU core (e.g., `4G`). Useful when you want memory to scale with CPU count. Cannot combine with `--mem`. |
+
+!!! tip "Choosing CPUs and memory for GPU jobs"
+    The [Clusters Overview](../osc-basics/osc-clusters-overview.md#resource-request-guidelines) recommends 4–8 CPU cores and 32–64 GB memory per GPU for single-GPU training. The CPUs feed data to the GPU via DataLoader workers. If `nvidia-smi` shows low GPU utilization, increase CPUs and `num_workers` first — the GPU is likely waiting on data (see [PyTorch Performance Tuning Guide](https://pytorch.org/tutorials/recipes/recipes/tuning_guide.html)).
+
+##### Time & Scheduling
+
+| Directive | Description |
+|-----------|-------------|
+| `--time=HH:MM:SS` | **Required.** Maximum walltime. SLURM kills the job when this expires. Formats: `02:00:00` (2 hours), `2-12:00:00` (2 days 12 hours). Shorter requests get scheduled faster due to backfill scheduling. |
+| `--partition=NAME` | Queue to submit to. Common: `gpu` (7-day max), `cpu` (CPU only), `gpudebug`/`debug-cpu` (1-hour max, high priority for testing). See [Clusters Overview](../osc-basics/osc-clusters-overview.md) for full list. Default: cluster-dependent. |
+
+##### Output & Logging
+
+| Directive | Description |
+|-----------|-------------|
+| `--output=PATH` | File for stdout. Supports substitution: `%j` → job ID, `%A` → array job ID, `%a` → array task ID. Example: `logs/train_%j.out`. Default: `slurm-%j.out` in submit directory. |
+| `--error=PATH` | File for stderr. Same substitutions as `--output`. If omitted, stderr merges into the `--output` file. |
+
+!!! tip "Create the logs directory first"
+    SLURM does **not** create parent directories for output files. If you use `--output=logs/job_%j.out`, run `mkdir -p logs` before submitting. If the directory doesn't exist, the job fails immediately and no output file is written.
+
+##### Notifications
+
+| Directive | Description |
+|-----------|-------------|
+| `--mail-type=EVENTS` | When to send email. Values: `BEGIN`, `END`, `FAIL`, `ALL`. Comma-separate multiples: `END,FAIL`. |
+| `--mail-user=EMAIL` | Destination address. Use your `name.N@osu.edu` address. |
+
+##### Advanced Scheduling
+
+| Directive | Description |
+|-----------|-------------|
+| `--array=RANGE` | Run a job array. `1-10` runs 10 jobs; `1-100%10` runs 100 with max 10 concurrent. Each job gets a unique `$SLURM_ARRAY_TASK_ID`. See [Job Arrays](#job-arrays). |
+| `--dependency=COND:ID` | Wait for another job. `afterok:12345` starts only if job 12345 succeeds. `afterany:12345` starts regardless. See [Job Dependencies](#job-dependencies). |
+| `--exclusive` | Reserve the entire node — no sharing with other users. Useful for benchmarking or memory-sensitive workloads. Expensive: charges all node cores. |
+| `--constraint=FEATURE` | Request nodes with a specific feature tag. Check available features with `sinfo -o "%N %f"`. |
+| `--signal=B:SIG@TIME` | Send a signal to the job before walltime expires. `--signal=B:USR1@300` sends `SIGUSR1` five minutes before timeout — used for graceful checkpointing. See [Graceful Timeout Handling](#graceful-timeout-handling). |
+| `--requeue` | Allow SLURM to requeue the job if the node fails. Combine with checkpoint-resume logic. |
 
 ### Basic Job Script Template
 
@@ -309,7 +347,7 @@ For data preprocessing, feature extraction, or file conversion jobs that don't n
 #!/bin/bash
 #SBATCH --job-name=data_preprocess
 #SBATCH --account=PAS1234
-#SBATCH --partition=serial
+#SBATCH --partition=cpu
 #SBATCH --cpus-per-task=16
 #SBATCH --mem=64G
 #SBATCH --time=04:00:00
@@ -385,6 +423,106 @@ for epoch in range(start_epoch, num_epochs):
     fi
     ```
 
+#### Graceful Timeout Handling
+
+When a job hits its walltime, SLURM sends `SIGTERM` followed by `SIGKILL` after a short grace period ([SLURM docs](https://slurm.schedmd.com/sbatch.html#OPT_signal)) — any in-flight training step is lost. Use `--signal` to get advance warning and save a checkpoint before the kill:
+
+```bash
+#!/bin/bash
+#SBATCH --job-name=train_graceful
+#SBATCH --account=PAS1234
+#SBATCH --partition=gpu
+#SBATCH --gpus-per-node=1
+#SBATCH --time=08:00:00
+#SBATCH --signal=B:USR1@300            # Send USR1 five minutes before timeout
+#SBATCH --output=logs/train_%j.out
+
+source .venv/bin/activate
+
+python train.py --epochs 500 --checkpoint-dir checkpoints/
+```
+
+In your Python code, catch the signal and save state:
+
+```python
+import signal
+import sys
+
+def handle_timeout(signum, frame):
+    """Save checkpoint when SLURM sends USR1 before walltime."""
+    print("Received USR1 — saving checkpoint before timeout")
+    save_checkpoint(model, optimizer, epoch, "checkpoints/timeout_ckpt.pt")
+    sys.exit(0)
+
+signal.signal(signal.SIGUSR1, handle_timeout)
+```
+
+!!! tip "PyTorch Lightning handles this automatically"
+    If you use PyTorch Lightning, the [`SLURMEnvironment` plugin](https://lightning.ai/docs/pytorch/stable/clouds/cluster_advanced.html) catches `SIGUSR1` and triggers checkpoint saving — no manual signal handling needed. Just add `--signal=B:USR1@300` to your SBATCH header.
+
+#### Data Staging for I/O-Heavy Jobs
+
+OSC has [three storage tiers](https://www.osc.edu/resources/getting_started/howto/howto_use_scratch_space) with different performance characteristics. Staging data to faster storage before training reduces I/O bottleneck:
+
+```
+Home (NFS, permanent)       → Slow random reads, limited quota
+  ↓ rsync
+Scratch (GPFS, 60-day purge) → Fast parallel I/O, large quota
+  ↓ cp
+$TMPDIR (local disk, job-only) → Fastest, but ephemeral — deleted when job ends
+```
+
+For training jobs that read many small files (e.g., image datasets, graph tensors), copy data to `$TMPDIR` at job start:
+
+```bash
+#!/bin/bash
+#SBATCH --job-name=train_staged
+#SBATCH --account=PAS1234
+#SBATCH --partition=gpu
+#SBATCH --gpus-per-node=1
+#SBATCH --time=08:00:00
+#SBATCH --output=logs/train_%j.out
+
+source .venv/bin/activate
+
+# Stage data: scratch → local SSD
+SCRATCH_DATA="/fs/scratch/PAS1234/$USER/datasets/my_data"
+LOCAL_DATA="$TMPDIR/my_data"
+
+if [ -d "$SCRATCH_DATA" ]; then
+    echo "Staging data to local SSD..."
+    cp -r "$SCRATCH_DATA" "$LOCAL_DATA"
+    DATA_ROOT="$LOCAL_DATA"
+else
+    echo "Using scratch directly"
+    DATA_ROOT="$SCRATCH_DATA"
+fi
+
+python train.py --data-root "$DATA_ROOT"
+```
+
+!!! tip "When to stage data"
+    - **Consider staging** if your dataset is many small files (images, `.pt` graph tensors) — NFS metadata operations are a common bottleneck for small-file workloads.
+    - **Skip staging** if your data is a few large files (Parquet, HDF5) — GPFS is optimized for sequential reads.
+    - **Check `$TMPDIR` size** — local disk capacity varies by node. Use `df -h $TMPDIR` at job start to verify.
+
+#### CUDA Memory Configuration
+
+For GPU training jobs, set the PyTorch CUDA memory allocator to avoid fragmentation-related OOM errors:
+
+```bash
+# Add to your job script, before python
+export PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True,garbage_collection_threshold:0.8
+```
+
+| Setting | What It Does |
+|---------|-------------|
+| `expandable_segments:True` | Allocates GPU memory in growable segments instead of fixed blocks. Reduces fragmentation when tensors vary in size. See [PyTorch CUDA memory management](https://pytorch.org/docs/stable/notes/cuda.html#memory-management). |
+| `garbage_collection_threshold:0.8` | Triggers CUDA garbage collection when the ratio of allocated memory to reserved memory drops below this threshold (i.e., when fragmentation is high). Default is `0.0` (disabled). |
+
+!!! tip "When to use this"
+    Recommended for models with variable-size inputs (graph neural networks, NLP with dynamic padding) where tensor sizes change between iterations, causing memory fragmentation.
+
 #### Long-Running Job with Email Alerts
 
 Get notified when important jobs start, finish, or fail:
@@ -434,9 +572,9 @@ For partition details (time limits, GPU availability, node counts), see the [Clu
 # Request 1 GPU (any type)
 #SBATCH --gpus-per-node=1
 
-# Request specific GPU type
-#SBATCH --gpus-per-node=v100:1     # V100 GPU
-#SBATCH --gpus-per-node=a100:1     # A100 GPU
+# Request specific GPU type (Pitzer)
+#SBATCH --gpus-per-node=v100:1       # V100 16 GB (gpu partition)
+#SBATCH --gpus-per-node=v100-32g:1   # V100 32 GB (gpu-exp partition)
 
 # Request multiple GPUs
 #SBATCH --gpus-per-node=2
@@ -584,55 +722,15 @@ job_id = os.environ.get('SLURM_JOB_ID')
 task_id = os.environ.get('SLURM_ARRAY_TASK_ID', '0')
 ```
 
-## Advanced Topics
-
-### Email Notifications
-
-```bash
-#SBATCH --mail-type=BEGIN          # Email when job starts
-#SBATCH --mail-type=END            # Email when job ends
-#SBATCH --mail-type=FAIL           # Email on failure
-#SBATCH --mail-type=ALL            # Email for all events
-#SBATCH --mail-user=user@osu.edu
-```
-
-??? note "Job Requeue"
-
-    ```bash
-    # Allow job to be requeued if node fails
-    #SBATCH --requeue
-
-    # In your script, handle requeue
-    if [ -f checkpoint.pth ]; then
-        python train.py --resume checkpoint.pth
-    else
-        python train.py
-    fi
-    ```
-
-??? note "Exclusive Node Access"
-
-    ```bash
-    # Request exclusive access to node
-    #SBATCH --exclusive
-    ```
-
-??? note "Node Constraints"
-
-    ```bash
-    # Request specific node features
-    #SBATCH --constraint=skylake
-
-    # Exclude specific nodes
-    #SBATCH --exclude=p0010,p0011
-    ```
-
 ## Best Practices
 
-1. **Test with debug partition first** — `#SBATCH --partition=debug` with a short time limit before submitting long jobs.
+1. **Test with debug partition first** — `--partition=gpudebug` (1-hour max, high priority) before submitting long jobs.
 2. **Don't over-request resources** — request only the CPUs, memory, and time you need. Over-requesting wastes allocation and increases queue wait time.
-3. **Organize output files** — create a `logs/` directory and use `--output=logs/job_%j.out`.
-4. **Check job efficiency after completion** — run `seff <job_id>` and aim for >80% CPU efficiency.
+3. **Organize output files** — `mkdir -p logs` and use `--output=logs/job_%j.out`. SLURM won't create directories for you.
+4. **Check job efficiency after completion** — run `seff <job_id>` and aim for >80% CPU efficiency and >50% GPU utilization.
+5. **Set `PYTORCH_CUDA_ALLOC_CONF`** — add `export PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True` to every GPU job. See [CUDA Memory Configuration](#cuda-memory-configuration).
+6. **Use `--signal` for long training runs** — `--signal=B:USR1@300` gives you 5 minutes to checkpoint before timeout. See [Graceful Timeout Handling](#graceful-timeout-handling).
+7. **Stage data for I/O-heavy jobs** — copy many-small-files datasets to `$TMPDIR` at job start. See [Data Staging](#data-staging-for-io-heavy-jobs).
 
 ## Troubleshooting
 

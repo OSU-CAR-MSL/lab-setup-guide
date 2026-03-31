@@ -1,4 +1,7 @@
-<!-- last-reviewed: 2026-02-26 -->
+---
+status: updated
+---
+<!-- last-reviewed: 2026-03-30 -->
 # Data & Experiment Tracking
 
 Managing datasets, tracking experiments, and reproducing results are core challenges in ML research. This guide covers practical tools for structured data and experiment tracking on OSC — DVC for data versioning, SQLite for metadata, MLflow and Weights & Biases for experiment tracking, TensorBoard for training visualization, and Parquet for fast data loading.
@@ -85,7 +88,7 @@ dvc checkout
 ```
 
 !!! tip "DVC on OSC scratch"
-    OSC scratch directories (`/fs/scratch/`) are ideal for DVC remote storage — they're high-performance, shared across nodes, and have large quotas. Just remember that scratch files may be purged after 90 days of inactivity, so keep important data backed up.
+    OSC scratch directories (`/fs/scratch/`) are ideal for DVC remote storage — they're high-performance, shared across nodes, and have large quotas. Just remember that scratch files are purged after [60 days of inactivity](https://www.osc.edu/supercomputing/storage-environment-at-osc/available-file-systems), so keep important data backed up.
 
 ---
 
@@ -339,7 +342,40 @@ python train.py
 wandb sync --sync-all
 ```
 
-Alternatively, if your cluster allows outbound HTTPS from compute nodes, W&B syncs in real time with no extra steps.
+Alternatively, if your cluster allows outbound HTTPS from compute nodes (Pitzer compute nodes currently have internet access), W&B syncs in real time with no extra steps — remove the `WANDB_MODE=offline` line.
+
+### OSC Performance: Redirect W&B to Scratch
+
+W&B writes many small files (logs, media, metadata) to its [local run directory](https://docs.wandb.ai/guides/track/environment-variables/#wandb_dir). On NFS home directories, this adds metadata I/O overhead. Redirect W&B's working directory to scratch:
+
+```bash
+# Add to your job script, before python
+export WANDB_DIR=/fs/scratch/PAS1234/$USER/wandb
+mkdir -p "$WANDB_DIR"
+```
+
+This avoids NFS contention during training. W&B still syncs to the cloud — only the local staging directory changes.
+
+### Forwarding Full Config to W&B
+
+If you use a config file (YAML, JSON, or argparse), forward the full config so every parameter is searchable in the W&B dashboard:
+
+```python
+import yaml
+import wandb
+
+# Load your config however you prefer
+with open("configs/experiment.yaml") as f:
+    config = yaml.safe_load(f)
+
+wandb.init(project="my-experiment", config=config)
+
+# All keys from the YAML are now searchable in the W&B UI
+# You can filter runs by any config value
+```
+
+!!! tip "PyTorch Lightning + W&B"
+    If you use LightningCLI with [`WandbLogger`](https://lightning.ai/docs/pytorch/stable/extensions/generated/lightning.pytorch.loggers.WandbLogger.html), the logger logs hyperparameters from the LightningModule's `self.save_hyperparameters()` when a logger is attached to the Trainer. No manual config forwarding needed in that case.
 
 ### Viewing Results
 

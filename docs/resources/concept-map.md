@@ -3,7 +3,7 @@ tags:
   - Resources
   - AI
 ---
-<!-- last-reviewed: 2026-03-03 -->
+<!-- last-reviewed: 2026-03-30 -->
 # Concept Map & Knowledge Graph
 
 This page provides two visual overviews: a **concept map** showing how topics in this documentation connect (so you can plan your learning path), and a **knowledge graph** demonstrating how AI coding assistants persist structured knowledge across sessions.
@@ -18,7 +18,8 @@ The site has eight sections that form a progression:
 | **OSC Basics** | Connecting to OSC: accounts, SSH, remote development |
 | **Working on OSC** | Day-to-day work: environments, job submission, pipelines |
 | **ML Workflows** | Machine learning stack: PyTorch, PyG, experiment tracking |
-| **Contributing** | How to contribute to lab docs and use GitHub effectively |
+| **GitHub** | Git fundamentals, repo management, SSH auth, CI/CD, troubleshooting |
+| **Contributing** | How to contribute to lab docs, issues, PRs, and project management |
 | **Assignments** | Course assignments and project templates |
 | **Resources** | Troubleshooting, useful links, and this concept map |
 | **Tags** | Browse all pages by topic tag |
@@ -68,11 +69,26 @@ flowchart TB
     tracking --> hf
   end
 
+  subgraph GH["GitHub"]
+    gitfund["Git Fundamentals"]
+    reposetup["Repository Setup"]
+    sshauth["SSH & Authentication"]
+    actions["GitHub Actions & CI/CD"]
+    gittrouble["Git Troubleshooting"]
+    gitfund --> reposetup
+    gitfund --> gittrouble
+    sshauth --> reposetup
+    reposetup --> actions
+  end
+
   %% Cross-section prerequisite edges
   pyenv --> envmgmt
   remote --> envmgmt
   jobs --> pytorch
   pytorch --> mlwf
+  sshauth --> ssh
+  gitfund --> jobs
+  actions --> hf
 ```
 
 ## Hub Pages
@@ -86,6 +102,7 @@ These five pages are referenced most often across the documentation. If you're l
 | [Environment Management](../working-on-osc/osc-environment-management.md) | Modules, virtual environments, uv, and dependency management |
 | [Data & Experiment Tracking](../ml-workflows/data-experiment-tracking.md) | W&B, DVC, and the Parquet datalake pattern |
 | [SSH Connection](../osc-basics/osc-ssh-connection.md) | SSH keys, config, ProxyJump, and connection troubleshooting |
+| [Git Fundamentals](../github/git-fundamentals.md) | Git mental model, branching, collaborative workflows, worktrees |
 
 ## What Is a Knowledge Graph?
 

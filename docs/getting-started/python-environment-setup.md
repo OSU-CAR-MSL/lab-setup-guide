@@ -90,6 +90,23 @@ uv run python my_script.py
 !!! warning "Don't commit `.venv/`"
     The `.venv/` directory should be in your `.gitignore`. Each machine builds its own venv from the lockfile.
 
+### Pre-commit hooks
+
+Many lab repos include a `.pre-commit-config.yaml` that runs linters (e.g. `ruff`) automatically before each commit. After cloning a repo, install the hooks once:
+
+```bash
+# Install pre-commit (if not already available)
+uv pip install pre-commit
+
+# Activate hooks for this repo
+pre-commit install
+```
+
+After this, every `git commit` will run the configured checks. If a check fails, the commit is blocked and you'll see what to fix. This catches lint and formatting issues before they reach CI.
+
+!!! tip "First run is slow"
+    The first commit after `pre-commit install` downloads and caches the hook environments. Subsequent commits are fast.
+
 ---
 
 ## Step 4: Git Line-Ending Configuration

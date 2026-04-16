@@ -1,17 +1,17 @@
-<!-- last-reviewed: 2026-02-26 -->
+<!-- last-reviewed: 2026-04-16 -->
 # Assignment 3b: Neural Network from Scratch
 
 |                    |                                                                    |
 | ------------------ | ------------------------------------------------------------------ |
 | **Author**         | Robert Frenken                                                     |
 | **Estimated time** | 5--7 hours                                                         |
-| **Prerequisites**  | Assignment 2a completed (pandas, sklearn basics), numpy            |
+| **Prerequisites**  | Assignment 2a completed, numpy basics                              |
 
----
+!!! abstract "What you'll build"
+    A neural network from scratch using **only numpy** — no PyTorch, no TensorFlow. You'll implement forward propagation, backpropagation, and a training loop to classify a non-linear dataset. By the end you'll understand what's happening inside `nn.Linear` and `loss.backward()` before you start using them.
 
-## What You'll Build
-
-A neural network from scratch using only numpy — no PyTorch, no TensorFlow. You'll implement forward propagation, backpropagation, and a training loop to classify a non-linear dataset. By the end you'll understand what's happening inside frameworks like PyTorch before you start using them.
+!!! info "3a and 3b are assigned together"
+    You have **2 weeks** to complete both. [3a is conceptual (package management)](package-management-concepts.md). 3b is hands-on coding. Both include a blog post deliverable.
 
 ---
 
@@ -55,6 +55,10 @@ jupyter notebook
 ```
 
 Create a new notebook at `notebooks/nn_from_scratch.ipynb`. All code in this assignment goes in this notebook.
+
+- [ ] Repo created and cloned
+- [ ] Virtual environment activated with numpy, matplotlib, scikit-learn, jupyter
+- [ ] Empty notebook created at `notebooks/nn_from_scratch.ipynb`
 
 ---
 
@@ -131,6 +135,9 @@ plt.show()
 
 Notice the blocky, staircase-like boundary. By the end of this assignment, your neural network will draw a smooth curve instead.
 
+- [ ] `make_moons` scatter plot generated
+- [ ] Decision tree baseline plotted with its staircase boundary
+
 ---
 
 ## Part 2: The Building Blocks
@@ -163,6 +170,18 @@ $$W_2(W_1 x + b_1) + b_2 = (W_2 W_1)x + (W_2 b_1 + b_2) = W' x + b'$$
 
 The activation function introduces **non-linearity**, which is what lets neural networks learn curved decision boundaries.
 
+??? abstract "Other common activations (optional)"
+    You'll use **sigmoid** in this assignment for simplicity, but modern networks usually prefer these:
+
+    | Activation | Formula | When to use |
+    |-----------|---------|-------------|
+    | **ReLU** | $\max(0, z)$ | Default for hidden layers in deep networks |
+    | **Leaky ReLU** | $\max(0.01z, z)$ | When ReLU "dies" (zero gradient for $z < 0$) |
+    | **Tanh** | $\frac{e^z - e^{-z}}{e^z + e^{-z}}$ | Zero-centered alternative to sigmoid |
+    | **Softmax** | $\frac{e^{z_i}}{\sum_j e^{z_j}}$ | Output layer for multi-class classification |
+
+    The choice matters for training dynamics — ReLU avoids the vanishing-gradient problem that sigmoid suffers from in deep networks. For a 1-hidden-layer network like this, it doesn't matter much.
+
 ### Implement sigmoid
 
 The **sigmoid** function squashes any input to the range (0, 1) — useful for binary classification:
@@ -187,6 +206,9 @@ print(f"sigmoid({z}) = {sigmoid(z).round(4)}")
 
 !!! question "Reflection"
     If you stack two linear layers (no activation), what single operation is the result equivalent to? Why does this mean linear layers alone can't learn the moon-shaped boundary?
+
+- [ ] `sigmoid` and `sigmoid_derivative` implemented and tested
+- [ ] Part 2 reflection answered
 
 ---
 
@@ -248,6 +270,10 @@ The predictions are random right now — the network hasn't learned anything yet
 !!! question "Reflection"
     Why do we initialize weights randomly instead of setting them all to zero? (Hint: consider what happens during backpropagation if all neurons in a layer start with identical weights.)
 
+- [ ] Weight shapes confirmed: `W1 (2, 8)`, `b1 (1, 8)`, `W2 (8, 1)`, `b2 (1, 1)`
+- [ ] `forward()` runs on a sample batch without errors
+- [ ] Part 3 reflection answered
+
 ---
 
 ## Part 4: Loss and Backpropagation
@@ -274,6 +300,27 @@ Backpropagation computes **how much each weight contributed to the error**, then
 
 !!! info "Don't memorize the formulas"
     The goal is seeing that backprop is **mechanical** — you compute the output error, then propagate it backward through each layer. PyTorch's `loss.backward()` does exactly this, automatically.
+
+??? abstract "The chain-rule derivation (optional)"
+    For each parameter, we want $\frac{\partial \mathcal{L}}{\partial W}$. Working from the output backward:
+
+    **Output layer** — with sigmoid + binary cross-entropy the gradient simplifies:
+
+    $$\frac{\partial \mathcal{L}}{\partial Z_2} = A_2 - y$$
+
+    **Gradients for `W2`, `b2`** — chain through $Z_2 = A_1 W_2 + b_2$:
+
+    $$\frac{\partial \mathcal{L}}{\partial W_2} = A_1^T \cdot \frac{\partial \mathcal{L}}{\partial Z_2}, \quad \frac{\partial \mathcal{L}}{\partial b_2} = \sum_i \frac{\partial \mathcal{L}}{\partial Z_2}$$
+
+    **Propagate to hidden** — chain through $Z_2 = A_1 W_2 + b_2$ and $A_1 = \sigma(Z_1)$:
+
+    $$\frac{\partial \mathcal{L}}{\partial Z_1} = \left(\frac{\partial \mathcal{L}}{\partial Z_2} \cdot W_2^T\right) \odot \sigma'(Z_1)$$
+
+    **Gradients for `W1`, `b1`** — same pattern as above:
+
+    $$\frac{\partial \mathcal{L}}{\partial W_1} = X^T \cdot \frac{\partial \mathcal{L}}{\partial Z_1}, \quad \frac{\partial \mathcal{L}}{\partial b_1} = \sum_i \frac{\partial \mathcal{L}}{\partial Z_1}$$
+
+    You don't need to re-derive this — but once you see the pattern (one layer at a time, chain rule, repeat), you understand what PyTorch's autograd does for you.
 
 ```python
 def backward(X, y_true, Z1, A1, Z2, A2, W1, b1, W2, b2):
@@ -302,6 +349,9 @@ def backward(X, y_true, Z1, A1, Z2, A2, W1, b1, W2, b2):
 
     return dW1, db1, dW2, db2
 ```
+
+- [ ] `compute_loss` implemented
+- [ ] `backward` implemented with correctly-shaped gradients
 
 ---
 
@@ -387,17 +437,51 @@ plt.show()
 
 ### Experiment with hyperparameters
 
-Try different configurations and observe the effects:
+Try different configurations and observe the effects. You need to run **at least 3** of these — more if you're curious.
 
-| Hidden size | Learning rate | Expected behavior |
-|:-----------:|:------------:|-------------------|
-| 4 | 0.5 | Simpler boundary, may underfit |
-| 8 | 0.5 | Good fit (baseline) |
-| 16 | 0.5 | More complex boundary, may overfit on noisy points |
-| 8 | 0.1 | Slower convergence, may need more epochs |
-| 8 | 1.0 | Faster convergence, risk of instability |
+=== "Sweep table"
 
-Modify the hidden layer size by changing the shapes of `W1` (second dim) and `W2` (first dim). Run each experiment and save the decision boundary plots.
+    | Hidden size | Learning rate | Expected behavior |
+    |:-----------:|:------------:|-------------------|
+    | 4 | 0.5 | Simpler boundary, may underfit |
+    | 8 | 0.5 | Good fit (baseline) |
+    | 16 | 0.5 | More complex boundary, may overfit on noisy points |
+    | 8 | 0.1 | Slower convergence, may need more epochs |
+    | 8 | 1.0 | Faster convergence, risk of instability |
+
+=== "Parameterized training cell"
+
+    Wrap your training loop in a function so you can sweep configurations cleanly:
+
+    ```python
+    def train(hidden_size: int, learning_rate: float, epochs: int = 1000, seed: int = 42):
+        rng = np.random.default_rng(seed)
+        W1 = rng.standard_normal((2, hidden_size)) * 0.5
+        b1 = np.zeros((1, hidden_size))
+        W2 = rng.standard_normal((hidden_size, 1)) * 0.5
+        b2 = np.zeros((1, 1))
+
+        losses = []
+        for _ in range(epochs):
+            Z1, A1, Z2, A2 = forward(X, W1, b1, W2, b2)
+            losses.append(compute_loss(y, A2))
+            dW1, db1, dW2, db2 = backward(X, y, Z1, A1, Z2, A2, W1, b1, W2, b2)
+            W1 -= learning_rate * dW1
+            b1 -= learning_rate * db1
+            W2 -= learning_rate * dW2
+            b2 -= learning_rate * db2
+
+        return (W1, b1, W2, b2), losses
+
+    configs = [(4, 0.5), (8, 0.5), (16, 0.5), (8, 0.1), (8, 1.0)]
+    results = {cfg: train(*cfg) for cfg in configs}
+    ```
+
+Save the decision boundary plot for each config you run.
+
+- [ ] Baseline model trained and loss curve plotted
+- [ ] Side-by-side decision boundary plot (decision tree vs neural net)
+- [ ] At least 3 hyperparameter experiments run and plotted
 
 ---
 
@@ -433,17 +517,24 @@ For setting up PyTorch on OSC, see the [PyTorch & GPU Setup](../ml-workflows/pyt
 !!! question "Reflection"
     When you call `loss.backward()` in PyTorch, what is it doing? How does it relate to the `backward()` function you wrote in Part 4?
 
+- [ ] sklearn `MLPClassifier` comparison run (within a few percent of your from-scratch network)
+- [ ] Part 6 reflection answered
+
 ---
 
 ## Part 7: Publish
 
-Convert your notebook into a Quarto blog post on your personal website. Your post should include:
+Turn your notebook into a blog post on your Quarto site. Follow the **[Publishing Guide](publishing-guide.md)** for the full workflow.
 
-1. The decision boundary comparison (decision tree vs neural network)
-2. Your loss curve
-3. A brief explanation of what surprised you or what you learned
+**Quick reference for this assignment:**
 
-Add it to your Quarto blog and push to GitHub Pages.
+- **Suggested categories:** `[deep-learning, python, reflection]`
+- **Cover image:** the side-by-side decision boundary comparison (decision tree vs neural net) — it's the most visually telling plot
+- **Required elements in the post:**
+    1. The decision boundary comparison figure
+    2. Your loss curve
+    3. At least one hyperparameter experiment result
+    4. A "What surprised me" or "What I learned" section — be specific (e.g., "I thought the gradient updates would be noisy — they weren't")
 
 ---
 

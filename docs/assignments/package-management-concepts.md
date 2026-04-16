@@ -1,4 +1,4 @@
-<!-- last-reviewed: 2026-02-26 -->
+<!-- last-reviewed: 2026-04-16 -->
 # Assignment 3a: Package Management Concepts
 
 |                    |                                                              |
@@ -7,11 +7,11 @@
 | **Estimated time** | 3--4 hours                                                   |
 | **Prerequisites**  | Assignment 1 completed, Python basics                        |
 
----
+!!! abstract "What you'll learn"
+    Why package management exists, how dependency resolution works, and when to use **pip** vs **conda** vs **uv**. By the end you'll be able to create reproducible Python environments for any project — and you'll understand why that's a solved problem you no longer have to re-solve.
 
-## What You'll Learn
-
-Why package management exists, how dependency resolution works, and when to use pip vs conda vs uv. By the end you'll be able to create reproducible Python environments for any project.
+!!! info "3a and 3b are assigned together"
+    You have **2 weeks** to complete both. 3a is conceptual (package management). [3b is hands-on coding (a neural network from scratch)](neural-network-from-scratch.md). Both include a blog post deliverable.
 
 ---
 
@@ -30,11 +30,21 @@ When you run `pip install requests`, pip:
 
 Create and activate a fresh virtual environment, then count what's already installed:
 
-```bash
-python -m venv scratch-env
-source scratch-env/bin/activate   # Windows Git Bash: source scratch-env/Scripts/activate
-pip list
-```
+=== "macOS / Linux / WSL"
+
+    ```bash
+    python -m venv scratch-env
+    source scratch-env/bin/activate
+    pip list
+    ```
+
+=== "Windows (Git Bash)"
+
+    ```bash
+    python -m venv scratch-env
+    source scratch-env/Scripts/activate
+    pip list
+    ```
 
 You should see only `pip` and `setuptools` — a clean slate. Now install one package and count again:
 
@@ -52,6 +62,11 @@ When you're done exploring, deactivate and delete the scratch environment:
 deactivate
 rm -rf scratch-env
 ```
+
+- [ ] Created a fresh venv and confirmed the minimal package list
+- [ ] Installed `requests` and counted the extras
+
+
 
 ---
 
@@ -103,12 +118,20 @@ graph TD
 
 One `pip install torch` pulls in **14+ packages** including GPU libraries, a symbolic math engine, and a template language. Every one of those packages has its own version requirements, and they all have to be compatible with each other.
 
+??? abstract "How dependency resolution actually works"
+    When you `pip install torch`, pip does a depth-first traversal of the dependency graph, collecting every package `torch` needs, then every package *those* need, and so on. At each step it has to pick a version that satisfies **all** constraints — if `torch` needs `numpy >= 1.24` and another already-installed package needs `numpy < 2`, the resolver has to find a version in the intersection.
+
+    Modern resolvers (pip ≥ 20.3, uv, conda) use **backtracking** or **SAT solvers**: if they hit a dead end, they undo recent choices and try different versions. When no valid combination exists, you get a `ResolutionImpossible` error — and the only fix is relaxing a constraint somewhere.
+
 ### Why this matters
 
 Imagine Project A needs `numpy==1.26.4` and Project B needs `numpy==2.0.0`. If both are installed into the same Python environment, one project breaks. This is the **version conflict problem**, and it's the core reason package management tools exist.
 
 !!! question "Reflection"
     What could go wrong if two projects share a single Python installation and one of them upgrades a shared dependency?
+
+- [ ] Dependency-tree reasoning makes sense to you
+- [ ] Part 1 reflection answered
 
 ---
 
@@ -168,8 +191,14 @@ Verify that each environment has its own version. Then clean up:
 rm -rf env-numpy1 env-numpy2
 ```
 
+!!! success "What just happened"
+    You created two fully independent Python installations that share nothing but the interpreter. Installing a new package in one has zero effect on the other. This is what lets a lab machine host 20 projects without any of them breaking each other.
+
 !!! question "Reflection"
     Why not install everything into the system Python? What problems would that cause on a shared system like OSC where multiple users and projects coexist?
+
+- [ ] Two isolated venvs created with different numpy versions
+- [ ] Part 2 reflection answered
 
 ---
 
@@ -190,32 +219,53 @@ The lab uses three package managers. Each has different strengths:
 
 - **uv** — Default choice for new projects. Fast, deterministic, excellent error messages.
 - **conda** — When you need non-Python dependencies (CUDA, MKL, system libraries) that aren't available as pip wheels.
-- **pip** — When a package is only on PyPI and not on conda-forge.
+- **pip** — When a package is only on PyPI and not on conda-forge, or you're working in a codebase that hasn't migrated yet.
 
 For details on how we use these on OSC, see the [Environment Management](../working-on-osc/osc-environment-management.md) guide and the [Python Environment Setup](../getting-started/python-environment-setup.md) guide.
 
 ### Hands-on: compare pip and uv speed
 
-Install the same set of packages with pip and uv, and compare the time:
+Install the same set of packages with pip and uv, then compare the time:
 
-```bash
-# Time pip
-python -m venv pip-test
-source pip-test/bin/activate
-time pip install requests flask pandas numpy
-deactivate
-rm -rf pip-test
+=== "pip"
 
-# Time uv (install uv first if needed: curl -LsSf https://astral.sh/uv/install.sh | sh)
-uv venv uv-test
-source uv-test/bin/activate
-time uv pip install requests flask pandas numpy
-deactivate
-rm -rf uv-test
-```
+    ```bash
+    python -m venv pip-test
+    source pip-test/bin/activate
+    time pip install requests flask pandas numpy
+    deactivate
+    rm -rf pip-test
+    ```
+
+=== "uv"
+
+    ```bash
+    # Install uv first if needed:
+    # curl -LsSf https://astral.sh/uv/install.sh | sh
+    uv venv uv-test
+    source uv-test/bin/activate
+    time uv pip install requests flask pandas numpy
+    deactivate
+    rm -rf uv-test
+    ```
+
+Record the `real` time from each `time` command.
+
+??? example "What you'll probably see"
+    On a recent laptop with warm caches, rough numbers:
+
+    | Tool | Time |
+    |------|------|
+    | `pip install` | 15–40s |
+    | `uv pip install` | 1–3s |
+
+    The gap is bigger the first time (cold cache) and for larger package sets (e.g., pytorch + its dependencies). uv also produces cleaner error messages when there's a conflict.
 
 !!! question "Reflection"
     Conda can install non-Python packages like CUDA libraries. Why is this useful? When would pip or uv alone not be enough?
+
+- [ ] Speed comparison run with times recorded
+- [ ] Part 3 reflection answered
 
 ---
 
@@ -303,17 +353,24 @@ uv pip install -r requirements.lock
     rm -rf req-test req-verify requirements.txt
     ```
 
+- [ ] Captured both a `pip freeze` and a hand-curated requirements file
+- [ ] Reproduced an environment from a requirements file in a fresh venv
+
 ---
 
 ## Part 5: Publish
 
-Write a short blog post on your Quarto website explaining **one concept** from this assignment. Pick the topic that surprised you most or that you think would be most useful to a classmate. Ideas:
+Write a short blog post on your Quarto website explaining **one concept** from this assignment. Pick the topic that surprised you most or that you think would be most useful to a classmate. Follow the **[Publishing Guide](publishing-guide.md)** for the full workflow.
 
-- Why virtual environments exist (and what goes wrong without them)
-- How dependency trees work — with your own diagram
-- pip vs conda vs uv — which to use when
+**Quick reference for this assignment:**
 
-Your post should include at least one code example or diagram. Add it to your Quarto blog and push to GitHub Pages.
+- **Suggested categories:** `[tooling, python, reflection]`
+- **Post angles** (pick one):
+    - **Why virtual environments exist** — and what specifically goes wrong without them
+    - **How dependency trees work** — with a diagram you draw for a package of your choice
+    - **pip vs conda vs uv** — when to reach for each, with the time comparison you measured
+
+Your post should include at least one code example or diagram.
 
 ---
 

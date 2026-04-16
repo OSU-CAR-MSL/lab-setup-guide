@@ -198,9 +198,11 @@ nav:
     - Overview: assignments/index.md
     - "Assignment 1: Personal Website": assignments/personal-website.md
     - "Assignment 2a: Exploratory Data Analysis": assignments/exploratory-data-analysis.md
-    - "Assignment 2b: Concepts, Admin & AI Setup": assignments/concepts-admin-setup.md
+    - "Assignment 2b: Research Infrastructure": assignments/concepts-admin-setup.md
+    - "Assignment 2c: AI-Augmented Development": assignments/ai-augmented-development.md
     - "Assignment 3a: Package Management Concepts": assignments/package-management-concepts.md
     - "Assignment 3b: Neural Network from Scratch": assignments/neural-network-from-scratch.md
+    - Publishing Guide: assignments/publishing-guide.md
     - Student Site Showcase: assignments/site-showcase.md
     - Typst CV Guide: assignments/typst-cv-guide.md
 

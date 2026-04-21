@@ -180,6 +180,7 @@ nav:
     - Data & Experiment Tracking: ml-workflows/data-experiment-tracking.md
     - DuckDB Analytics Layer: ml-workflows/duckdb-analytics.md
     - Hugging Face Spaces: ml-workflows/huggingface-spaces.md
+    - HPC Training Nuances: ml-workflows/hpc-training-nuances.md
 
   - GitHub:
     - Git Fundamentals: github/git-fundamentals.md

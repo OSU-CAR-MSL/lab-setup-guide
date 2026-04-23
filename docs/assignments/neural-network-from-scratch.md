@@ -565,6 +565,6 @@ Turn your notebook into a blog post on your Quarto site. Follow the **[Publishin
 ## Sources
 
 - [Neural Networks and Deep Learning](http://neuralnetworksanddeeplearning.com/) — Michael Nielsen, 2015
-- [3Blue1Brown Neural Networks series](https://www.3blue1brown.com/topics/neural-networks) — Grant Sanderson, 2017
+- [3Blue1Brown Neural Networks series](https://www.3blue1brown.com/?topic=neural-networks) — Grant Sanderson, 2017
 - [CS231n: Convolutional Neural Networks for Visual Recognition](https://cs231n.github.io/) — Stanford University
 - [scikit-learn classifier comparison](https://scikit-learn.org/stable/auto_examples/classification/plot_classifier_comparison.html) — decision boundary plotting reference

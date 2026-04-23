@@ -271,6 +271,57 @@ grouping that makes cross-seed / cross-variant analysis possible.
 
 ---
 
+## 11. Prebatching fixes worker starvation, not compute-vs-pipeline ratio
+
+**Rule**: high GPU utilization requires `T_gpu(batch) ≫ T_main_process(batch)`.
+Prebatching (collate once at setup, `num_workers=0`, `PrefetchLoader`)
+eliminates worker cost but cannot shrink main-process per-step
+overhead below a floor. When the model is compute-tiny, the floor
+dominates and GPU util looks low — even though the pipeline is
+correct.
+
+**Case study (graphids, set_01 VGAE-small on V100, 2026-04-22)**:
+the prebatched training path was measured at ~100% GPU util on
+hcrl_sa with `scale="medium"` (T_gpu ~155 ms, T_cpu ~15 ms). The same
+pipeline on set_01 with `scale="small"` showed **27% mean GPU util
+over 54 min of training** — MLflow `system/gpu_0_utilization_percentage`,
+5-second nvml samples. VRAM was at 93% (the two-point budget probe
+was sized correctly), but the GPU sat idle 86% of the time because
+the smaller model's T_gpu had collapsed to ~5 ms while the main-process
+step wall (`Batch.clone()` + async H2D + callback dispatch) stayed
+near ~20 ms. Not a regression: different workload, different ratio.
+
+**V100 / A100 / H100 are compute-heavy machines.** A 10k-parameter
+model on a V100 can't saturate the device by any pipeline tuning —
+that's a workload characteristic. The practical implication:
+
+- **Smoke runs** (tiny model, tiny epochs, `gpudebug`) — expect low
+  GPU util, measure correctness only (no NaN, loss shape).
+- **Production fits** — scale the model up (or the batch, via the
+  budget probe) until T_gpu dominates. For most graph-IDS-style
+  workloads on V100 that means `scale="medium"` or larger; on H100
+  you can often push further.
+- **Moving to a bigger GPU doesn't help a small model** — H100 has
+  more VRAM and faster tensor cores, but a tiny model still runs in
+  5 ms, so you'll get the same low util with fewer jobs finishing
+  sooner (wall-clock wins, util doesn't).
+
+**Diagnostic hierarchy** — always in this order:
+
+1. Device-level metrics first: `nvidia-smi dmon -s u`,
+   MLflow `system/gpu_*_utilization_percentage`, DCGM. These read from
+   nvml and are ground truth.
+2. Per-step timing: OTel traces, `torch.profiler`, `time.perf_counter`
+   around the training step.
+3. Wall-clock per epoch last — it aggregates everything and hides the
+   signal. **Never diagnose throughput from wall-clock alone**.
+
+Cross-reference: the full graphids quantitative breakdown lives at
+[`docs/reference/prebatch-timing.md`](https://frenken-lab.github.io/graphids/reference/prebatch-timing/)
+(Generalization and limits section).
+
+---
+
 ## TODO — room to grow
 
 Sections worth adding as experience accumulates:

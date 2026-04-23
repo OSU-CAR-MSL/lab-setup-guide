@@ -64,9 +64,9 @@ theme:
     repo: fontawesome/brands/github
     edit: material/pencil
   
-  # Logo and favicon (add these files to docs/assets/ if you have them)
-  # logo: assets/logo.png
-  # favicon: assets/favicon.ico
+  # Logo and favicon
+  logo: assets/logo.svg
+  favicon: assets/favicon.svg
 
 # Custom CSS for OSU branding
 extra_css:
@@ -75,6 +75,9 @@ extra_css:
 # Custom JavaScript
 extra_javascript:
   - javascripts/feedback.js
+  - javascripts/details-hash.js
+  - javascripts/concept-graph.js
+  - https://cdnjs.cloudflare.com/ajax/libs/cytoscape/3.28.1/cytoscape.min.js
 
 # Extensions for enhanced markdown
 markdown_extensions:
@@ -128,6 +131,10 @@ markdown_extensions:
       emoji_index: !!python/name:material.extensions.emoji.twemoji
       emoji_generator: !!python/name:material.extensions.emoji.to_svg
 
+# Build hooks
+hooks:
+  - scripts/concept_graph_hook.py
+
 # Plugins
 plugins:
   - search:
@@ -149,6 +156,7 @@ nav:
   - Home: index.md
   
   - Getting Started:
+    - getting-started/index.md
     - WSL2 Setup: getting-started/wsl-setup.md
     - VS Code Setup: getting-started/vscode-setup.md
     - VS Code Extensions: getting-started/vscode-extensions.md
@@ -157,6 +165,7 @@ nav:
     - Agent Workflows: getting-started/agent-workflows.md
 
   - OSC Basics:
+    - osc-basics/index.md
     - Clusters Overview: osc-basics/osc-clusters-overview.md
     - Account Setup: osc-basics/osc-account-setup.md
     - SSH Connection: osc-basics/osc-ssh-connection.md
@@ -165,6 +174,7 @@ nav:
     - OnDemand Portal: osc-basics/osc-ondemand.md
 
   - Working on OSC:
+    - working-on-osc/index.md
     - Job Submission: working-on-osc/osc-job-submission.md
     - Environment Management: working-on-osc/osc-environment-management.md
     - Pipeline Orchestration: working-on-osc/pipeline-orchestration.md
@@ -172,6 +182,7 @@ nav:
     - MATLAB & Simulink: working-on-osc/matlab-simulink.md
 
   - ML Workflows:
+    - ml-workflows/index.md
     - PyTorch & GPU Setup: ml-workflows/pytorch-setup.md
     - PyG (PyTorch Geometric): ml-workflows/pyg-setup.md
     - GPU Preprocessing (RAPIDS): ml-workflows/rapids-gpu-preprocessing.md

@@ -696,7 +696,10 @@ if os.path.exists('checkpoints/best_model.pth'):
 
 ## Troubleshooting
 
-### CUDA Out of Memory
+Common failure modes and their fixes. Click an entry to expand.
+
+<details class="collapsible-issue" markdown id="cuda-out-of-memory">
+<summary>CUDA Out of Memory</summary>
 
 **Symptoms:**
 ```
@@ -734,7 +737,10 @@ RuntimeError: CUDA out of memory
 
 6. **Reduce model size**
 
-### CUDA Not Available
+</details>
+
+<details class="collapsible-issue" markdown id="cuda-not-available">
+<summary>CUDA Not Available</summary>
 
 **Checks:**
 
@@ -756,7 +762,10 @@ pip install "torch>=2.8.0,<2.9" torchvision torchaudio
 !!! note "You do NOT need `module load cuda` for PyPI torch"
     If you installed PyTorch from PyPI (via `pip install` or `uv add`), the wheels bundle their own CUDA libraries. `module load cuda` is only needed if you are compiling custom CUDA extensions (e.g. custom C++/CUDA kernels). If `torch.cuda.is_available()` returns False, the most common cause is running on a login node instead of a GPU compute node.
 
-### Slow Training
+</details>
+
+<details class="collapsible-issue" markdown id="slow-training">
+<summary>Slow Training</summary>
 
 **Common issues:**
 - Too few data loader workers
@@ -774,7 +783,10 @@ with torch.profiler.profile() as prof:
 print(prof.key_averages().table())
 ```
 
-### Module Import Errors
+</details>
+
+<details class="collapsible-issue" markdown id="module-import-errors">
+<summary>Module Import Errors</summary>
 
 ```bash
 # Verify environment activated
@@ -786,6 +798,8 @@ pip install --force-reinstall torch
 # Check Python path
 python -c "import sys; print('\n'.join(sys.path))"
 ```
+
+</details>
 
 ## Best Practices
 

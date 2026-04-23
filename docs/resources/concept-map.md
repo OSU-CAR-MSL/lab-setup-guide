@@ -3,10 +3,10 @@ tags:
   - Resources
   - AI
 ---
-<!-- last-reviewed: 2026-03-30 -->
+<!-- last-reviewed: 2026-04-23 -->
 # Concept Map & Knowledge Graph
 
-This page provides two visual overviews: a **concept map** showing how topics in this documentation connect (so you can plan your learning path), and a **knowledge graph** demonstrating how AI coding assistants persist structured knowledge across sessions.
+This page provides two visual overviews: an **interactive concept map** built from the real cross-links between every page (so you can see the actual structure of the docs, not a curated snapshot), and a **knowledge graph** demonstrating how AI coding assistants persist structured knowledge across sessions.
 
 ## How These Docs Are Organized
 
@@ -24,78 +24,16 @@ The site has eight sections that form a progression:
 | **Resources** | Troubleshooting, useful links, and this concept map |
 | **Tags** | Browse all pages by topic tag |
 
-The concept map below shows the key prerequisite relationships between pages.
-
 ## Docs Concept Map
 
-```mermaid
-%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#e8f4fd', 'primaryTextColor': '#1a1a1a', 'lineColor': '#555'}}}%%
-flowchart TB
-  subgraph GS["fa:fa-rocket Getting Started"]
-    wsl["fa:fa-linux WSL2 Setup"]:::gs
-    vscode["fa:fa-code VS Code Setup"]:::gs
-    pyenv["fa:fa-box Python Env Setup"]:::gs
-    ai["fa:fa-robot AI Coding Assistants"]:::gs
-    agent["fa:fa-wand-magic-sparkles Agent Workflows"]:::gs
-    wsl --> vscode --> pyenv
-    vscode --> ai --> agent
-  end
+Every dot is a page. Every arrow is a cross-link one page makes to another — the graph is rebuilt from the actual Markdown on every build, so it's always in sync with the docs. **Click a node to open the page. Hover to highlight neighbors. Uncheck a section to hide it.**
 
-  subgraph OB["fa:fa-server OSC Basics"]
-    account["fa:fa-user-plus Account Setup"]:::osc
-    ssh["fa:fa-key SSH Connection"]:::osc
-    remote["fa:fa-desktop Remote Development"]:::osc
-    account --> ssh --> remote
-  end
+<div id="concept-graph" class="concept-graph"></div>
 
-  subgraph WO["fa:fa-terminal Working on OSC"]
-    envmgmt["fa:fa-cubes Environment Mgmt"]:::osc
-    jobs["fa:fa-list-check Job Submission"]:::osc
-    pipeline["fa:fa-arrows-rotate Pipeline Orchestration"]:::osc
-    envmgmt --> jobs
-    jobs --> pipeline
-  end
-
-  subgraph ML["fa:fa-brain ML Workflows"]
-    pytorch["fa:fa-fire PyTorch & GPU Setup"]:::ml
-    pyg["fa:fa-diagram-project PyG Setup"]:::ml
-    rapids["fa:fa-bolt RAPIDS GPU"]:::ml
-    mlwf["fa:fa-folder-open ML Project Template"]:::ml
-    tracking["fa:fa-chart-line Data & Experiment Tracking"]:::ml
-    duckdb["fa:fa-database DuckDB Analytics"]:::ml
-    hf["fa:fa-cloud Hugging Face Spaces"]:::ml
-    pytorch --> pyg
-    pytorch --> rapids
-    mlwf --> tracking --> duckdb
-    tracking --> hf
-  end
-
-  subgraph GH["fa:fa-code-branch GitHub"]
-    gitfund["fa:fa-code-branch Git Fundamentals"]:::gh
-    reposetup["fa:fa-folder-plus Repository Setup"]:::gh
-    sshauth["fa:fa-key SSH & Authentication"]:::gh
-    actions["fa:fa-gears GitHub Actions & CI/CD"]:::gh
-    gittrouble["fa:fa-wrench Git Troubleshooting"]:::gh
-    gitfund --> reposetup
-    gitfund --> gittrouble
-    sshauth --> reposetup
-    reposetup --> actions
-  end
-
-  %% Cross-section prerequisite edges
-  pyenv --> envmgmt
-  remote --> envmgmt
-  jobs --> pytorch
-  pytorch --> mlwf
-  sshauth --> ssh
-  gitfund --> jobs
-  actions --> hf
-
-  classDef gs fill:#e8f4fd,stroke:#3b82f6,color:#1a1a1a,stroke-width:2px
-  classDef osc fill:#fef3c7,stroke:#d97706,color:#1a1a1a,stroke-width:2px
-  classDef ml fill:#ede9fe,stroke:#7c3aed,color:#1a1a1a,stroke-width:2px
-  classDef gh fill:#d1fae5,stroke:#059669,color:#1a1a1a,stroke-width:2px
-```
+!!! tip "Reading the graph"
+    - Hub pages (Job Submission, PyTorch, Environment Management, SSH Connection, Git Fundamentals) sit near the center — lots of inbound arrows.
+    - Clusters by color: blue = Getting Started, orange = OSC, purple = ML Workflows, green = GitHub/Contributing, scarlet = Assignments, grey = Resources.
+    - If you see a lonely orphan node with no edges, that's a sign a page isn't cross-linked well — fix it by adding relevant links in pages that should reference it.
 
 ## Hub Pages
 

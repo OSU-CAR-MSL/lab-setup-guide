@@ -350,7 +350,10 @@ torchrun --nproc_per_node=4 train.py --distributed
 
 ### Common Job Patterns
 
-#### CPU-Only Data Processing
+Copy-paste recipes for the most frequent lab workloads. Click a pattern to expand its full job script.
+
+<details class="collapsible-issue" markdown id="cpu-only-data-processing">
+<summary>CPU-Only Data Processing</summary>
 
 For data preprocessing, feature extraction, or file conversion jobs that don't need a GPU:
 
@@ -376,7 +379,10 @@ python preprocess.py \
     --workers $SLURM_CPUS_PER_TASK
 ```
 
-#### Checkpoint-Resume Pattern
+</details>
+
+<details class="collapsible-issue" markdown id="checkpoint-resume-pattern">
+<summary>Checkpoint-Resume Pattern</summary>
 
 For long training jobs that may hit walltime limits or need to recover from failures:
 
@@ -434,7 +440,10 @@ for epoch in range(start_epoch, num_epochs):
     fi
     ```
 
-#### Graceful Timeout Handling
+</details>
+
+<details class="collapsible-issue" markdown id="graceful-timeout-handling">
+<summary>Graceful Timeout Handling</summary>
 
 When a job hits its walltime, SLURM sends `SIGTERM` followed by `SIGKILL` after a short grace period ([SLURM docs](https://slurm.schedmd.com/sbatch.html#OPT_signal)) — any in-flight training step is lost. Use `--signal` to get advance warning and save a checkpoint before the kill:
 
@@ -471,7 +480,10 @@ signal.signal(signal.SIGUSR1, handle_timeout)
 !!! tip "PyTorch Lightning handles this automatically"
     If you use PyTorch Lightning, the [`SLURMEnvironment` plugin](https://lightning.ai/docs/pytorch/stable/clouds/cluster_advanced.html) catches `SIGUSR1` and triggers checkpoint saving — no manual signal handling needed. Just add `--signal=B:USR1@300` to your SBATCH header.
 
-#### Data Staging for I/O-Heavy Jobs
+</details>
+
+<details class="collapsible-issue" markdown id="data-staging-for-io-heavy-jobs">
+<summary>Data Staging for I/O-Heavy Jobs</summary>
 
 OSC has [three storage tiers](https://www.osc.edu/supercomputing/storage-environment-at-osc/available-file-systems) with different performance characteristics. Staging data to faster storage before training reduces I/O bottleneck:
 
@@ -517,7 +529,10 @@ python train.py --data-root "$DATA_ROOT"
     - **Skip staging** if your data is a few large files (Parquet, HDF5) — GPFS is optimized for sequential reads.
     - **Check `$TMPDIR` size** — local disk capacity varies by node. Use `df -h $TMPDIR` at job start to verify.
 
-#### CUDA Memory Configuration
+</details>
+
+<details class="collapsible-issue" markdown id="cuda-memory-configuration">
+<summary>CUDA Memory Configuration</summary>
 
 For GPU training jobs, set the PyTorch CUDA memory allocator to avoid fragmentation-related OOM errors:
 
@@ -534,7 +549,10 @@ export PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True,garbage_collection_thres
 !!! tip "When to use this"
     Recommended for models with variable-size inputs (graph neural networks, NLP with dynamic padding) where tensor sizes change between iterations, causing memory fragmentation.
 
-#### Long-Running Job with Email Alerts
+</details>
+
+<details class="collapsible-issue" markdown id="long-running-job-with-email-alerts">
+<summary>Long-Running Job with Email Alerts</summary>
 
 Get notified when important jobs start, finish, or fail:
 
@@ -557,6 +575,8 @@ echo "Training started at $(date) on $(hostname)"
 python train.py --config configs/full_training.yaml
 echo "Training finished at $(date)"
 ```
+
+</details>
 
 ## Partitions (Queues)
 
@@ -745,7 +765,10 @@ task_id = os.environ.get('SLURM_ARRAY_TASK_ID', '0')
 
 ## Troubleshooting
 
-### Job Pending Forever
+Common failure modes and their fixes. Click an entry to expand.
+
+<details class="collapsible-issue" markdown id="job-pending-forever">
+<summary>Job Pending Forever</summary>
 
 ```bash
 # Check reason
@@ -760,7 +783,10 @@ squeue -u $USER
 
 **Solution**: Reduce resources or wait.
 
-### Job Fails Immediately
+</details>
+
+<details class="collapsible-issue" markdown id="job-fails-immediately">
+<summary>Job Fails Immediately</summary>
 
 ```bash
 # Check output files
@@ -773,7 +799,10 @@ cat logs/job_<jobid>.err
 # - Permission denied
 ```
 
-### Out of Memory
+</details>
+
+<details class="collapsible-issue" markdown id="out-of-memory">
+<summary>Out of Memory</summary>
 
 ```bash
 # Request more memory
@@ -782,7 +811,10 @@ cat logs/job_<jobid>.err
 # Or reduce batch size in code
 ```
 
-### Job Timeout
+</details>
+
+<details class="collapsible-issue" markdown id="job-timeout">
+<summary>Job Timeout</summary>
 
 ```bash
 # Increase time limit
@@ -791,7 +823,10 @@ cat logs/job_<jobid>.err
 # Or optimize your code
 ```
 
-### GPU Not Detected
+</details>
+
+<details class="collapsible-issue" markdown id="gpu-not-detected">
+<summary>GPU Not Detected</summary>
 
 ```bash
 # Verify GPU requested
@@ -806,6 +841,8 @@ python -c "import torch; print(torch.cuda.is_available())"
 
 !!! note
     If you installed PyTorch from PyPI, you do **not** need `module load cuda`. PyPI wheels bundle CUDA. Only load a CUDA module if you are compiling custom CUDA extensions.
+
+</details>
 
 ## Example Workflows
 
